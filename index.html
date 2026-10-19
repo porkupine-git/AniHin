@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anixo Hindi - जल्द आ रहा है | anixohindi.cc</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&family=Poppins:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            font-family: 'Poppins', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #0b0f14;
+            color: #ffffff;
+            position: relative;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Fullscreen Anime Artwork */
+        .bg {
+            position: fixed;
+            inset: 0;
+            background: url('assets/frieren-ruins-bg.jpg') no-repeat center center / cover;
+            z-index: 1;
+            transform: scale(1.02);
+        }
+
+        /* Smooth Cinematic Scrim - perfect balance of art clarity and text contrast */
+        .scrim {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at center, rgba(9, 13, 20, 0.42) 0%, rgba(9, 13, 20, 0.72) 100%);
+            backdrop-filter: blur(2px);
+            -webkit-backdrop-filter: blur(2px);
+            z-index: 2;
+        }
+
+        /* Clean Content Container directly on artwork */
+        .content {
+            position: relative;
+            z-index: 3;
+            text-align: center;
+            max-width: 640px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Static Clean Domain Header - NO blinking dots or cheesy pills */
+        .domain-tag {
+            font-family: 'Space Grotesk', monospace;
+            font-size: 13px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 16px;
+        }
+
+        h1 {
+            font-size: 44px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            line-height: 1.25;
+            color: #ffffff;
+            margin-bottom: 12px;
+            text-shadow: 0 4px 24px rgba(0, 0, 0, 0.6);
+        }
+
+        .subtitle {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.85);
+            font-weight: 400;
+            line-height: 1.55;
+            text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+            margin-bottom: 34px;
+        }
+
+        /* Call To Action Box */
+        .cta-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* Sleek Frosted Glass Button - Blends naturally with Frieren art */
+        .btn-anixo {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 14px 30px;
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.24);
+            border-radius: 9999px;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .btn-anixo strong {
+            font-weight: 700;
+            color: #ffffff;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
+
+        .btn-anixo:hover {
+            background: rgba(255, 255, 255, 0.22);
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.45);
+        }
+
+        .btn-anixo svg {
+            transition: transform 0.2s ease;
+        }
+
+        .btn-anixo:hover svg {
+            transform: translateX(4px);
+        }
+
+        .btn-hint {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.6);
+            letter-spacing: 0.2px;
+            text-shadow: 0 1px 8px rgba(0, 0, 0, 0.5);
+        }
+
+        footer {
+            position: fixed;
+            bottom: 24px;
+            z-index: 3;
+            font-family: 'Space Grotesk', monospace;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.45);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        @media (max-width: 640px) {
+            h1 {
+                font-size: 30px;
+                line-height: 1.3;
+            }
+            .subtitle {
+                font-size: 15px;
+                margin-bottom: 26px;
+            }
+            .btn-anixo {
+                width: 100%;
+                padding: 13px 20px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg"></div>
+    <div class="scrim"></div>
+
+    <main class="content">
+        <div class="domain-tag">ANIXOHINDI.CC</div>
+        <h1>साइट पर काम चल रहा है</h1>
+        <p class="subtitle">हिंदी एनीमे का नया ठिकाना — बहुत जल्द आ रहा है!</p>
+
+        <div class="cta-box">
+            <a href="https://anixo.online" class="btn-anixo" target="_blank" rel="noopener">
+                <span>तब तक के लिए Anime देखें <strong>Anixo.online</strong> पर</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M5 12h14"></path>
+                    <path d="m12 5 7 7-7 7"></path>
+                </svg>
+            </a>
+            <span class="btn-hint">हजारों Sub & Dub एनीमे देखने के लिए क्लिक करें</span>
+        </div>
+    </main>
+
+    <footer>&copy; 2026 anixohindi</footer>
+
+</body>
+</html>
