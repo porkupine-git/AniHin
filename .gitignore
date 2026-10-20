@@ -1,0 +1,6 @@
+# Cache files
+cache/*.json
+!cache/.gitkeep
+
+# Environment and sensitive configs
+.env
