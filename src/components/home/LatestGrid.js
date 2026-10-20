@@ -1,4 +1,4 @@
-// Latest Episodes Grid Component (HiAnime Screenshot 3)
+// Latest Episodes Grid Component (Responsive 2 to 4 Columns)
 
 import { animeApi } from '../../api/animeApi.js';
 import { renderAnimeCard } from '../common/AnimeCard.js';
@@ -18,7 +18,7 @@ export function renderLatestGrid() {
         </div>
 
         <div class="block_area-content film_list film_list-grid">
-            <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3" style="row-gap: 24px;">
+            <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-2 g-md-3" style="row-gap: 20px;">
                 ${animeList.map(anime => `
                 <div class="col">
                     ${renderAnimeCard(anime)}
