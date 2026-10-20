@@ -1,0 +1,180 @@
+<div id="header" class="header-home" role="banner">
+            <div class="container">
+                <button id="mobile_menu" aria-label="Toggle mobile menu"><i class="fa fa-bars"></i></button>
+                <a href="https://hianime.at/home" id="logo" aria-label="Home">
+                    <img src="https://hianime.at/theme/images/logo.png" alt="HiAnime">
+                    <div class="clearfix"></div>
+                </a>
+                <div id="search">
+                    <div class="search-content">
+                        <form action="https://hianime.at/search" autocomplete="off">
+                            <a href="https://hianime.at/filter" class="filter-icon" aria-label="Filter anime">Filter</a>
+                            <input type="text" class="form-control search-input" name="keyword"
+                                placeholder="Search anime..." required aria-label="Search anime" value="">
+                            <button type="submit" class="search-icon" aria-label="Search"><i class="fas fa-search"></i></button>
+                        </form>
+                        <div class="nav search-result-pop" id="search-suggest" style="display: none;">
+                            <div class="loading-relative" id="search-loading" style="display: none;">
+                                <div class="loading">
+                                    <div class="span1"></div>
+                                    <div class="span2"></div>
+                                    <div class="span3"></div>
+                                </div>
+                            </div>
+                            <div class="result" style="display:none;"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="header-group">
+                    <div class="anw-group">
+                        <div class="zrg-title"><span class="top">Join now</span><span class="bottom">HiAnime
+                                Group</span></div>
+                        <div class="zrg-list">
+                            <div class="item"><a href="https://discord.com/invite/qCMd54VQUv" target="_blank"
+                                    class="zr-social-button dc-btn" aria-label="Discord"><i class="fab fa-discord" aria-hidden="true"></i></a>
+                            </div>
+                            <div class="item"><a href="https://t.me/hianimeat" target="_blank"
+                                    class="zr-social-button tl-btn" aria-label="Telegram"><i class="fab fa-telegram-plane" aria-hidden="true"></i></a>
+                            </div>
+                            <div class="item"><a href="#" target="_blank"
+                                    class="zr-social-button rd-btn" aria-label="Reddit"><i class="fab fa-reddit-alien" aria-hidden="true"></i></a></div>
+                            <div class="item"><a href="https://x.com/hianimeat" target="_blank"
+                                    class="zr-social-button tw-btn" aria-label="Twitter"><i class="fab fa-twitter" aria-hidden="true"></i></a></div>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+                <div class="header-setting">
+                    <div class="hs-toggles">
+                        <a href="https://hianime.at/watch2gather" class="hst-item" data-toggle="tooltip" title="Watch with friends">
+                            <div class="hst-icon"><i class="zicon zicon-20 zicon-live"></i></div>
+                            <div class="name"><span>Watch2gether</span></div>
+                        </a>
+                        <a href="https://hianime.at/random" class="hst-item" data-toggle="tooltip"
+                            data-original-title="Watch random anime">
+                            <div class="hst-icon"><i class="fas fa-random"></i></div>
+                            <div class="name"><span>Random</span></div>
+                        </a>
+                        <div class="hst-item" data-toggle="tooltip" title="Select language of anime name to display.">
+                            <div class="select-anime-name toggle-lang"><span class="en">EN</span><span
+                                    class="jp">JP</span></div>
+                            <div class="name"><span>Anime Name</span></div>
+                        </div>
+                        <a href="https://hianime.at/news" class="hst-item" data-toggle="tooltip" title="News">
+                            <div class="hst-icon"><i class="fas fa-rss"></i></div>
+                            <div class="name"><span>News</span></div>
+                        </a>
+                        <a href="https://hianime.at/community" class="hst-item" data-toggle="tooltip" title="HiAnime Community">
+                            <div class="hst-icon"><i class="fas fa-comments"></i></div>
+                            <div class="name"><span>Community</span></div>
+                        </a>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+
+                <div id="pick_menu">
+                    <div class="pick_menu-ul">
+                        <ul class="ulclear">
+                            <li class="pmu-item pmu-item-home">
+                                <a class="pmu-item-icon" href="https://hianime.at/home" title="Home">
+                                    <img src="https://hianime.at/theme/images/pick-home.svg" data-toggle="tooltip" data-placement="right"
+                                        title="Home">
+                                </a>
+                            </li>
+                            <li class="pmu-item pmu-item-movies">
+                                <a class="pmu-item-icon" href="https://hianime.at/movie" title="Movies">
+                                    <img src="https://hianime.at/theme/images/pick-movies.svg" data-toggle="tooltip" data-placement="right"
+                                        title="Movies">
+                                </a>
+                            </li>
+                            <li class="pmu-item pmu-item-show">
+                                <a class="pmu-item-icon" href="https://hianime.at/tv" title="TV Series">
+                                    <img src="https://hianime.at/theme/images/pick-show.svg" data-toggle="tooltip" data-placement="right"
+                                        title="TV Series">
+                                </a>
+                            </li>
+                            <li class="pmu-item pmu-item-popular">
+                                <a class="pmu-item-icon" href="https://hianime.at/most-popular" title="Most Popular">
+                                    <img src="https://hianime.at/theme/images/pick-popular.svg" data-toggle="tooltip" data-placement="right"
+                                        title="Most Popular">
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div id="header_right">
+                    
+                    <div id="user-slot">
+                        <div class="header_right-user">
+                            <a href="#modallogin" data-toggle="modal" class="nav-link btn btn-primary text-white">Login</a>
+                        </div>
+                    </div>
+                    
+                    <template id="tpl-notifications">
+                        <div class="hr-notifications dropdown">
+                            <div class="hrn-icon" data-toggle="dropdown" data-noti-bell aria-expanded="false" role="button" aria-label="Notifications">
+                                <i class="fas fa-bell"></i>
+                                <div class="number" data-noti-count style="display:none">0</div>
+                            </div>
+                            <div class="dropdown-menu dropdown-menu-noti">
+                                
+                                <div class="nnl-head">
+                                    <strong>Notifications</strong>
+                                    <div class="fav-tabs mt-2 mb-0">
+                                        <ul class="nav nav-tabs pre-tabs pre-tabs-min">
+                                            <li class="nav-item"><a class="nav-link active" href="javascript:;" data-noti-tab="anime">Anime<span class="noti-tab-badge" data-noti-tab-badge="anime" style="display:none">0</span></a></li>
+                                            <li class="nav-item"><a class="nav-link" href="javascript:;" data-noti-tab="community">Community<span class="noti-tab-badge" data-noti-tab-badge="community" style="display:none">0</span></a></li>
+                                            <li class="nav-item"><a class="nav-link" href="javascript:;" data-noti-tab="system">System<span class="noti-tab-badge" data-noti-tab-badge="system" style="display:none">0</span></a></li>
+                                        </ul>
+                                        <div class="clearfix"></div>
+                                    </div>
+                                </div>
+                                <div class="new-noti-list">
+                                    <div class="nnl-mark">
+                                        <a class="btn btn-xs float-right" href="javascript:;" data-noti-read><i class="fas fa-check-double mr-1"></i>Mark all as read</a>
+                                        <div class="clearfix"></div>
+                                    </div>
+                                    <div data-noti-items>
+                                        <div class="nnl-item new text-center">Loading…</div>
+                                    </div>
+                                    <a class="nnl-item nnl-more text-center" href="https://hianime.at/user/notifications">View all notifications<i class="fas fa-angle-right ml-2"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                    <template id="tpl-user-menu">
+                        <div class="header_right-user logged">
+                            <div class="dropdown">
+                                <div class="btn-user-avatar" data-toggle="dropdown" aria-expanded="true" aria-controls="user_menu">
+                                    <div class="profile-avatar">
+                                        <img data-fill="avatar" data-fallback="https://hianime.at/theme/images/no-image.jpg" src="https://hianime.at/theme/images/no-image.jpg" alt="">
+                                    </div>
+                                </div>
+                                <div id="user_menu" class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(-270px, 30px, 0px);">
+                                    <div class="dropdown-item dropdown-item-user">
+                                        <div class="user-detail">
+                                            <div class="name"><strong data-fill="name"></strong></div>
+                                            <div class="mail" data-fill="email"></div>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                    </div>
+                                    <div class="grid-menu">
+                                        <a class="dropdown-item" href="https://hianime.at/user/profile"><i class="fas fa-user mr-2"></i>Profile</a>
+                                        <a class="dropdown-item" href="https://hianime.at/user/watching"><i class="fas fa-history mr-2"></i>Continue Watching</a>
+                                        <a class="dropdown-item" href="https://hianime.at/user/bookmarks"><i class="fas fa-heart mr-2"></i>Watch List</a>
+                                        <a class="dropdown-item" href="https://hianime.at/user/import"><i class="fas fa-exchange-alt mr-2"></i>Import/Export</a>
+                                        <a class="dropdown-item" href="https://hianime.at/user/settings"><i class="fas fa-cog mr-2"></i>Settings</a>
+                                        <div class="clearfix"></div>
+                                    </div>
+                                    <a class="dropdown-item text-right text-white" href="#" data-action="logout">Logout<i class="fas fa-arrow-right ml-2 mr-1"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+                <div id="mobile_search"><i class="fa fa-search"></i></div>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+        <div class="clearfix"></div>

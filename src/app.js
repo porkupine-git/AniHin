@@ -9,7 +9,7 @@ import { renderBrowsePage } from './pages/browsePage.js';
 export function initApp() {
     console.log('🚀 HiAnime / AnixoHindi Application Bootstrapped.');
 
-    // 1. Mount Header
+    // 1. Mount Header & Sidebar
     const headerContainer = document.getElementById('header-mount');
     if (headerContainer) {
         headerContainer.innerHTML = renderHeader();
