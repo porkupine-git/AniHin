@@ -646,19 +646,19 @@ body:not(:has(.hero-spotlight-deck)) .site-navbar {
 .hero-spotlight-deck {
     position: relative;
     width: 100%;
-    height: 100vh;
-    min-height: 560px;
-    max-height: 860px;
+    height: 100vh !important;
+    min-height: 100vh !important;
+    min-height: 100svh !important;
     margin-top: -44px !important;
-    padding-top: clamp(75px, 10vh, 100px) !important;
-    padding-bottom: clamp(14px, 2.5vh, 28px);
+    padding-top: clamp(55px, 8vh, 85px) !important;
+    padding-bottom: clamp(16px, 3vh, 32px);
     box-sizing: border-box;
     overflow: hidden;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: clamp(8px, 1.8vh, 18px);
+    gap: clamp(10px, 2.2vh, 26px);
     perspective: 1200px;
     user-select: none;
     background: #101716;
@@ -2593,3 +2593,91 @@ body:not(:has(.hero-spotlight-deck)) .site-navbar {
         transform: none !important;
     }
 }
+
+/* Responsive Scaling for 2K / 4K / Zoomed-out viewports */
+@media (min-width: 2000px) and (min-height: 1100px) {
+    .deck-stage-wrapper {
+        max-width: 1300px;
+    }
+    .deck-cards-track {
+        height: 275px;
+    }
+    .deck-card-item {
+        width: 155px;
+        height: 228px;
+        border-radius: 16px;
+    }
+    .deck-card-inner {
+        border-radius: 16px;
+    }
+    .deck-title {
+        font-size: clamp(38px, 2.5vw, 52px);
+    }
+    .deck-title-logo {
+        max-height: 85px;
+    }
+    .deck-meta-row {
+        font-size: 14px;
+        gap: 12px;
+    }
+    .deck-hindi-title {
+        font-size: 16px;
+    }
+    .deck-genres {
+        font-size: 13.5px;
+    }
+    .btn-deck-watch, .btn-deck-browse {
+        padding: 12px 30px;
+        font-size: 14px;
+    }
+    .deck-nav-btn {
+        width: 52px;
+        height: 76px;
+        font-size: 22px;
+        top: calc(50% - 95px);
+    }
+}
+
+@media (min-width: 3000px) and (min-height: 1600px) {
+    .deck-stage-wrapper {
+        max-width: 1600px;
+    }
+    .deck-cards-track {
+        height: 330px;
+    }
+    .deck-card-item {
+        width: 185px;
+        height: 272px;
+        border-radius: 20px;
+    }
+    .deck-card-inner {
+        border-radius: 20px;
+    }
+    .deck-title {
+        font-size: clamp(48px, 3vw, 68px);
+    }
+    .deck-title-logo {
+        max-height: 110px;
+    }
+    .deck-meta-row {
+        font-size: 16px;
+        gap: 16px;
+    }
+    .deck-hindi-title {
+        font-size: 18px;
+    }
+    .deck-genres {
+        font-size: 15px;
+    }
+    .btn-deck-watch, .btn-deck-browse {
+        padding: 15px 38px;
+        font-size: 16px;
+    }
+    .deck-nav-btn {
+        width: 62px;
+        height: 90px;
+        font-size: 26px;
+        top: calc(50% - 115px);
+    }
+}
+/* End Zoomed-out Scaling */

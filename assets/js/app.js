@@ -352,19 +352,33 @@ function initSpotlightDeck() {
                 rotZFactor: 6.2,
                 rotYFactor: 14
             };
-        } else {
-            // Tier 6: 2560px – 3840px+ (2K QHD, Ultra-Wide 3440, 4K UHD Displays)
+        } else if (w <= 3199) {
+            // Tier 6: 2560px – 3199px (2K QHD, Ultra-Wide 3440)
             base = {
-                stepX: 118,
+                stepX: 135,
                 centerScale: 1.28,
                 scaleStep: 0.105,
                 maxOffset: 5.0,
-                tyPeak: -28,
+                tyPeak: -30,
                 tyFactor: 22,
-                tzBase: 150,
+                tzBase: 155,
                 tzStep: 50,
                 rotZFactor: 6.5,
                 rotYFactor: 14.5
+            };
+        } else {
+            // Tier 7: 3200px+ (4K UHD Displays & 50% / 33% Zoom)
+            base = {
+                stepX: 160,
+                centerScale: 1.30,
+                scaleStep: 0.10,
+                maxOffset: 5.2,
+                tyPeak: -34,
+                tyFactor: 24,
+                tzBase: 170,
+                tzStep: 55,
+                rotZFactor: 6.8,
+                rotYFactor: 15
             };
         }
 
