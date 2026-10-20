@@ -1,4 +1,4 @@
-// Exact 1:1 HiAnime Watch Page Controller
+// Authentic 1:1 HiAnime Watch Page Controller (Pixel-Perfect Stage Layout)
 
 import { animeApi } from '../api/animeApi.js';
 import { getQueryParams } from '../utils/helpers.js';
@@ -13,6 +13,7 @@ export function renderWatchPage() {
 
     document.title = `Watch ${anime.title} Episode ${currentEp} in HD | HiAnime`;
 
+    // Render Authentic HiAnime Watch DOM
     mainWrapper.outerHTML = `<div id="main-wrapper" class="layout-page layout-page-detail layout-page-watchtv" role="main">
     <div id="ani_detail" data-anime-id="100" data-id="2928" data-episode-number="1">
         <div class="ani_detail-stage">
@@ -34,23 +35,14 @@ export function renderWatchPage() {
                         <div class="watch-player" style="position: relative;">
                                                                                     
                             <style>.player-frame:fullscreen,.player-frame:-webkit-full-screen{padding:0!important;background:#000}</style>
-                            <div class="player-frame">
-                                
-<div class="video-player-container" style="width:100%; aspect-ratio:16/9; background:#000; border-radius:8px; overflow:hidden;">
-    <iframe id="anime-video-player" src="https://www.youtube-nocookie.com/embed/fJ9rUzIMcZQ?autoplay=0&rel=0&modestbranding=1" 
-        style="width:100%; height:100%; border:none;" 
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
-    </iframe>
+                            
+<div class="player-frame position-relative" style="background:#000; overflow:hidden;">
+    <video id="player-video" controls autoplay playsinline style="position:absolute; inset:0; width:100%; height:100%; object-fit:contain; background:#000;">
+        <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
+    </video>
 </div>
-<div class="loading-relative loading-box d-none" id="embed-loading">
-                                    <div class="loading">
-                                        <div class="span1"></div>
-                                        <div class="span2"></div>
-                                        <div class="span3"></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="player-controls">
+</div>
+<div class="player-controls">
                                 <div class="pc-item pc-resize">
                                     <a href="javascript:;" id="media-resize" class="btn btn-sm"><i class="fas fa-expand mr-1"></i>Expand</a>
                                 </div>
@@ -123,143 +115,241 @@ export function renderWatchPage() {
                             </div>
                         </div>
                         <div class="player-servers">
-                            <div id="servers-content">
-<div class="ps_-block ps_-block-sub">
-    <div class="ps__-title"><i class="fas fa-closed-captioning mr-1 text-success"></i> SUB:</div>
-    <div class="ps__-list">
-        <div class="item"><a class="btn btn-server active" href="javascript:;" data-server="hd-1">HD-1</a></div>
-        <div class="item"><a class="btn btn-server" href="javascript:;" data-server="hd-2">HD-2</a></div>
-        <div class="item"><a class="btn btn-server" href="javascript:;" data-server="megacloud">MegaCloud</a></div>
-        <div class="item"><a class="btn btn-server" href="javascript:;" data-server="streamsb">StreamSB</a></div>
+                            
+<div id="servers-content">
+    <div class="ps_-block ps_-block-sub">
+        <div class="ps__-title"><i class="fas fa-closed-captioning mr-1 text-success"></i> SUB:</div>
+        <div class="ps__-list">
+            <div class="item"><a class="btn btn-server active" href="javascript:;" data-server="HD-1">HD-1</a></div>
+            <div class="item"><a class="btn btn-server" href="javascript:;" data-server="HD-2">HD-2</a></div>
+            <div class="item"><a class="btn btn-server" href="javascript:;" data-server="MegaCloud">MegaCloud</a></div>
+            <div class="item"><a class="btn btn-server" href="javascript:;" data-server="StreamSB">StreamSB</a></div>
+        </div>
+    </div>
+    <div class="ps_-block ps_-block-dub" style="border-top: 1px solid rgba(255,255,255,0.06); padding-top: 8px; margin-top: 6px;">
+        <div class="ps__-title"><i class="fas fa-microphone mr-1 text-info"></i> DUB (Hindi):</div>
+        <div class="ps__-list">
+            <div class="item"><a class="btn btn-server active" href="javascript:;" data-server="Hindi HD-1" style="background:#ffbade; color:#111; font-weight:700;"><i class="fas fa-play mr-1"></i> Hindi HD-1</a></div>
+            <div class="item"><a class="btn btn-server" href="javascript:;" data-server="Hindi HD-2">Hindi HD-2</a></div>
+            <div class="item"><a class="btn btn-server" href="javascript:;" data-server="English Dub">English Dub</a></div>
+        </div>
     </div>
 </div>
-<div class="ps_-block ps_-block-dub" style="border-top: 1px solid rgba(255,255,255,0.06); padding-top: 12px; margin-top: 8px;">
-    <div class="ps__-title"><i class="fas fa-microphone mr-1 text-info"></i> DUB (Hindi Featured):</div>
-    <div class="ps__-list">
-        <div class="item"><a class="btn btn-server active" href="javascript:;" data-server="hindi-1" style="background:#ffbade; color:#111; font-weight:700;"><i class="fas fa-play mr-1"></i> Hindi HD-1</a></div>
-        <div class="item"><a class="btn btn-server" href="javascript:;" data-server="hindi-2">Hindi HD-2</a></div>
-        <div class="item"><a class="btn btn-server" href="javascript:;" data-server="eng-dub">English Dub</a></div>
-    </div>
-</div>
-</div>
+
                             
                                                         <div id="downloads-content"></div>
                                                     </div>
                         
                         
-                        <div id="episodes-content">
-<div class="episodes-list" style="background: #252438; border-radius: 8px; padding: 18px; margin-top: 20px;">
-    <div class="episodes-list-header d-flex justify-content-between align-items-center mb-3">
-        <div>
-            <h4 class="cat-heading mb-0" style="color:#ffbade; font-size:16px; font-weight:600;">List of Episodes: (Playing: Ep <span id="current-ep-num">1</span>)</h4>
+                        
+    <div id="episodes-content">
+        <div class="seasons-block position-relative" style="height:100%; min-height:480px; background:#191826;">
+            <div class="ss-choice" style="background:#11101a; border-bottom:1px solid rgba(255,255,255,0.08); padding:10px 14px; display:flex; justify-content:space-between; align-items:center;">
+                <div style="font-weight:700; color:#ffbade; font-size:13px;">
+                    <i class="fas fa-list mr-1"></i> Episodes (<span id="ep-count-badge">24</span>)
+                </div>
+                <div style="max-width:90px;">
+                    <input type="text" id="search-ep" placeholder="Ep #" style="width:100%; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.1); border-radius:12px; color:#fff; font-size:11px; padding:2px 8px; outline:none;">
+                </div>
+            </div>
+            <div class="ss-list" id="episodes-scroll-list" style="position:absolute; top:46px; left:0; right:0; bottom:0; overflow-y:auto; padding:4px 0;">
+                
+        <a href="javascript:;" class="ssl-item ep-item active" data-number="1" title="Episode 1">
+            <div class="ssli-order" style="min-width:32px; font-weight:700; color:#fff; text-align:center;">01</div>
+            <div class="ssli-detail">
+                <div class="ep-name dynamic-name" title="Episode 1" style="font-size:12.5px; color:#ddd;">Episode 1</div>
+            </div>
+            <div class="clearfix"></div>
+        </a>
+        
+        <a href="javascript:;" class="ssl-item ep-item" data-number="2" title="Episode 2">
+            <div class="ssli-order" style="min-width:32px; font-weight:700; color:#fff; text-align:center;">02</div>
+            <div class="ssli-detail">
+                <div class="ep-name dynamic-name" title="Episode 2" style="font-size:12.5px; color:#ddd;">Episode 2</div>
+            </div>
+            <div class="clearfix"></div>
+        </a>
+        
+        <a href="javascript:;" class="ssl-item ep-item" data-number="3" title="Episode 3">
+            <div class="ssli-order" style="min-width:32px; font-weight:700; color:#fff; text-align:center;">03</div>
+            <div class="ssli-detail">
+                <div class="ep-name dynamic-name" title="Episode 3" style="font-size:12.5px; color:#ddd;">Episode 3</div>
+            </div>
+            <div class="clearfix"></div>
+        </a>
+        
+        <a href="javascript:;" class="ssl-item ep-item" data-number="4" title="Episode 4">
+            <div class="ssli-order" style="min-width:32px; font-weight:700; color:#fff; text-align:center;">04</div>
+            <div class="ssli-detail">
+                <div class="ep-name dynamic-name" title="Episode 4" style="font-size:12.5px; color:#ddd;">Episode 4</div>
+            </div>
+            <div class="clearfix"></div>
+        </a>
+        
+        <a href="javascript:;" class="ssl-item ep-item" data-number="5" title="Episode 5">
+            <div class="ssli-order" style="min-width:32px; font-weight:700; color:#fff; text-align:center;">05</div>
+            <div class="ssli-detail">
+                <div class="ep-name dynamic-name" title="Episode 5" style="font-size:12.5px; color:#ddd;">Episode 5</div>
+            </div>
+            <div class="clearfix"></div>
+        </a>
+        
+        <a href="javascript:;" class="ssl-item ep-item" data-number="6" title="Episode 6">
+            <div class="ssli-order" style="min-width:32px; font-weight:700; color:#fff; text-align:center;">06</div>
+            <div class="ssli-detail">
+                <div class="ep-name dynamic-name" title="Episode 6" style="font-size:12.5px; color:#ddd;">Episode 6</div>
+            </div>
+            <div class="clearfix"></div>
+        </a>
+        
+        <a href="javascript:;" class="ssl-item ep-item" data-number="7" title="Episode 7">
+            <div class="ssli-order" style="min-width:32px; font-weight:700; color:#fff; text-align:center;">07</div>
+            <div class="ssli-detail">
+                <div class="ep-name dynamic-name" title="Episode 7" style="font-size:12.5px; color:#ddd;">Episode 7</div>
+            </div>
+            <div class="clearfix"></div>
+        </a>
+        
+        <a href="javascript:;" class="ssl-item ep-item" data-number="8" title="Episode 8">
+            <div class="ssli-order" style="min-width:32px; font-weight:700; color:#fff; text-align:center;">08</div>
+            <div class="ssli-detail">
+                <div class="ep-name dynamic-name" title="Episode 8" style="font-size:12.5px; color:#ddd;">Episode 8</div>
+            </div>
+            <div class="clearfix"></div>
+        </a>
+        
+        <a href="javascript:;" class="ssl-item ep-item" data-number="9" title="Episode 9">
+            <div class="ssli-order" style="min-width:32px; font-weight:700; color:#fff; text-align:center;">09</div>
+            <div class="ssli-detail">
+                <div class="ep-name dynamic-name" title="Episode 9" style="font-size:12.5px; color:#ddd;">Episode 9</div>
+            </div>
+            <div class="clearfix"></div>
+        </a>
+        
+        <a href="javascript:;" class="ssl-item ep-item" data-number="10" title="Episode 10">
+            <div class="ssli-order" style="min-width:32px; font-weight:700; color:#fff; text-align:center;">10</div>
+            <div class="ssli-detail">
+                <div class="ep-name dynamic-name" title="Episode 10" style="font-size:12.5px; color:#ddd;">Episode 10</div>
+            </div>
+            <div class="clearfix"></div>
+        </a>
+        
+        <a href="javascript:;" class="ssl-item ep-item" data-number="11" title="Episode 11">
+            <div class="ssli-order" style="min-width:32px; font-weight:700; color:#fff; text-align:center;">11</div>
+            <div class="ssli-detail">
+                <div class="ep-name dynamic-name" title="Episode 11" style="font-size:12.5px; color:#ddd;">Episode 11</div>
+            </div>
+            <div class="clearfix"></div>
+        </a>
+        
+        <a href="javascript:;" class="ssl-item ep-item" data-number="12" title="Episode 12">
+            <div class="ssli-order" style="min-width:32px; font-weight:700; color:#fff; text-align:center;">12</div>
+            <div class="ssli-detail">
+                <div class="ep-name dynamic-name" title="Episode 12" style="font-size:12.5px; color:#ddd;">Episode 12</div>
+            </div>
+            <div class="clearfix"></div>
+        </a>
+        
+        <a href="javascript:;" class="ssl-item ep-item" data-number="13" title="Episode 13">
+            <div class="ssli-order" style="min-width:32px; font-weight:700; color:#fff; text-align:center;">13</div>
+            <div class="ssli-detail">
+                <div class="ep-name dynamic-name" title="Episode 13" style="font-size:12.5px; color:#ddd;">Episode 13</div>
+            </div>
+            <div class="clearfix"></div>
+        </a>
+        
+        <a href="javascript:;" class="ssl-item ep-item" data-number="14" title="Episode 14">
+            <div class="ssli-order" style="min-width:32px; font-weight:700; color:#fff; text-align:center;">14</div>
+            <div class="ssli-detail">
+                <div class="ep-name dynamic-name" title="Episode 14" style="font-size:12.5px; color:#ddd;">Episode 14</div>
+            </div>
+            <div class="clearfix"></div>
+        </a>
+        
+        <a href="javascript:;" class="ssl-item ep-item" data-number="15" title="Episode 15">
+            <div class="ssli-order" style="min-width:32px; font-weight:700; color:#fff; text-align:center;">15</div>
+            <div class="ssli-detail">
+                <div class="ep-name dynamic-name" title="Episode 15" style="font-size:12.5px; color:#ddd;">Episode 15</div>
+            </div>
+            <div class="clearfix"></div>
+        </a>
+        
+        <a href="javascript:;" class="ssl-item ep-item" data-number="16" title="Episode 16">
+            <div class="ssli-order" style="min-width:32px; font-weight:700; color:#fff; text-align:center;">16</div>
+            <div class="ssli-detail">
+                <div class="ep-name dynamic-name" title="Episode 16" style="font-size:12.5px; color:#ddd;">Episode 16</div>
+            </div>
+            <div class="clearfix"></div>
+        </a>
+        
+        <a href="javascript:;" class="ssl-item ep-item" data-number="17" title="Episode 17">
+            <div class="ssli-order" style="min-width:32px; font-weight:700; color:#fff; text-align:center;">17</div>
+            <div class="ssli-detail">
+                <div class="ep-name dynamic-name" title="Episode 17" style="font-size:12.5px; color:#ddd;">Episode 17</div>
+            </div>
+            <div class="clearfix"></div>
+        </a>
+        
+        <a href="javascript:;" class="ssl-item ep-item" data-number="18" title="Episode 18">
+            <div class="ssli-order" style="min-width:32px; font-weight:700; color:#fff; text-align:center;">18</div>
+            <div class="ssli-detail">
+                <div class="ep-name dynamic-name" title="Episode 18" style="font-size:12.5px; color:#ddd;">Episode 18</div>
+            </div>
+            <div class="clearfix"></div>
+        </a>
+        
+        <a href="javascript:;" class="ssl-item ep-item" data-number="19" title="Episode 19">
+            <div class="ssli-order" style="min-width:32px; font-weight:700; color:#fff; text-align:center;">19</div>
+            <div class="ssli-detail">
+                <div class="ep-name dynamic-name" title="Episode 19" style="font-size:12.5px; color:#ddd;">Episode 19</div>
+            </div>
+            <div class="clearfix"></div>
+        </a>
+        
+        <a href="javascript:;" class="ssl-item ep-item" data-number="20" title="Episode 20">
+            <div class="ssli-order" style="min-width:32px; font-weight:700; color:#fff; text-align:center;">20</div>
+            <div class="ssli-detail">
+                <div class="ep-name dynamic-name" title="Episode 20" style="font-size:12.5px; color:#ddd;">Episode 20</div>
+            </div>
+            <div class="clearfix"></div>
+        </a>
+        
+        <a href="javascript:;" class="ssl-item ep-item" data-number="21" title="Episode 21">
+            <div class="ssli-order" style="min-width:32px; font-weight:700; color:#fff; text-align:center;">21</div>
+            <div class="ssli-detail">
+                <div class="ep-name dynamic-name" title="Episode 21" style="font-size:12.5px; color:#ddd;">Episode 21</div>
+            </div>
+            <div class="clearfix"></div>
+        </a>
+        
+        <a href="javascript:;" class="ssl-item ep-item" data-number="22" title="Episode 22">
+            <div class="ssli-order" style="min-width:32px; font-weight:700; color:#fff; text-align:center;">22</div>
+            <div class="ssli-detail">
+                <div class="ep-name dynamic-name" title="Episode 22" style="font-size:12.5px; color:#ddd;">Episode 22</div>
+            </div>
+            <div class="clearfix"></div>
+        </a>
+        
+        <a href="javascript:;" class="ssl-item ep-item" data-number="23" title="Episode 23">
+            <div class="ssli-order" style="min-width:32px; font-weight:700; color:#fff; text-align:center;">23</div>
+            <div class="ssli-detail">
+                <div class="ep-name dynamic-name" title="Episode 23" style="font-size:12.5px; color:#ddd;">Episode 23</div>
+            </div>
+            <div class="clearfix"></div>
+        </a>
+        
+        <a href="javascript:;" class="ssl-item ep-item" data-number="24" title="Episode 24">
+            <div class="ssli-order" style="min-width:32px; font-weight:700; color:#fff; text-align:center;">24</div>
+            <div class="ssli-detail">
+                <div class="ep-name dynamic-name" title="Episode 24" style="font-size:12.5px; color:#ddd;">Episode 24</div>
+            </div>
+            <div class="clearfix"></div>
+        </a>
+        
+            </div>
         </div>
-        <div class="ep-search" style="max-width: 180px;">
-            <input type="text" class="form-control form-control-sm" placeholder="Number of Ep" id="search-ep" style="background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.1); color:#fff; border-radius:20px; padding: 4px 14px;">
-        </div>
-    </div>
-    <div class="episodes-ul-wrapper" style="max-height: 250px; overflow-y: auto;">
-        <div class="episodes-ul">
-            
-    <div class="item" style="display:inline-block; margin: 4px;">
-        <a class="btn ep-item active" href="javascript:;" data-number="1" title="Episode 1" style="min-width:44px; padding:6px 12px; border-radius:4px; font-weight:600; font-size:13px; background:rgba(255,255,255,0.07); color:#fff;">1</a>
     </div>
     
-    <div class="item" style="display:inline-block; margin: 4px;">
-        <a class="btn ep-item" href="javascript:;" data-number="2" title="Episode 2" style="min-width:44px; padding:6px 12px; border-radius:4px; font-weight:600; font-size:13px; background:rgba(255,255,255,0.07); color:#fff;">2</a>
-    </div>
-    
-    <div class="item" style="display:inline-block; margin: 4px;">
-        <a class="btn ep-item" href="javascript:;" data-number="3" title="Episode 3" style="min-width:44px; padding:6px 12px; border-radius:4px; font-weight:600; font-size:13px; background:rgba(255,255,255,0.07); color:#fff;">3</a>
-    </div>
-    
-    <div class="item" style="display:inline-block; margin: 4px;">
-        <a class="btn ep-item" href="javascript:;" data-number="4" title="Episode 4" style="min-width:44px; padding:6px 12px; border-radius:4px; font-weight:600; font-size:13px; background:rgba(255,255,255,0.07); color:#fff;">4</a>
-    </div>
-    
-    <div class="item" style="display:inline-block; margin: 4px;">
-        <a class="btn ep-item" href="javascript:;" data-number="5" title="Episode 5" style="min-width:44px; padding:6px 12px; border-radius:4px; font-weight:600; font-size:13px; background:rgba(255,255,255,0.07); color:#fff;">5</a>
-    </div>
-    
-    <div class="item" style="display:inline-block; margin: 4px;">
-        <a class="btn ep-item" href="javascript:;" data-number="6" title="Episode 6" style="min-width:44px; padding:6px 12px; border-radius:4px; font-weight:600; font-size:13px; background:rgba(255,255,255,0.07); color:#fff;">6</a>
-    </div>
-    
-    <div class="item" style="display:inline-block; margin: 4px;">
-        <a class="btn ep-item" href="javascript:;" data-number="7" title="Episode 7" style="min-width:44px; padding:6px 12px; border-radius:4px; font-weight:600; font-size:13px; background:rgba(255,255,255,0.07); color:#fff;">7</a>
-    </div>
-    
-    <div class="item" style="display:inline-block; margin: 4px;">
-        <a class="btn ep-item" href="javascript:;" data-number="8" title="Episode 8" style="min-width:44px; padding:6px 12px; border-radius:4px; font-weight:600; font-size:13px; background:rgba(255,255,255,0.07); color:#fff;">8</a>
-    </div>
-    
-    <div class="item" style="display:inline-block; margin: 4px;">
-        <a class="btn ep-item" href="javascript:;" data-number="9" title="Episode 9" style="min-width:44px; padding:6px 12px; border-radius:4px; font-weight:600; font-size:13px; background:rgba(255,255,255,0.07); color:#fff;">9</a>
-    </div>
-    
-    <div class="item" style="display:inline-block; margin: 4px;">
-        <a class="btn ep-item" href="javascript:;" data-number="10" title="Episode 10" style="min-width:44px; padding:6px 12px; border-radius:4px; font-weight:600; font-size:13px; background:rgba(255,255,255,0.07); color:#fff;">10</a>
-    </div>
-    
-    <div class="item" style="display:inline-block; margin: 4px;">
-        <a class="btn ep-item" href="javascript:;" data-number="11" title="Episode 11" style="min-width:44px; padding:6px 12px; border-radius:4px; font-weight:600; font-size:13px; background:rgba(255,255,255,0.07); color:#fff;">11</a>
-    </div>
-    
-    <div class="item" style="display:inline-block; margin: 4px;">
-        <a class="btn ep-item" href="javascript:;" data-number="12" title="Episode 12" style="min-width:44px; padding:6px 12px; border-radius:4px; font-weight:600; font-size:13px; background:rgba(255,255,255,0.07); color:#fff;">12</a>
-    </div>
-    
-    <div class="item" style="display:inline-block; margin: 4px;">
-        <a class="btn ep-item" href="javascript:;" data-number="13" title="Episode 13" style="min-width:44px; padding:6px 12px; border-radius:4px; font-weight:600; font-size:13px; background:rgba(255,255,255,0.07); color:#fff;">13</a>
-    </div>
-    
-    <div class="item" style="display:inline-block; margin: 4px;">
-        <a class="btn ep-item" href="javascript:;" data-number="14" title="Episode 14" style="min-width:44px; padding:6px 12px; border-radius:4px; font-weight:600; font-size:13px; background:rgba(255,255,255,0.07); color:#fff;">14</a>
-    </div>
-    
-    <div class="item" style="display:inline-block; margin: 4px;">
-        <a class="btn ep-item" href="javascript:;" data-number="15" title="Episode 15" style="min-width:44px; padding:6px 12px; border-radius:4px; font-weight:600; font-size:13px; background:rgba(255,255,255,0.07); color:#fff;">15</a>
-    </div>
-    
-    <div class="item" style="display:inline-block; margin: 4px;">
-        <a class="btn ep-item" href="javascript:;" data-number="16" title="Episode 16" style="min-width:44px; padding:6px 12px; border-radius:4px; font-weight:600; font-size:13px; background:rgba(255,255,255,0.07); color:#fff;">16</a>
-    </div>
-    
-    <div class="item" style="display:inline-block; margin: 4px;">
-        <a class="btn ep-item" href="javascript:;" data-number="17" title="Episode 17" style="min-width:44px; padding:6px 12px; border-radius:4px; font-weight:600; font-size:13px; background:rgba(255,255,255,0.07); color:#fff;">17</a>
-    </div>
-    
-    <div class="item" style="display:inline-block; margin: 4px;">
-        <a class="btn ep-item" href="javascript:;" data-number="18" title="Episode 18" style="min-width:44px; padding:6px 12px; border-radius:4px; font-weight:600; font-size:13px; background:rgba(255,255,255,0.07); color:#fff;">18</a>
-    </div>
-    
-    <div class="item" style="display:inline-block; margin: 4px;">
-        <a class="btn ep-item" href="javascript:;" data-number="19" title="Episode 19" style="min-width:44px; padding:6px 12px; border-radius:4px; font-weight:600; font-size:13px; background:rgba(255,255,255,0.07); color:#fff;">19</a>
-    </div>
-    
-    <div class="item" style="display:inline-block; margin: 4px;">
-        <a class="btn ep-item" href="javascript:;" data-number="20" title="Episode 20" style="min-width:44px; padding:6px 12px; border-radius:4px; font-weight:600; font-size:13px; background:rgba(255,255,255,0.07); color:#fff;">20</a>
-    </div>
-    
-    <div class="item" style="display:inline-block; margin: 4px;">
-        <a class="btn ep-item" href="javascript:;" data-number="21" title="Episode 21" style="min-width:44px; padding:6px 12px; border-radius:4px; font-weight:600; font-size:13px; background:rgba(255,255,255,0.07); color:#fff;">21</a>
-    </div>
-    
-    <div class="item" style="display:inline-block; margin: 4px;">
-        <a class="btn ep-item" href="javascript:;" data-number="22" title="Episode 22" style="min-width:44px; padding:6px 12px; border-radius:4px; font-weight:600; font-size:13px; background:rgba(255,255,255,0.07); color:#fff;">22</a>
-    </div>
-    
-    <div class="item" style="display:inline-block; margin: 4px;">
-        <a class="btn ep-item" href="javascript:;" data-number="23" title="Episode 23" style="min-width:44px; padding:6px 12px; border-radius:4px; font-weight:600; font-size:13px; background:rgba(255,255,255,0.07); color:#fff;">23</a>
-    </div>
-    
-    <div class="item" style="display:inline-block; margin: 4px;">
-        <a class="btn ep-item" href="javascript:;" data-number="24" title="Episode 24" style="min-width:44px; padding:6px 12px; border-radius:4px; font-weight:600; font-size:13px; background:rgba(255,255,255,0.07); color:#fff;">24</a>
-    </div>
-    
-        </div>
-    </div>
-</div>
-</div>
                     </div>
                     <div class="anis-watch-detail">
                         <div class="anis-content" data-anime-id="100">
@@ -1512,34 +1602,125 @@ export function renderWatchPage() {
         <div class="container">
                     </div>`;
 
+    // Dynamically Hydrate with Active Anime's Data
     setTimeout(() => {
-        initWatchInteractivity(anime, currentEp);
-    }, 50);
+        hydrateWatchData(anime, currentEp);
+    }, 40);
 }
 
-function initWatchInteractivity(anime, currentEp) {
-    // 1. Dynamic Anime Info update
-    const titleEl = document.querySelector('.anisc-detail .film-name');
-    if (titleEl) titleEl.innerText = anime.title;
-
-    const bannerCover = document.querySelector('.anis-cover');
-    if (bannerCover && anime.banner) {
-        bannerCover.style.backgroundImage = `url(${anime.banner})`;
+function hydrateWatchData(anime, currentEp) {
+    // 1. Breadcrumbs
+    const bcTitle = document.querySelector('.anis-watch-wrap .breadcrumb-item.active');
+    if (bcTitle) {
+        bcTitle.innerHTML = `Watching <span style="color:#ffbade; font-weight:600;">${anime.title}</span> (Ep <span id="current-ep-badge">${currentEp}</span>)`;
     }
 
-    const posterImg = document.querySelector('.anisc-poster .film-poster img');
-    if (posterImg && anime.poster) {
-        posterImg.src = anime.poster;
+    // 2. Cover Banner
+    const coverBanner = document.querySelector('.anis-cover');
+    if (coverBanner && anime.banner) {
+        coverBanner.style.backgroundImage = `url(${anime.banner})`;
     }
 
-    const descEl = document.querySelector('.item-description');
-    if (descEl && anime.synopsis) {
-        descEl.innerText = anime.synopsis;
+    // 3. Poster Image
+    const poster = document.querySelector('.anisc-poster .film-poster img');
+    if (poster && anime.poster) {
+        poster.src = anime.poster;
+        poster.alt = anime.title;
     }
 
-    // 2. Server selection
+    // 4. Video Poster
+    const video = document.getElementById('player-video');
+    if (video && anime.banner) {
+        video.poster = anime.banner;
+    }
+
+    // 5. Film Detail Titles & Synopsis
+    const filmNameLink = document.querySelector('.anisc-detail .film-name a');
+    if (filmNameLink) {
+        filmNameLink.innerText = anime.title;
+        filmNameLink.href = `watch.html?anime=${anime.slug}`;
+    }
+
+    const descText = document.querySelector('.film-description .text');
+    if (descText && anime.synopsis) {
+        descText.innerText = anime.synopsis;
+    }
+
+    // 6. Sub / Dub Badges in Detail card
+    const tickSub = document.querySelector('.anisc-detail .tick-item.tick-sub');
+    if (tickSub && anime.subCount) tickSub.innerHTML = `<i class="fas fa-closed-captioning mr-1"></i>${anime.subCount}`;
+    
+    const tickDub = document.querySelector('.anisc-detail .tick-item.tick-dub');
+    if (tickDub && anime.dubCount) tickDub.innerHTML = `<i class="fas fa-microphone mr-1"></i>${anime.dubCount}`;
+
+    // 7. Dynamic Episode List Generation for the anime
+    const totalEps = anime.totalEpisodes || (anime.subCount || 24);
+    const epCountBadge = document.getElementById('ep-count-badge');
+    if (epCountBadge) epCountBadge.innerText = totalEps;
+
+    const listContainer = document.getElementById('episodes-scroll-list');
+    if (listContainer) {
+        const items = [];
+        for (let i = 1; i <= totalEps; i++) {
+            const numStr = String(i).padStart(2, '0');
+            const isActive = i === currentEp ? ' active' : '';
+            items.push(`
+                <a href="javascript:;" class="ssl-item ep-item${isActive}" data-number="${i}" title="Episode ${i}">
+                    <div class="ssli-order" style="min-width:32px; font-weight:700; color:#fff; text-align:center;">${numStr}</div>
+                    <div class="ssli-detail">
+                        <div class="ep-name dynamic-name" title="Episode ${i}" style="font-size:12.5px; color:#ddd;">Episode ${i}</div>
+                    </div>
+                    <div class="clearfix"></div>
+                </a>
+            `);
+        }
+        listContainer.innerHTML = items.join('');
+    }
+
+    // 8. Bind Episode Clicking & Switching
+    const epButtons = document.querySelectorAll('.ssl-item.ep-item');
+    const epBadge = document.getElementById('current-ep-badge');
+    epButtons.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            epButtons.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+
+            const epNum = this.getAttribute('data-number');
+            if (epBadge) epBadge.innerText = epNum;
+
+            const url = new URL(window.location);
+            url.searchParams.set('ep', epNum);
+            window.history.replaceState({}, '', url);
+
+            // Restart video
+            if (video) {
+                video.currentTime = 0;
+                video.play().catch(() => {});
+            }
+        });
+    });
+
+    // 9. Episode Filter Search
+    const searchEp = document.getElementById('search-ep');
+    if (searchEp) {
+        searchEp.addEventListener('input', function() {
+            const val = this.value.trim().toLowerCase();
+            document.querySelectorAll('.ssl-item.ep-item').forEach(item => {
+                const num = item.getAttribute('data-number');
+                if (!val || num.includes(val)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+    }
+
+    // 10. Server Switching
     document.querySelectorAll('.btn-server').forEach(btn => {
-        btn.addEventListener('click', function() {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
             const group = this.closest('.ps__-list');
             if (group) {
                 group.querySelectorAll('.btn-server').forEach(b => {
@@ -1556,70 +1737,50 @@ function initWatchInteractivity(anime, currentEp) {
         });
     });
 
-    // 3. Episode selection
-    const epBtns = document.querySelectorAll('.ep-item');
-    const epDisplay = document.getElementById('current-ep-num');
-    epBtns.forEach(btn => {
-        btn.addEventListener('click', function() {
-            epBtns.forEach(b => {
-                b.classList.remove('active');
-                b.style.background = 'rgba(255,255,255,0.07)';
-                b.style.color = '#fff';
-            });
-            this.classList.add('active');
-            this.style.background = '#ffbade';
-            this.style.color = '#111';
-
-            const ep = this.getAttribute('data-number');
-            if (epDisplay) epDisplay.innerText = ep;
-
-            const url = new URL(window.location);
-            url.searchParams.set('ep', ep);
-            window.history.replaceState({}, '', url);
-        });
-    });
-
-    // 4. Episode search input
-    const epSearch = document.getElementById('search-ep');
-    if (epSearch) {
-        epSearch.addEventListener('input', function() {
-            const val = this.value.trim().toLowerCase();
-            epBtns.forEach(btn => {
-                const num = btn.getAttribute('data-number');
-                const parent = btn.closest('.item');
-                if (!val || num.includes(val)) {
-                    if (parent) parent.style.display = 'inline-block';
-                    else btn.style.display = 'inline-block';
-                } else {
-                    if (parent) parent.style.display = 'none';
-                    else btn.style.display = 'none';
-                }
-            });
+    // 11. Light toggle (theater mode)
+    const lightBtn = document.getElementById('turn-off-light');
+    if (lightBtn) {
+        lightBtn.addEventListener('click', () => {
+            document.body.classList.toggle('theater-mode');
         });
     }
 
-    // 5. Discussion comment posting
+    // 12. Fullscreen / Resize toggle
+    const resizeBtn = document.getElementById('media-resize');
+    const playerFrame = document.querySelector('.player-frame');
+    if (resizeBtn && playerFrame) {
+        resizeBtn.addEventListener('click', () => {
+            if (!document.fullscreenElement) {
+                playerFrame.requestFullscreen().catch(() => {});
+            } else {
+                document.exitFullscreen().catch(() => {});
+            }
+        });
+    }
+
+    // 13. Discussion Comment posting
     const postBtn = document.getElementById('post-comment-btn');
     const commentBox = document.getElementById('comment-text-box');
-    const commentsList = document.getElementById('comments-list-box');
-    if (postBtn && commentBox && commentsList) {
+    const commentList = document.getElementById('comments-list-box');
+    if (postBtn && commentBox && commentList) {
         postBtn.addEventListener('click', () => {
-            const text = commentBox.value.trim();
-            if (!text) return;
-            const newDiv = document.createElement('div');
-            newDiv.className = 'comment-item d-flex mb-3 pb-3';
-            newDiv.style.borderBottom = '1px solid rgba(255,255,255,0.06)';
-            newDiv.innerHTML = `
-                <div class="avatar mr-3" style="width:42px; height:42px; border-radius:50%; background:#ffbade; color:#111; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:16px;">Y</div>
+            const txt = commentBox.value.trim();
+            if (!txt) return;
+
+            const div = document.createElement('div');
+            div.className = 'comment-item d-flex mb-3 pb-3';
+            div.style.borderBottom = '1px solid rgba(255,255,255,0.06)';
+            div.innerHTML = `
+                <div class="avatar mr-3" style="width:40px; height:40px; border-radius:50%; background:#ffbade; color:#111; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:16px;">Y</div>
                 <div class="content flex-grow-1">
                     <div class="d-flex justify-content-between align-items-center mb-1">
                         <strong style="color:#fff; font-size:14px;">You <span class="badge badge-pill badge-primary ml-2" style="background:#ffbade; color:#111; font-size:10px;">Just Now</span></strong>
                         <span class="text-muted" style="font-size:12px;">Moments ago</span>
                     </div>
-                    <p class="mb-1 text-light" style="font-size:13.5px;">${text}</p>
+                    <p class="mb-1 text-light" style="font-size:13.5px;">${txt}</p>
                 </div>
             `;
-            commentsList.prepend(newDiv);
+            commentList.prepend(div);
             commentBox.value = '';
         });
     }
