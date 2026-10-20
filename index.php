@@ -40,49 +40,140 @@ usort($topRated, fn($a, $b) => ($b['score'] ?? 0) <=> ($a['score'] ?? 0));
 
 <main>
     <!-- Spotlight Hero Section (100% Dynamic from db.anixo.buzz API) -->
-    <?php if ($spotlight): ?>
-    <section class="hero-spotlight">
-        <div class="container">
-            <div class="spotlight-card">
-                <div class="spotlight-backdrop" style="background-image: url('<?= e($spotlight['banner']) ?>');"></div>
-                <div class="spotlight-gradient"></div>
-                
-                <div class="spotlight-content">
-                    <div class="spotlight-tag">
-                        <i class="fa-solid fa-fire mr-1"></i> #1 Spotlight Anime
-                    </div>
-                    <h1 class="spotlight-title"><?= e($spotlight['title']) ?></h1>
-                    
-                    <div class="spotlight-meta">
-                        <?php if (!empty($spotlight['hindi_title'])): ?>
-                            <span class="badge-tag badge-dub"><i class="fa-solid fa-language mr-1"></i> <?= e($spotlight['hindi_title']) ?></span>
-                        <?php else: ?>
-                            <span class="badge-tag badge-dub">Hindi Dubbed</span>
-                        <?php endif; ?>
-                        <span class="badge-tag badge-hd">HD</span>
-                        <span><i class="fa-solid fa-star text-accent mr-1"></i><?= e($spotlight['score']) ?></span>
-                        <span>•</span>
-                        <span><?= e($spotlight['show_type']) ?></span>
-                        <span>•</span>
-                        <span><?= e($spotlight['release_year']) ?></span>
-                    </div>
-                    
-                    <p class="spotlight-desc">
-                        <?= e($spotlight['synopsis']) ?>
-                    </p>
-                    
-                    <div class="spotlight-buttons">
-                        <a href="/watch.php?anime=<?= e($spotlight['slug']) ?>&ep=1" class="btn-primary-custom">
-                            <i class="fa-solid fa-play"></i> Watch Episode 1
-                        </a>
-                        <a href="/watch.php?anime=<?= e($spotlight['slug']) ?>&ep=1" class="btn-secondary-custom">
-                            <i class="fa-solid fa-circle-info"></i> Details & Episodes
-                        </a>
-                    </div>
-                </div>
+    <!-- 3D Infinite Fan-Deck Spotlight Hero Section (Matching Reference Image) -->
+    <?php
+    // Curate 12 premium spotlight anime (Hindi dubs + Top popular from db.anixo.buzz)
+    $spotlightList = [];
+    $seenDeck = [];
+    foreach ($hindiDubbed as $a) {
+        if (!isset($seenDeck[$a['id']])) {
+            $spotlightList[] = $a;
+            $seenDeck[$a['id']] = true;
+            if (count($spotlightList) >= 6) break;
+        }
+    }
+    foreach ($allAnime as $a) {
+        if (!isset($seenDeck[$a['id']])) {
+            $spotlightList[] = $a;
+            $seenDeck[$a['id']] = true;
+            if (count($spotlightList) >= 12) break;
+        }
+    }
+    $spotlightCount = count($spotlightList);
+    $initialAnime = $spotlightList[0] ?? null;
+    ?>
+
+    <?php if (!empty($spotlightList) && $initialAnime): ?>
+    <section class="hero-spotlight-deck" id="heroSpotlightDeck">
+        <!-- Dynamic Full-Bleed Backdrops for Smooth Crossfade -->
+        <div class="deck-backdrop-container">
+            <div class="deck-backdrop-bg active" id="deckBackdrop1" style="background-image: url('<?= e($initialAnime['banner'] ?? $initialAnime['poster']) ?>');"></div>
+            <div class="deck-backdrop-bg" id="deckBackdrop2"></div>
+            <div class="deck-backdrop-overlay"></div>
+        </div>
+
+        <!-- Top Corner Indicators (Matching Reference Screenshot) -->
+        <div class="deck-top-bar">
+            <div class="deck-indicator-left">
+                <span class="dash-prefix">—</span> SPOTLIGHTS / <span id="deckActiveNum">01</span>
+            </div>
+            <div class="deck-indicator-right">
+                <span id="deckTotalCount"><?= sprintf("%02d", $spotlightCount) ?> TOTAL</span>
             </div>
         </div>
+
+        <!-- Center 3D Curved Fan-Deck of Cards -->
+        <div class="deck-stage-wrapper">
+            <button class="deck-nav-btn deck-nav-prev" id="deckPrevBtn" aria-label="Previous Anime">
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
+
+            <div class="deck-cards-track" id="deckCardsTrack">
+                <?php foreach ($spotlightList as $idx => $item): ?>
+                    <div class="deck-card-item" data-index="<?= $idx ?>" title="<?= e($item['title']) ?>">
+                        <div class="deck-card-inner">
+                            <img src="<?= e($item['poster']) ?>" alt="<?= e($item['title']) ?>" loading="eager">
+                            <div class="deck-card-glow"></div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+
+            <button class="deck-nav-btn deck-nav-next" id="deckNextBtn" aria-label="Next Anime">
+                <i class="fa-solid fa-chevron-right"></i>
+            </button>
+        </div>
+
+        <!-- Center-Bottom Active Anime Info -->
+        <div class="deck-info-container">
+            <!-- Metadata Row (Format, Score, Episodes, Year, Dub) -->
+            <div class="deck-meta-row" id="deckMetaRow">
+                <span class="deck-meta-pill" id="deckMetaFormat">• <?= e($initialAnime['show_type'] ?? 'TV') ?></span>
+                <span class="deck-meta-sep">|</span>
+                <span class="deck-meta-pill">SCORE — <span class="score-highlight" id="deckMetaScore"><?= round(((float)($initialAnime['score'] ?? 8.2)) * 10) ?>%</span></span>
+                <span class="deck-meta-sep">|</span>
+                <span class="deck-meta-pill" id="deckMetaEpisodes"><?= e($initialAnime['episodes_count'] ?? 12) ?> EP</span>
+                <span class="deck-meta-sep">|</span>
+                <span class="deck-meta-pill" id="deckMetaYear"><?= e($initialAnime['release_year'] ?? 2025) ?></span>
+                <?php if (!empty($initialAnime['hindi_title']) || !empty($initialAnime['is_hindi_dubbed'])): ?>
+                    <span class="deck-meta-sep">|</span>
+                    <span class="deck-meta-pill deck-meta-dub" id="deckMetaDub"><i class="fa-solid fa-headphones mr-1"></i> HINDI DUB</span>
+                <?php endif; ?>
+            </div>
+
+            <!-- Stylized Big Title -->
+            <h1 class="deck-title" id="deckTitle"><?= e($initialAnime['title']) ?></h1>
+
+            <!-- Hindi Title / Subtitle -->
+            <div class="deck-hindi-title" id="deckHindiTitle">
+                <?php if (!empty($initialAnime['hindi_title'])): ?>
+                    <i class="fa-solid fa-language mr-1"></i><?= e($initialAnime['hindi_title']) ?>
+                <?php endif; ?>
+            </div>
+
+            <!-- Genres Row -->
+            <?php 
+            $gText = !empty($initialAnime['genres']) ? (is_array($initialAnime['genres']) ? implode(' — ', array_slice($initialAnime['genres'], 0, 3)) : str_replace(', ', ' — ', $initialAnime['genres'])) : 'ACTION — ADVENTURE — FANTASY';
+            ?>
+            <div class="deck-genres" id="deckGenres"><?= e($gText) ?></div>
+
+            <!-- Action Buttons -->
+            <div class="deck-actions">
+                <a href="/watch.php?anime=<?= e($initialAnime['slug']) ?>&ep=1" class="btn-deck-watch" id="deckWatchBtn">
+                    <i class="fa-solid fa-play mr-2"></i> WATCH NOW
+                </a>
+                <a href="/filter.php" class="btn-deck-browse">
+                    BROWSE CATALOGUE
+                </a>
+            </div>
+        </div>
+
+        <!-- Giant Stylized Background Watermark Number (Bottom Right) -->
+        <div class="deck-watermark-number" id="deckWatermark">01</div>
     </section>
+
+    <!-- Pass Spotlight JSON to Client Script -->
+    <script>
+        window.SPOTLIGHT_DECK_DATA = <?= json_encode(array_values(array_map(function($a) {
+            $rawScore = (float)($a['score'] ?? 8.2);
+            $scorePct = round($rawScore * 10) . '%';
+            $genres = !empty($a['genres']) ? (is_array($a['genres']) ? implode(' — ', array_slice($a['genres'], 0, 3)) : str_replace(', ', ' — ', $a['genres'])) : 'ACTION — ADVENTURE';
+            return [
+                'id' => $a['id'],
+                'title' => $a['title'],
+                'hindi_title' => $a['hindi_title'] ?? '',
+                'poster' => $a['poster'],
+                'banner' => $a['banner'] ?? $a['poster'],
+                'score_pct' => $scorePct,
+                'format' => strtoupper($a['show_type'] ?? 'TV'),
+                'episodes' => ($a['episodes_count'] ?? 12) . ' EP',
+                'year' => $a['release_year'] ?? 2025,
+                'genres' => $genres,
+                'slug' => $a['slug'],
+                'is_dub' => !empty($a['is_hindi_dubbed']) || !empty($a['hindi_title'])
+            ];
+        }, $spotlightList))) ?>;
+    </script>
     <?php endif; ?>
 
     <!-- Section 1: Newly Released Anime (Live from db.anixo.buzz) -->
