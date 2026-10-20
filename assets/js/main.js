@@ -3,6 +3,35 @@
 document.addEventListener('DOMContentLoaded', function () {
     console.log('HiAnime / AnixoHindi driver initialized.');
 
+    // 0. Initialize Swipers (Slider & Trending)
+    if (typeof Swiper !== 'undefined') {
+        try {
+            const sliderEl = document.querySelector('#slider');
+            if (sliderEl && !sliderEl.classList.contains('swiper-initialized')) {
+                new Swiper('#slider', {
+                    navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
+                    pagination: { el: '#slider .swiper-pagination', clickable: true },
+                    loop: true,
+                    speed: 600,
+                    autoplay: { delay: 6000, disableOnInteraction: false }
+                });
+            }
+
+            const trendingEl = document.querySelector('#trending-home .swiper-container');
+            if (trendingEl && !trendingEl.classList.contains('swiper-initialized')) {
+                new Swiper(trendingEl, {
+                    slidesPerView: 'auto',
+                    spaceBetween: 20,
+                    navigation: { nextEl: '.trending-navi .navi-next', prevEl: '.trending-navi .navi-prev' },
+                    loop: false,
+                    autoplay: { delay: 3500, disableOnInteraction: false }
+                });
+            }
+        } catch (e) {
+            console.warn('Swiper init error:', e);
+        }
+    }
+
     // 1. Back to Top Button
     const backToTop = document.getElementById('back-to-top') || document.querySelector('.btn-scroll-top');
     if (backToTop) {
@@ -65,7 +94,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // 4. Spotlight Slider Controls
+    // 4. Spotlight Slider Fallback Controls (if swiper not used)
     const slideItems = document.querySelectorAll('.deslide-item');
     let currentSlide = 0;
 
@@ -85,7 +114,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    if (slideItems.length > 1) {
+    if (slideItems.length > 1 && !document.querySelector('#slider.swiper-initialized')) {
         if (nextSlideBtn) {
             nextSlideBtn.addEventListener('click', function () {
                 currentSlide = (currentSlide + 1) % slideItems.length;
