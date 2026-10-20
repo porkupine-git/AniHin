@@ -505,14 +505,67 @@ body:not(:has(.hero-spotlight-deck)) .site-navbar {
 }
 
 .nav-mobile-menu {
-    display: none;
-    background: rgba(14, 20, 19, 0.98);
+    display: block;
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    background: rgba(14, 21, 20, 0.98);
     border-top: 1px solid rgba(209, 232, 226, 0.12);
-    padding: 12px 0 16px;
+    border-radius: 0 0 16px 16px;
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.65);
+    transition: max-height 0.32s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.24s ease, padding 0.24s ease;
+    padding: 0 14px;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
 }
 
 .nav-mobile-menu.open {
-    display: block;
+    max-height: 520px;
+    opacity: 1;
+    overflow: visible;
+    padding: 12px 14px 16px;
+}
+
+.mobile-drawer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 2px 4px 10px;
+    margin-bottom: 6px;
+    border-bottom: 1px solid rgba(209, 232, 226, 0.08);
+}
+
+.mobile-drawer-tagline {
+    font-size: 11.5px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.mobile-drawer-badge {
+    font-size: 8.5px;
+    font-weight: 800;
+    padding: 2px 6px;
+    border-radius: 8px;
+    background: rgba(17, 100, 102, 0.45);
+    color: var(--accent-peach);
+    border: 1px solid var(--accent-peach);
+}
+
+.nav-pill-hot {
+    margin-left: auto;
+    font-size: 8px;
+    font-weight: 800;
+    padding: 2px 5px;
+    border-radius: 5px;
+    background: linear-gradient(135deg, #e65c00, #F9D423);
+    color: #000;
+    letter-spacing: 0.5px;
+}
+
+.mobile-drawer-footer {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(209, 232, 226, 0.08);
 }
 
 .mobile-nav-links {
@@ -521,21 +574,22 @@ body:not(:has(.hero-spotlight-deck)) .site-navbar {
     padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 3px;
 }
 
 .mobile-nav-links li a {
     display: flex;
     align-items: center;
-    padding: 11px 16px;
+    padding: 10px 14px;
     border-radius: 10px;
     color: rgba(209, 232, 226, 0.85);
     font-weight: 600;
-    font-size: 14.5px;
+    font-size: 14px;
     text-decoration: none;
     transition: all 0.2s ease;
 }
 
+.mobile-nav-links li a:active,
 .mobile-nav-links li a:hover,
 .mobile-nav-links li a.active {
     background: rgba(255, 203, 154, 0.12);
@@ -544,7 +598,7 @@ body:not(:has(.hero-spotlight-deck)) .site-navbar {
 }
 
 .mobile-nav-links li a i {
-    width: 24px;
+    width: 22px;
     color: var(--accent-peach);
 }
 
@@ -2031,6 +2085,39 @@ body:not(:has(.hero-spotlight-deck)) .site-navbar {
    Responsive Breakpoints & Touch Mobile Optimizations
    ========================================================================== */
 
+/* Mobile Backdrop Overlay (Absorbs clicks to dismiss menus smoothly) */
+.mobile-backdrop-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.72);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    z-index: 998;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.28s ease, visibility 0.28s ease;
+}
+
+.mobile-backdrop-overlay.active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+/* Navbar Active states when mobile drawer or search is open */
+.site-navbar.menu-active,
+.site-navbar.search-active {
+    background: rgba(12, 18, 17, 0.98) !important;
+    backdrop-filter: blur(20px) saturate(160%) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(160%) !important;
+    border-bottom: 1px solid rgba(209, 232, 226, 0.14) !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+}
+
 /* Mobile Bottom Navigation Bar (Hidden on desktop) */
 .mobile-bottom-nav {
     display: none;
@@ -2184,14 +2271,35 @@ body:not(:has(.hero-spotlight-deck)) .site-navbar {
 
     .mobile-search-dropdown {
         margin-top: 6px;
-        background: rgba(16, 23, 22, 0.98);
+        background: rgba(14, 21, 20, 0.98);
         border: 1px solid var(--border-hover);
         border-radius: 14px;
-        max-height: 270px;
+        max-height: min(340px, 52vh);
         overflow-y: auto;
-        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.55);
-        -webkit-backdrop-filter: blur(16px);
-        backdrop-filter: blur(16px);
+        box-shadow: 0 16px 36px rgba(0, 0, 0, 0.65);
+        -webkit-backdrop-filter: blur(20px);
+        backdrop-filter: blur(20px);
+    }
+
+    .search-view-all-link {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 11px 14px;
+        background: rgba(17, 100, 102, 0.25);
+        color: var(--accent-peach);
+        font-size: 12px;
+        font-weight: 700;
+        text-decoration: none;
+        border-top: 1px solid rgba(209, 232, 226, 0.1);
+        border-radius: 0 0 14px 14px;
+        transition: background 0.18s;
+    }
+
+    .search-view-all-link:hover,
+    .search-view-all-link:active {
+        background: rgba(17, 100, 102, 0.45);
+        color: #fff;
     }
 
     /* Floating App-Style Bottom Navigation Bar */

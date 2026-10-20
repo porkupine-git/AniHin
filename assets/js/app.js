@@ -16,11 +16,11 @@ document.addEventListener('DOMContentLoaded', () => {
     let debounceTimer;
 
     // Helper to render search result items
-    function renderSearchResults(data, targetDropdown) {
+    function renderSearchResults(data, targetDropdown, currentQuery = '') {
         if (!data || data.length === 0) {
             targetDropdown.innerHTML = '<div style="padding: 16px; text-align: center; color: var(--text-muted); font-size: 13px;"><i class="fa-solid fa-circle-notch fa-spin mr-1"></i> No anime found</div>';
         } else {
-            targetDropdown.innerHTML = data.map(item => `
+            let html = data.map(item => `
                 <a href="/watch.php?anime=${encodeURIComponent(item.slug || item.id)}&ep=1" class="search-result-item">
                     <img src="${item.poster}" alt="${item.title}" class="search-result-thumb" loading="lazy">
                     <div style="min-width: 0; flex: 1;">
@@ -32,6 +32,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 </a>
             `).join('');
+
+            if (currentQuery && currentQuery.length >= 2) {
+                html += `
+                    <a href="/filter.php?q=${encodeURIComponent(currentQuery)}" class="search-view-all-link">
+                        <span>View all results for "<strong>${currentQuery}</strong>" in Catalog</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                `;
+            }
+            targetDropdown.innerHTML = html;
         }
         targetDropdown.style.display = 'block';
     }
@@ -52,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 try {
                     const res = await fetch(`/api/search.php?q=${encodeURIComponent(query)}`);
                     const data = await res.json();
-                    renderSearchResults(data, searchDropdown);
+                    renderSearchResults(data, searchDropdown, query);
                 } catch (err) {
                     console.error('Search error:', err);
                 }
@@ -67,10 +77,18 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Mobile Search Bar Toggle & Live Search
+    // Mobile Search Bar & Hamburger Menu Controls
+    const mobileBackdrop = document.getElementById('mobileBackdropOverlay');
+    const siteNavbar = document.querySelector('.site-navbar');
+    const heroSection = document.getElementById('heroSpotlightDeck') || document.querySelector('.hero-spotlight-deck');
+
     function openMobileSearch() {
         if (!mobileSearchBar) return;
+        closeMobileMenu();
         mobileSearchBar.classList.add('open');
+        siteNavbar?.classList.add('search-active');
+        mobileBackdrop?.classList.add('active');
+        updateNavbarBackground();
         if (mobileSearchInput) {
             setTimeout(() => mobileSearchInput.focus(), 150);
         }
@@ -79,9 +97,38 @@ document.addEventListener('DOMContentLoaded', () => {
     function closeMobileSearch() {
         if (!mobileSearchBar) return;
         mobileSearchBar.classList.remove('open');
+        siteNavbar?.classList.remove('search-active');
+        if (!mobileMenu?.classList.contains('open')) {
+            mobileBackdrop?.classList.remove('active');
+        }
         if (mobileSearchDropdown) mobileSearchDropdown.style.display = 'none';
         if (mobileSearchInput) mobileSearchInput.value = '';
+        updateNavbarBackground();
     }
+
+    function openMobileMenu() {
+        if (!mobileMenu) return;
+        closeMobileSearch();
+        mobileMenu.classList.add('open');
+        siteNavbar?.classList.add('menu-active');
+        mobileBackdrop?.classList.add('active');
+        if (mobileToggle) mobileToggle.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+        updateNavbarBackground();
+    }
+
+    function closeMobileMenu() {
+        if (!mobileMenu) return;
+        mobileMenu.classList.remove('open');
+        siteNavbar?.classList.remove('menu-active');
+        if (!mobileSearchBar?.classList.contains('open')) {
+            mobileBackdrop?.classList.remove('active');
+        }
+        if (mobileToggle) mobileToggle.innerHTML = '<i class="fa-solid fa-bars"></i>';
+        updateNavbarBackground();
+    }
+
+    window.closeMobileMenu = closeMobileMenu;
+    window.closeMobileSearch = closeMobileSearch;
 
     if (mobileSearchBtn) {
         mobileSearchBtn.addEventListener('click', (e) => {
@@ -97,7 +144,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (bottomNavSearchTrigger) {
         bottomNavSearchTrigger.addEventListener('click', (e) => {
             e.stopPropagation();
-            openMobileSearch();
+            if (mobileSearchBar && mobileSearchBar.classList.contains('open')) {
+                closeMobileSearch();
+            } else {
+                openMobileSearch();
+            }
         });
     }
 
@@ -123,7 +174,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 try {
                     const res = await fetch(`/api/search.php?q=${encodeURIComponent(query)}`);
                     const data = await res.json();
-                    renderSearchResults(data, mobileSearchDropdown);
+                    renderSearchResults(data, mobileSearchDropdown, query);
                 } catch (err) {
                     console.error('Mobile search error:', err);
                 }
@@ -137,33 +188,36 @@ document.addEventListener('DOMContentLoaded', () => {
     if (mobileToggle && mobileMenu) {
         mobileToggle.addEventListener('click', (e) => {
             e.stopPropagation();
-            mobileMenu.classList.toggle('open');
-            const isOpen = mobileMenu.classList.contains('open');
-            mobileToggle.innerHTML = isOpen 
-                ? '<i class="fa-solid fa-xmark"></i>' 
-                : '<i class="fa-solid fa-bars"></i>';
-            if (isOpen && mobileSearchBar) {
-                closeMobileSearch();
+            if (mobileMenu.classList.contains('open')) {
+                closeMobileMenu();
+            } else {
+                openMobileMenu();
             }
         });
 
-        document.addEventListener('click', (e) => {
-            if (!mobileMenu.contains(e.target) && !mobileToggle.contains(e.target)) {
-                mobileMenu.classList.remove('open');
-                mobileToggle.innerHTML = '<i class="fa-solid fa-bars"></i>';
-            }
+        // Close when clicking any nav link in the drawer
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                closeMobileMenu();
+            });
+        });
+    }
+
+    // Tap on mobile backdrop overlay closes both menus smoothly
+    if (mobileBackdrop) {
+        mobileBackdrop.addEventListener('click', () => {
+            closeMobileSearch();
+            closeMobileMenu();
         });
     }
 
     // 1c. Navbar Scroll Behavior
-    // Over the hero section: background is 100% invisible.
-    // When scrolling down: background smoothly activates compact frosted glass.
-    const siteNavbar = document.querySelector('.site-navbar');
-    const heroSection = document.getElementById('heroSpotlightDeck') || document.querySelector('.hero-spotlight-deck');
-
     function updateNavbarBackground() {
         if (!siteNavbar) return;
-        
+        if (siteNavbar.classList.contains('menu-active') || siteNavbar.classList.contains('search-active')) {
+            siteNavbar.classList.add('scrolled');
+            return;
+        }
         const scrollThreshold = heroSection ? 25 : 10;
         if (window.scrollY > scrollThreshold) {
             siteNavbar.classList.add('scrolled');
@@ -919,10 +973,12 @@ function initSpotlightDeck() {
             // Direction lock: check if horizontal intent exceeds vertical intent
             if (Math.abs(dx) > 10 && Math.abs(dx) > Math.abs(dy)) {
                 isHorizontalSwipe = true;
+                isDragging = true;
             }
         }
 
         if (isHorizontalSwipe) {
+            isDragging = true;
             if (e.cancelable) e.preventDefault();
         }
     }, { passive: false });
@@ -948,6 +1004,12 @@ function initSpotlightDeck() {
             startSpringAnimation(Math.round(currentPos), 0);
         }
         startAutoplay();
+
+        // Lock isDragging for 250ms to swallow any trailing synthetic click on mobile
+        setTimeout(() => {
+            isDragging = false;
+            isHorizontalSwipe = false;
+        }, 250);
     }, { passive: true });
 
     // Card click event (tap side card to center it, click center card to watch)

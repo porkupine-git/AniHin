@@ -103,16 +103,31 @@ $user = currentUser();
 
         <!-- Mobile Drawer Nav -->
         <div class="nav-mobile-menu" id="navMobileMenu">
+            <div class="mobile-drawer-header">
+                <span class="mobile-drawer-tagline"><i class="fa-solid fa-headphones text-accent-peach mr-1"></i> Hindi Dubbed Anime</span>
+                <span class="mobile-drawer-badge">HD 1080p</span>
+            </div>
             <ul class="mobile-nav-links">
                 <li><a href="/index.php" class="<?= basename($_SERVER['PHP_SELF']) == 'index.php' ? 'active' : '' ?>"><i class="fa-solid fa-house mr-2"></i> Home</a></li>
-                <li><a href="/filter.php?type=dub" class="<?= ($_GET['type'] ?? '') == 'dub' ? 'active' : '' ?>"><i class="fa-solid fa-headphones mr-2"></i> Hindi Dubbed</a></li>
+                <li><a href="/filter.php?type=dub" class="<?= ($_GET['type'] ?? '') == 'dub' ? 'active' : '' ?>"><i class="fa-solid fa-headphones mr-2 text-accent-gold"></i> Hindi Dubbed <span class="nav-pill-hot">HOT</span></a></li>
+                <li><a href="/filter.php?status=Currently+Airing" class="<?= ($_GET['status'] ?? '') == 'Currently Airing' ? 'active' : '' ?>"><i class="fa-solid fa-bolt mr-2 text-accent-teal"></i> Currently Airing</a></li>
                 <li><a href="/filter.php?type=sub" class="<?= ($_GET['type'] ?? '') == 'sub' ? 'active' : '' ?>"><i class="fa-solid fa-closed-captioning mr-2"></i> Subbed</a></li>
                 <li><a href="/filter.php?type=Movie"><i class="fa-solid fa-film mr-2"></i> Movies</a></li>
                 <li><a href="/filter.php"><i class="fa-solid fa-compass mr-2"></i> All Anime</a></li>
             </ul>
+            <?php if (!$user): ?>
+            <div class="mobile-drawer-footer">
+                <button class="btn-primary-custom w-100" onclick="openAuthModal(); closeMobileMenu();" style="width: 100%; justify-content: center; padding: 10px 16px;">
+                    <i class="fa-regular fa-user mr-2"></i> Sign In to AniXoHindi
+                </button>
+            </div>
+            <?php endif; ?>
         </div>
     </div>
 </header>
+
+<!-- Mobile Dark Frosted Backdrop Overlay (Absorbs clicks to dismiss menus smoothly) -->
+<div class="mobile-backdrop-overlay" id="mobileBackdropOverlay" aria-hidden="true"></div>
 
 <!-- Auth Modal (AniList + Google OAuth) -->
 <div class="auth-modal-overlay" id="authModal">
