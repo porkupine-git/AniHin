@@ -10,7 +10,10 @@ if (session_status() === PHP_SESSION_NONE) {
 // Site Details
 define('SITE_NAME', 'AniXoHindi');
 define('SITE_TAGLINE', 'Watch Anime in Hindi Dubbed & Subbed');
-define('SITE_URL', 'http://localhost:3000');
+$isSecure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https');
+$siteProtocol = $isSecure ? 'https://' : 'http://';
+$siteHost = $_SERVER['HTTP_HOST'] ?? 'anixohindi.cc';
+define('SITE_URL', $siteProtocol . $siteHost);
 define('CONTACT_EMAIL', 'support@anixohindi.com');
 
 // Database Credentials (Update with your MySQL credentials)
