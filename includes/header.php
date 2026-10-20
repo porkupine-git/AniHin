@@ -55,8 +55,8 @@ $user = currentUser();
 
             <!-- Right Group: Live Search & User Account -->
             <div class="navbar-right">
-                <!-- Search Bar with Live Suggest -->
-                <div class="nav-search">
+                <!-- Desktop Search Bar with Live Suggest -->
+                <div class="nav-search nav-search-desktop">
                     <div class="search-input-wrap">
                         <i class="fa-solid fa-magnifying-glass text-muted"></i>
                         <input type="text" id="site-search-input" placeholder="Search Hindi anime, Naruto, Solo Leveling..." autocomplete="off">
@@ -64,17 +64,22 @@ $user = currentUser();
                     <div class="search-dropdown" id="search-results-dropdown"></div>
                 </div>
 
+                <!-- Mobile Search Toggle Button (Visible on mobile only) -->
+                <button class="nav-mobile-search-btn" id="navMobileSearchBtn" aria-label="Search Anime">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+
                 <!-- Auth Action -->
                 <div class="nav-auth-actions">
                     <?php if ($user): ?>
                         <div class="user-profile-badge" onclick="toggleUserMenu()">
                             <img src="<?= e($user['avatar'] ?? 'https://ui-avatars.com/api/?name=' . urlencode($user['username'])) ?>" alt="User" class="user-profile-avatar">
-                            <span class="small font-weight-bold"><?= e($user['username']) ?></span>
+                            <span class="small font-weight-bold user-name-label"><?= e($user['username']) ?></span>
                             <a href="/auth/logout.php" title="Logout" class="text-muted ml-2"><i class="fa-solid fa-arrow-right-from-bracket"></i></a>
                         </div>
                     <?php else: ?>
                         <button class="btn-primary-custom" onclick="openAuthModal()">
-                            <i class="fa-regular fa-user"></i> Sign In
+                            <i class="fa-regular fa-user"></i> <span class="auth-btn-text">Sign In</span>
                         </button>
                     <?php endif; ?>
                 </div>
@@ -84,6 +89,16 @@ $user = currentUser();
                     <i class="fa-solid fa-bars"></i>
                 </button>
             </div>
+        </div>
+
+        <!-- Mobile Expandable Search Bar (Slides down smoothly when search button is tapped) -->
+        <div class="nav-mobile-search-bar" id="navMobileSearchBar">
+            <div class="mobile-search-input-wrap">
+                <i class="fa-solid fa-magnifying-glass text-muted"></i>
+                <input type="text" id="mobile-search-input" placeholder="Search Hindi anime, Naruto, Bleach..." autocomplete="off">
+                <button class="mobile-search-close-btn" id="mobileSearchCloseBtn" aria-label="Close search"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="mobile-search-dropdown" id="mobile-search-dropdown"></div>
         </div>
 
         <!-- Mobile Drawer Nav -->

@@ -4,11 +4,39 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Live Search with Debounce & Smooth Dropdown
+    // 1. Live Search with Debounce & Smooth Dropdown (Desktop & Mobile)
     const searchInput = document.getElementById('site-search-input');
     const searchDropdown = document.getElementById('search-results-dropdown');
+    const mobileSearchInput = document.getElementById('mobile-search-input');
+    const mobileSearchDropdown = document.getElementById('mobile-search-dropdown');
+    const mobileSearchBar = document.getElementById('navMobileSearchBar');
+    const mobileSearchBtn = document.getElementById('navMobileSearchBtn');
+    const mobileSearchCloseBtn = document.getElementById('mobileSearchCloseBtn');
+    const bottomNavSearchTrigger = document.getElementById('bottomNavSearchTrigger');
     let debounceTimer;
 
+    // Helper to render search result items
+    function renderSearchResults(data, targetDropdown) {
+        if (!data || data.length === 0) {
+            targetDropdown.innerHTML = '<div style="padding: 16px; text-align: center; color: var(--text-muted); font-size: 13px;"><i class="fa-solid fa-circle-notch fa-spin mr-1"></i> No anime found</div>';
+        } else {
+            targetDropdown.innerHTML = data.map(item => `
+                <a href="/watch.php?anime=${encodeURIComponent(item.slug || item.id)}&ep=1" class="search-result-item">
+                    <img src="${item.poster}" alt="${item.title}" class="search-result-thumb" loading="lazy">
+                    <div style="min-width: 0; flex: 1;">
+                        <div style="font-weight: 700; font-size: 13px; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${item.title}</div>
+                        ${item.hindi_title ? `<div style="font-size: 11px; color: var(--badge-dub-text); margin-top: 1px; font-weight: 600;">${item.hindi_title}</div>` : ''}
+                        <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">
+                            ${item.type} • ★ ${item.score} ${item.is_dub ? '• <span style="color:var(--accent-peach); font-weight:700;">HINDI DUB</span>' : ''}
+                        </div>
+                    </div>
+                </a>
+            `).join('');
+        }
+        targetDropdown.style.display = 'block';
+    }
+
+    // Desktop search input listener
     if (searchInput && searchDropdown) {
         searchInput.addEventListener('input', (e) => {
             clearTimeout(debounceTimer);
@@ -24,24 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 try {
                     const res = await fetch(`/api/search.php?q=${encodeURIComponent(query)}`);
                     const data = await res.json();
-
-                    if (!data || data.length === 0) {
-                        searchDropdown.innerHTML = '<div style="padding: 14px; text-align: center; color: var(--text-muted); font-size: 13px;"><i class="fa-solid fa-circle-notch fa-spin mr-1"></i> No anime found</div>';
-                    } else {
-                        searchDropdown.innerHTML = data.map(item => `
-                            <a href="/watch.php?anime=${encodeURIComponent(item.slug || item.id)}&ep=1" class="search-result-item">
-                                <img src="${item.poster}" alt="${item.title}" class="search-result-thumb" loading="lazy">
-                                <div style="min-width: 0; flex: 1;">
-                                    <div style="font-weight: 700; font-size: 13px; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${item.title}</div>
-                                    ${item.hindi_title ? `<div style="font-size: 11px; color: var(--badge-dub-text); margin-top: 1px; font-weight: 600;">${item.hindi_title}</div>` : ''}
-                                    <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">
-                                        ${item.type} • ★ ${item.score} ${item.is_dub ? '• <span style="color:var(--accent-peach); font-weight:700;">HINDI DUB</span>' : ''}
-                                    </div>
-                                </div>
-                            </a>
-                        `).join('');
-                    }
-                    searchDropdown.style.display = 'block';
+                    renderSearchResults(data, searchDropdown);
                 } catch (err) {
                     console.error('Search error:', err);
                 }
@@ -56,6 +67,70 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Mobile Search Bar Toggle & Live Search
+    function openMobileSearch() {
+        if (!mobileSearchBar) return;
+        mobileSearchBar.classList.add('open');
+        if (mobileSearchInput) {
+            setTimeout(() => mobileSearchInput.focus(), 150);
+        }
+    }
+
+    function closeMobileSearch() {
+        if (!mobileSearchBar) return;
+        mobileSearchBar.classList.remove('open');
+        if (mobileSearchDropdown) mobileSearchDropdown.style.display = 'none';
+        if (mobileSearchInput) mobileSearchInput.value = '';
+    }
+
+    if (mobileSearchBtn) {
+        mobileSearchBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (mobileSearchBar.classList.contains('open')) {
+                closeMobileSearch();
+            } else {
+                openMobileSearch();
+            }
+        });
+    }
+
+    if (bottomNavSearchTrigger) {
+        bottomNavSearchTrigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            openMobileSearch();
+        });
+    }
+
+    if (mobileSearchCloseBtn) {
+        mobileSearchCloseBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            closeMobileSearch();
+        });
+    }
+
+    if (mobileSearchInput && mobileSearchDropdown) {
+        mobileSearchInput.addEventListener('input', (e) => {
+            clearTimeout(debounceTimer);
+            const query = e.target.value.trim();
+
+            if (query.length < 2) {
+                mobileSearchDropdown.style.display = 'none';
+                mobileSearchDropdown.innerHTML = '';
+                return;
+            }
+
+            debounceTimer = setTimeout(async () => {
+                try {
+                    const res = await fetch(`/api/search.php?q=${encodeURIComponent(query)}`);
+                    const data = await res.json();
+                    renderSearchResults(data, mobileSearchDropdown);
+                } catch (err) {
+                    console.error('Mobile search error:', err);
+                }
+            }, 200);
+        });
+    }
+
     // 1b. Mobile Navigation Drawer Toggle
     const mobileToggle = document.getElementById('navMobileToggle');
     const mobileMenu = document.getElementById('navMobileMenu');
@@ -67,6 +142,9 @@ document.addEventListener('DOMContentLoaded', () => {
             mobileToggle.innerHTML = isOpen 
                 ? '<i class="fa-solid fa-xmark"></i>' 
                 : '<i class="fa-solid fa-bars"></i>';
+            if (isOpen && mobileSearchBar) {
+                closeMobileSearch();
+            }
         });
 
         document.addEventListener('click', (e) => {
@@ -814,6 +892,63 @@ function initSpotlightDeck() {
             handlePointerUp(e);
         }
     });
+
+    // Mobile Direct Touch Swipe Gestures with Direction Lock (Swipe left/right anywhere on hero)
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchStartTime = 0;
+    let isHorizontalSwipe = false;
+
+    deckStage.addEventListener('touchstart', (e) => {
+        if (e.target.closest('a') || e.target.closest('button')) return;
+        const touch = e.touches[0];
+        touchStartX = touch.clientX;
+        touchStartY = touch.clientY;
+        touchStartTime = performance.now();
+        isHorizontalSwipe = false;
+        stopAutoplay();
+    }, { passive: true });
+
+    deckStage.addEventListener('touchmove', (e) => {
+        if (e.touches.length !== 1) return;
+        const touch = e.touches[0];
+        const dx = touch.clientX - touchStartX;
+        const dy = touch.clientY - touchStartY;
+
+        if (!isHorizontalSwipe) {
+            // Direction lock: check if horizontal intent exceeds vertical intent
+            if (Math.abs(dx) > 10 && Math.abs(dx) > Math.abs(dy)) {
+                isHorizontalSwipe = true;
+            }
+        }
+
+        if (isHorizontalSwipe) {
+            if (e.cancelable) e.preventDefault();
+        }
+    }, { passive: false });
+
+    deckStage.addEventListener('touchend', (e) => {
+        if (!isHorizontalSwipe) {
+            startAutoplay();
+            return;
+        }
+        const touch = e.changedTouches[0];
+        const dx = touch.clientX - touchStartX;
+        const dt = performance.now() - touchStartTime;
+
+        if (Math.abs(dx) > 35 || (Math.abs(dx) > 22 && dt < 260)) {
+            if (dx < 0) {
+                // Swipe Left -> Next Anime
+                startSpringAnimation(Math.round(currentPos) + 1, -1.8);
+            } else {
+                // Swipe Right -> Previous Anime
+                startSpringAnimation(Math.round(currentPos) - 1, 1.8);
+            }
+        } else {
+            startSpringAnimation(Math.round(currentPos), 0);
+        }
+        startAutoplay();
+    }, { passive: true });
 
     // Card click event (tap side card to center it, click center card to watch)
     cards.forEach((card, idx) => {

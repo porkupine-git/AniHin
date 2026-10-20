@@ -184,8 +184,26 @@ usort($topRated, fn($a, $b) => ($b['score'] ?? 0) <=> ($a['score'] ?? 0));
     </script>
     <?php endif; ?>
 
+    <!-- Mobile Quick Filter Chips (Touch Momentum Scrollable) -->
+    <div class="mobile-chips-bar" aria-label="Quick Category Filter">
+        <div class="container">
+            <div class="chips-scroll-track">
+                <a href="/filter.php" class="chip-pill active"><i class="fa-solid fa-fire text-accent-gold mr-1"></i> All</a>
+                <a href="/filter.php?type=dub" class="chip-pill"><i class="fa-solid fa-headphones mr-1"></i> Hindi Dubbed</a>
+                <a href="/filter.php?status=Currently+Airing" class="chip-pill"><i class="fa-solid fa-bolt mr-1"></i> Currently Airing</a>
+                <a href="/filter.php?type=Movie" class="chip-pill"><i class="fa-solid fa-film mr-1"></i> Movies</a>
+                <a href="/filter.php?type=sub" class="chip-pill"><i class="fa-solid fa-closed-captioning mr-1"></i> Subbed</a>
+                <a href="/filter.php?genre=Action" class="chip-pill">Action</a>
+                <a href="/filter.php?genre=Adventure" class="chip-pill">Adventure</a>
+                <a href="/filter.php?genre=Fantasy" class="chip-pill">Fantasy</a>
+                <a href="/filter.php?genre=Comedy" class="chip-pill">Comedy</a>
+                <a href="/filter.php?genre=Romance" class="chip-pill">Romance</a>
+            </div>
+        </div>
+    </div>
+
     <!-- Section 1: Newly Released Anime (Live from db.anixo.buzz) -->
-    <section class="container mt-4">
+    <section class="container mt-3">
         <div class="section-header">
             <h2 class="section-title">
                 <span class="title-bar"></span>
