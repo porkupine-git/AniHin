@@ -56,6 +56,48 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // 1b. Mobile Navigation Drawer Toggle
+    const mobileToggle = document.getElementById('navMobileToggle');
+    const mobileMenu = document.getElementById('navMobileMenu');
+    if (mobileToggle && mobileMenu) {
+        mobileToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            mobileMenu.classList.toggle('open');
+            const isOpen = mobileMenu.classList.contains('open');
+            mobileToggle.innerHTML = isOpen 
+                ? '<i class="fa-solid fa-xmark"></i>' 
+                : '<i class="fa-solid fa-bars"></i>';
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!mobileMenu.contains(e.target) && !mobileToggle.contains(e.target)) {
+                mobileMenu.classList.remove('open');
+                mobileToggle.innerHTML = '<i class="fa-solid fa-bars"></i>';
+            }
+        });
+    }
+
+    // 1c. Navbar Scroll Behavior
+    // Over the hero section: background is 100% invisible.
+    // When scrolling down: background smoothly activates compact frosted glass.
+    const siteNavbar = document.querySelector('.site-navbar');
+    const heroSection = document.getElementById('heroSpotlightDeck') || document.querySelector('.hero-spotlight-deck');
+
+    function updateNavbarBackground() {
+        if (!siteNavbar) return;
+        
+        const scrollThreshold = heroSection ? 25 : 10;
+        if (window.scrollY > scrollThreshold) {
+            siteNavbar.classList.add('scrolled');
+        } else {
+            siteNavbar.classList.remove('scrolled');
+        }
+    }
+
+    window.addEventListener('scroll', updateNavbarBackground, { passive: true });
+    window.addEventListener('resize', updateNavbarBackground, { passive: true });
+    updateNavbarBackground();
+
     // 2. Episode drawer search
     const epSearch = document.getElementById('episode-search-input');
     if (epSearch) {
@@ -187,6 +229,7 @@ function initSpotlightDeck() {
     const activeNumEl = document.getElementById('deckActiveNum');
     const watermarkEl = document.getElementById('deckWatermark');
     const titleEl = document.getElementById('deckTitle');
+    const titleLogoEl = document.getElementById('deckTitleLogo');
     const hindiTitleEl = document.getElementById('deckHindiTitle');
     const metaFormatEl = document.getElementById('deckMetaFormat');
     const metaScoreEl = document.getElementById('deckMetaScore');
@@ -208,9 +251,12 @@ function initSpotlightDeck() {
     // 1025px-1200px, 1280px, 1366px-1440px, 1536px, 1920px FHD, 2560px-3840px 2K/4K/Ultrawide
     function getDeckMetrics() {
         const w = window.innerWidth;
+        const h = window.innerHeight;
+        let base;
+
         if (w <= 600) {
             // Mobile (<=600px)
-            return {
+            base = {
                 stepX: 68,
                 centerScale: 1.15,
                 scaleStep: 0.16,
@@ -224,7 +270,7 @@ function initSpotlightDeck() {
             };
         } else if (w <= 1024) {
             // Tablet Portrait / Compact (601px - 1024px)
-            return {
+            base = {
                 stepX: 78,
                 centerScale: 1.18,
                 scaleStep: 0.145,
@@ -238,7 +284,7 @@ function initSpotlightDeck() {
             };
         } else if (w <= 1200) {
             // Tier 1: 1025px – 1200px (Large Tablets Landscape, Netbooks, Small Laptops)
-            return {
+            base = {
                 stepX: 84,
                 centerScale: 1.20,
                 scaleStep: 0.13,
@@ -252,7 +298,7 @@ function initSpotlightDeck() {
             };
         } else if (w <= 1365) {
             // Tier 2: 1201px – 1365px (Standard Laptops & Compact Desktops - 1280px)
-            return {
+            base = {
                 stepX: 88,
                 centerScale: 1.22,
                 scaleStep: 0.125,
@@ -266,7 +312,7 @@ function initSpotlightDeck() {
             };
         } else if (w <= 1535) {
             // Tier 3: 1366px – 1535px (Widescreen Laptops & Standard Desktops - 1366px / 1440px)
-            return {
+            base = {
                 stepX: 94,
                 centerScale: 1.24,
                 scaleStep: 0.12,
@@ -280,7 +326,7 @@ function initSpotlightDeck() {
             };
         } else if (w <= 1919) {
             // Tier 4: 1536px – 1919px (Modern High-Density Laptops - 1536px / 1600px)
-            return {
+            base = {
                 stepX: 102,
                 centerScale: 1.25,
                 scaleStep: 0.115,
@@ -294,7 +340,7 @@ function initSpotlightDeck() {
             };
         } else if (w <= 2559) {
             // Tier 5: 1920px – 2559px (Full HD 1080p Desktop Monitors - 1920px)
-            return {
+            base = {
                 stepX: 114,
                 centerScale: 1.26,
                 scaleStep: 0.11,
@@ -308,8 +354,8 @@ function initSpotlightDeck() {
             };
         } else {
             // Tier 6: 2560px – 3840px+ (2K QHD, Ultra-Wide 3440, 4K UHD Displays)
-            return {
-                stepX: 132,
+            base = {
+                stepX: 118,
                 centerScale: 1.28,
                 scaleStep: 0.105,
                 maxOffset: 5.0,
@@ -321,6 +367,25 @@ function initSpotlightDeck() {
                 rotYFactor: 14.5
             };
         }
+
+        // Adaptive height scaling (Adapts seamlessly when Chrome is zoomed in or on short viewports)
+        if (h < 520) {
+            base.tyPeak = Math.max(-6, base.tyPeak + 20);
+            base.tyFactor = base.tyFactor * 0.52;
+            base.stepX = Math.round(base.stepX * 0.78);
+            base.centerScale = Math.max(1.05, base.centerScale * 0.85);
+        } else if (h < 620) {
+            base.tyPeak = Math.max(-10, base.tyPeak + 14);
+            base.tyFactor = base.tyFactor * 0.70;
+            base.stepX = Math.round(base.stepX * 0.88);
+            base.centerScale = Math.max(1.08, base.centerScale * 0.92);
+        } else if (h < 730) {
+            base.tyPeak = Math.max(-14, base.tyPeak + 8);
+            base.tyFactor = base.tyFactor * 0.85;
+            base.stepX = Math.round(base.stepX * 0.94);
+        }
+
+        return base;
     }
 
     function getStepX() {
@@ -425,8 +490,26 @@ function initSpotlightDeck() {
         const currentData = data[index];
         if (!currentData) return;
 
-        // Title and Hindi Title
-        if (titleEl) titleEl.textContent = currentData.title;
+        // Title and Official TMDB Anime Logo
+        if (currentData.logo) {
+            if (titleLogoEl) {
+                titleLogoEl.src = currentData.logo;
+                titleLogoEl.alt = currentData.title;
+                titleLogoEl.style.display = 'block';
+            }
+            if (titleEl) {
+                titleEl.style.display = 'none';
+            }
+        } else {
+            if (titleLogoEl) {
+                titleLogoEl.style.display = 'none';
+            }
+            if (titleEl) {
+                titleEl.textContent = currentData.title;
+                titleEl.style.display = 'block';
+            }
+        }
+
         if (hindiTitleEl) {
             if (currentData.hindi_title) {
                 hindiTitleEl.innerHTML = `<i class="fa-solid fa-language mr-1"></i> ${currentData.hindi_title}`;
