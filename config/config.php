@@ -29,6 +29,10 @@ define('ANILIST_CLIENT_ID', 'YOUR_ANILIST_CLIENT_ID');
 define('ANILIST_CLIENT_SECRET', 'YOUR_ANILIST_CLIENT_SECRET');
 define('ANILIST_REDIRECT_URI', SITE_URL . '/auth/callback.php?provider=anilist');
 
+// The Movie Database (TMDB) API Credentials
+define('TMDB_API_KEY', '85c0c9c03af878253af71c2ef787eb32');
+define('TMDB_ACCESS_TOKEN', 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4NWMwYzljMDNhZjg3ODI1M2FmNzFjMmVmNzg3ZWIzMiIsIm5iZiI6MTc4MzM1Njg1MS4zMDMsInN1YiI6IjZhNGJkZGIzOWUzZjJiYjEzMDg0ZTc3YyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.83s64Jy8FXMUIT8LK3GdGTTNCrE7nc4VEHlp-_rwWLE');
+
 // Helper function to sanitize output
 function e($str) {
     return htmlspecialchars((string)($str ?? ''), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');

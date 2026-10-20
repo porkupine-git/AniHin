@@ -24,7 +24,7 @@ $user = currentUser();
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <!-- Professional Design System Stylesheet -->
-    <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="stylesheet" href="/assets/css/style.css?v=<?= filemtime(__DIR__ . '/../assets/css/style.css') ?>">
 </head>
 <body>
 
@@ -32,45 +32,69 @@ $user = currentUser();
 <header class="site-navbar">
     <div class="container">
         <div class="navbar-inner">
-            <!-- Brand Logo -->
-            <a href="/index.php" class="brand-logo">
-                <i class="fa-solid fa-play text-accent"></i>
-                <span>Ani<span class="brand-highlight">Xo</span>Hindi</span>
-                <span class="brand-badge">हिंदी</span>
-            </a>
+            <!-- Left Group: Brand Logo & Main Navigation -->
+            <div class="navbar-left">
+                <!-- Brand Logo -->
+                <a href="/index.php" class="brand-logo">
+                    <span class="brand-icon-wrap">
+                        <i class="fa-solid fa-play"></i>
+                    </span>
+                    <span class="brand-text">Ani<span class="brand-highlight">Xo</span>Hindi</span>
+                    <span class="brand-badge">हिंदी</span>
+                </a>
 
-            <!-- Navigation Links -->
-            <ul class="nav-links">
-                <li><a href="/index.php" class="<?= basename($_SERVER['PHP_SELF']) == 'index.php' ? 'active' : '' ?>">Home</a></li>
-                <li><a href="/filter.php?type=dub" class="<?= ($_GET['type'] ?? '') == 'dub' ? 'active' : '' ?>">Hindi Dubbed</a></li>
-                <li><a href="/filter.php?type=sub" class="<?= ($_GET['type'] ?? '') == 'sub' ? 'active' : '' ?>">Subbed</a></li>
-                <li><a href="/filter.php?type=Movie">Movies</a></li>
-                <li><a href="/filter.php">All Anime</a></li>
-            </ul>
-
-            <!-- Search Bar with Live Suggest -->
-            <div class="nav-search">
-                <div class="search-input-wrap">
-                    <i class="fa-solid fa-magnifying-glass text-muted"></i>
-                    <input type="text" id="site-search-input" placeholder="Search Hindi anime, Naruto, Solo Leveling..." autocomplete="off">
-                </div>
-                <div class="search-dropdown" id="search-results-dropdown"></div>
+                <!-- Navigation Links -->
+                <ul class="nav-links">
+                    <li><a href="/index.php" class="<?= basename($_SERVER['PHP_SELF']) == 'index.php' ? 'active' : '' ?>">Home</a></li>
+                    <li><a href="/filter.php?type=dub" class="<?= ($_GET['type'] ?? '') == 'dub' ? 'active' : '' ?>">Hindi Dubbed</a></li>
+                    <li><a href="/filter.php?type=sub" class="<?= ($_GET['type'] ?? '') == 'sub' ? 'active' : '' ?>">Subbed</a></li>
+                    <li><a href="/filter.php?type=Movie">Movies</a></li>
+                    <li><a href="/filter.php">All Anime</a></li>
+                </ul>
             </div>
 
-            <!-- Auth Action -->
-            <div class="nav-auth-actions">
-                <?php if ($user): ?>
-                    <div class="user-profile-badge" onclick="toggleUserMenu()">
-                        <img src="<?= e($user['avatar'] ?? 'https://ui-avatars.com/api/?name=' . urlencode($user['username'])) ?>" alt="User" class="user-profile-avatar">
-                        <span class="small font-weight-bold"><?= e($user['username']) ?></span>
-                        <a href="/auth/logout.php" title="Logout" class="text-muted ml-2"><i class="fa-solid fa-arrow-right-from-bracket"></i></a>
+            <!-- Right Group: Live Search & User Account -->
+            <div class="navbar-right">
+                <!-- Search Bar with Live Suggest -->
+                <div class="nav-search">
+                    <div class="search-input-wrap">
+                        <i class="fa-solid fa-magnifying-glass text-muted"></i>
+                        <input type="text" id="site-search-input" placeholder="Search Hindi anime, Naruto, Solo Leveling..." autocomplete="off">
                     </div>
-                <?php else: ?>
-                    <button class="btn-primary-custom" onclick="openAuthModal()">
-                        <i class="fa-regular fa-user"></i> Sign In
-                    </button>
-                <?php endif; ?>
+                    <div class="search-dropdown" id="search-results-dropdown"></div>
+                </div>
+
+                <!-- Auth Action -->
+                <div class="nav-auth-actions">
+                    <?php if ($user): ?>
+                        <div class="user-profile-badge" onclick="toggleUserMenu()">
+                            <img src="<?= e($user['avatar'] ?? 'https://ui-avatars.com/api/?name=' . urlencode($user['username'])) ?>" alt="User" class="user-profile-avatar">
+                            <span class="small font-weight-bold"><?= e($user['username']) ?></span>
+                            <a href="/auth/logout.php" title="Logout" class="text-muted ml-2"><i class="fa-solid fa-arrow-right-from-bracket"></i></a>
+                        </div>
+                    <?php else: ?>
+                        <button class="btn-primary-custom" onclick="openAuthModal()">
+                            <i class="fa-regular fa-user"></i> Sign In
+                        </button>
+                    <?php endif; ?>
+                </div>
+
+                <!-- Mobile Hamburger Toggle -->
+                <button class="nav-mobile-toggle" id="navMobileToggle" aria-label="Toggle Navigation Menu">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
             </div>
+        </div>
+
+        <!-- Mobile Drawer Nav -->
+        <div class="nav-mobile-menu" id="navMobileMenu">
+            <ul class="mobile-nav-links">
+                <li><a href="/index.php" class="<?= basename($_SERVER['PHP_SELF']) == 'index.php' ? 'active' : '' ?>"><i class="fa-solid fa-house mr-2"></i> Home</a></li>
+                <li><a href="/filter.php?type=dub" class="<?= ($_GET['type'] ?? '') == 'dub' ? 'active' : '' ?>"><i class="fa-solid fa-headphones mr-2"></i> Hindi Dubbed</a></li>
+                <li><a href="/filter.php?type=sub" class="<?= ($_GET['type'] ?? '') == 'sub' ? 'active' : '' ?>"><i class="fa-solid fa-closed-captioning mr-2"></i> Subbed</a></li>
+                <li><a href="/filter.php?type=Movie"><i class="fa-solid fa-film mr-2"></i> Movies</a></li>
+                <li><a href="/filter.php"><i class="fa-solid fa-compass mr-2"></i> All Anime</a></li>
+            </ul>
         </div>
     </div>
 </header>

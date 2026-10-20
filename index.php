@@ -59,6 +59,21 @@ usort($topRated, fn($a, $b) => ($b['score'] ?? 0) <=> ($a['score'] ?? 0));
             if (count($spotlightList) >= 12) break;
         }
     }
+
+    // Enrich spotlight items with high-resolution TMDB backdrops & official PNG logos
+    foreach ($spotlightList as &$aItem) {
+        $tmdbArt = getTmdbAnimeArt($aItem['title'], $aItem['release_year'] ?? null);
+        if ($tmdbArt) {
+            if (!empty($tmdbArt['backdrop'])) {
+                $aItem['banner'] = $tmdbArt['backdrop'];
+            }
+            if (!empty($tmdbArt['logo'])) {
+                $aItem['logo'] = $tmdbArt['logo'];
+            }
+        }
+    }
+    unset($aItem);
+
     $spotlightCount = count($spotlightList);
     $initialAnime = $spotlightList[0] ?? null;
     ?>
@@ -72,22 +87,17 @@ usort($topRated, fn($a, $b) => ($b['score'] ?? 0) <=> ($a['score'] ?? 0));
             <div class="deck-backdrop-overlay"></div>
         </div>
 
-        <!-- Top Corner Indicators (Matching Reference Screenshot) -->
-        <div class="deck-top-bar">
-            <div class="deck-indicator-left">
-                <span class="dash-prefix">—</span> SPOTLIGHTS / <span id="deckActiveNum">01</span>
-            </div>
-            <div class="deck-indicator-right">
-                <span id="deckTotalCount"><?= sprintf("%02d", $spotlightCount) ?> TOTAL</span>
-            </div>
-        </div>
+
+        <!-- Screen-Edge Navigation Arrows (Attached to far left & right screen edges) -->
+        <button class="deck-nav-btn deck-nav-prev" id="deckPrevBtn" aria-label="Previous Anime">
+            <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <button class="deck-nav-btn deck-nav-next" id="deckNextBtn" aria-label="Next Anime">
+            <i class="fa-solid fa-chevron-right"></i>
+        </button>
 
         <!-- Center 3D Curved Fan-Deck of Cards -->
         <div class="deck-stage-wrapper">
-            <button class="deck-nav-btn deck-nav-prev" id="deckPrevBtn" aria-label="Previous Anime">
-                <i class="fa-solid fa-chevron-left"></i>
-            </button>
-
             <div class="deck-cards-track" id="deckCardsTrack">
                 <?php foreach ($spotlightList as $idx => $item): ?>
                     <div class="deck-card-item" data-index="<?= $idx ?>" title="<?= e($item['title']) ?>">
@@ -98,10 +108,6 @@ usort($topRated, fn($a, $b) => ($b['score'] ?? 0) <=> ($a['score'] ?? 0));
                     </div>
                 <?php endforeach; ?>
             </div>
-
-            <button class="deck-nav-btn deck-nav-next" id="deckNextBtn" aria-label="Next Anime">
-                <i class="fa-solid fa-chevron-right"></i>
-            </button>
         </div>
 
         <!-- Center-Bottom Active Anime Info -->
@@ -121,8 +127,11 @@ usort($topRated, fn($a, $b) => ($b['score'] ?? 0) <=> ($a['score'] ?? 0));
                 <?php endif; ?>
             </div>
 
-            <!-- Stylized Big Title -->
-            <h1 class="deck-title" id="deckTitle"><?= e($initialAnime['title']) ?></h1>
+            <!-- Stylized Anime Logo (TMDB) with Fallback to Stylized Text Title -->
+            <div class="deck-title-area" id="deckTitleArea">
+                <img class="deck-title-logo" id="deckTitleLogo" src="<?= e($initialAnime['logo'] ?? '') ?>" alt="<?= e($initialAnime['title']) ?>" style="<?= empty($initialAnime['logo']) ? 'display: none;' : '' ?>">
+                <h1 class="deck-title" id="deckTitle" style="<?= !empty($initialAnime['logo']) ? 'display: none;' : '' ?>"><?= e($initialAnime['title']) ?></h1>
+            </div>
 
             <!-- Hindi Title / Subtitle -->
             <div class="deck-hindi-title" id="deckHindiTitle">
@@ -148,8 +157,6 @@ usort($topRated, fn($a, $b) => ($b['score'] ?? 0) <=> ($a['score'] ?? 0));
             </div>
         </div>
 
-        <!-- Giant Stylized Background Watermark Number (Bottom Right) -->
-        <div class="deck-watermark-number" id="deckWatermark">01</div>
     </section>
 
     <!-- Pass Spotlight JSON to Client Script -->
@@ -164,6 +171,7 @@ usort($topRated, fn($a, $b) => ($b['score'] ?? 0) <=> ($a['score'] ?? 0));
                 'hindi_title' => $a['hindi_title'] ?? '',
                 'poster' => $a['poster'],
                 'banner' => $a['banner'] ?? $a['poster'],
+                'logo' => $a['logo'] ?? '',
                 'score_pct' => $scorePct,
                 'format' => strtoupper($a['show_type'] ?? 'TV'),
                 'episodes' => ($a['episodes_count'] ?? 12) . ' EP',
@@ -189,7 +197,7 @@ usort($topRated, fn($a, $b) => ($b['score'] ?? 0) <=> ($a['score'] ?? 0));
         </div>
         
         <div class="anime-grid">
-            <?php foreach (array_slice($newlyReleased, 0, 8) as $anime): ?>
+            <?php foreach (array_slice($newlyReleased, 0, 12) as $anime): ?>
                 <?= renderAnimeCard($anime) ?>
             <?php endforeach; ?>
         </div>
@@ -208,7 +216,7 @@ usort($topRated, fn($a, $b) => ($b['score'] ?? 0) <=> ($a['score'] ?? 0));
         </div>
         
         <div class="anime-grid">
-            <?php foreach (array_slice($hindiDubbed, 0, 8) as $anime): ?>
+            <?php foreach (array_slice($hindiDubbed, 0, 12) as $anime): ?>
                 <?= renderAnimeCard($anime) ?>
             <?php endforeach; ?>
         </div>
@@ -227,7 +235,7 @@ usort($topRated, fn($a, $b) => ($b['score'] ?? 0) <=> ($a['score'] ?? 0));
         </div>
         
         <div class="anime-grid">
-            <?php foreach (array_slice($topRated, 0, 8) as $anime): ?>
+            <?php foreach (array_slice($topRated, 0, 12) as $anime): ?>
                 <?= renderAnimeCard($anime) ?>
             <?php endforeach; ?>
         </div>

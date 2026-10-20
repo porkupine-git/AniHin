@@ -391,3 +391,255 @@ function getEpisodesForAnime($anime) {
     usort($episodes, fn($a, $b) => $a['number'] <=> $b['number']);
     return $episodes;
 }
+
+/**
+ * TMDB API Helper - Cached HTTP GET request
+ */
+function tmdbApiGet($endpoint, $params = [], $ttl = 1209600) {
+    if (!defined('TMDB_API_KEY') || empty(TMDB_API_KEY)) {
+        return null;
+    }
+
+    $params['api_key'] = TMDB_API_KEY;
+    $url = 'https://api.themoviedb.org/3/' . ltrim($endpoint, '/') . '?' . http_build_query($params);
+
+    $cacheKey = md5($url);
+    $cacheFile = ANIXO_CACHE_DIR . '/tmdb_' . $cacheKey . '.json';
+
+    if (file_exists($cacheFile) && (time() - filemtime($cacheFile) < $ttl)) {
+        $content = @file_get_contents($cacheFile);
+        if ($content) {
+            $data = json_decode($content, true);
+            if ($data !== null) {
+                return $data;
+            }
+        }
+    }
+
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 6);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+    curl_setopt($ch, CURLOPT_USERAGENT, 'AniXoHindi/1.0 (TMDB Client)');
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+    if (defined('TMDB_ACCESS_TOKEN') && !empty(TMDB_ACCESS_TOKEN)) {
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Authorization: Bearer ' . TMDB_ACCESS_TOKEN,
+            'Accept: application/json'
+        ]);
+    }
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+
+    if ($httpCode === 200 && !empty($response)) {
+        $data = json_decode($response, true);
+        if ($data !== null) {
+            @file_put_contents($cacheFile, $response);
+            return $data;
+        }
+    }
+
+    // Stale cache fallback if TMDB is offline
+    if (file_exists($cacheFile)) {
+        $content = @file_get_contents($cacheFile);
+        if ($content) {
+            $data = json_decode($content, true);
+            if ($data !== null) return $data;
+        }
+    }
+
+    return null;
+}
+
+/**
+ * Clean anime title for TMDB search matching
+ */
+function cleanAnimeTitleForTmdb($title) {
+    $title = trim($title);
+    if (stripos($title, "JoJo's Bizarre Adventure") !== false) {
+        return "JoJo's Bizarre Adventure";
+    }
+    // Remove typical anime season/arc suffixes
+    $cleaned = preg_replace('/\s+(Season|Part|Cour|\b\d+(st|nd|rd|th)\s+Season|\b\d+(st|nd|rd|th)\s+Stage)\b.*$/i', '', $title);
+    $cleaned = preg_replace('/\s+:\s+.*$/', '', $cleaned);
+    $cleaned = preg_replace('/\s+-\s+.*$/', '', $cleaned);
+    $cleaned = preg_replace('/\s+\(TV\)/i', '', $cleaned);
+    $cleaned = trim($cleaned);
+    return !empty($cleaned) ? $cleaned : $title;
+}
+
+/**
+ * Fetch high-res backdrop and logo from TMDB with persistent file caching
+ */
+function getTmdbAnimeArt($title, $year = null) {
+    if (empty($title)) return null;
+
+    $cacheKey = md5('tmdb_art_' . strtolower(trim($title)));
+    $cacheFile = ANIXO_CACHE_DIR . '/art_' . $cacheKey . '.json';
+    if (file_exists($cacheFile) && (time() - filemtime($cacheFile) < 1209600)) {
+        $cached = @file_get_contents($cacheFile);
+        if ($cached) {
+            $decoded = json_decode($cached, true);
+            if ($decoded !== null && (!empty($decoded['backdrop']) || !empty($decoded['logo']))) {
+                return $decoded;
+            }
+        }
+    }
+
+    $queriesToTry = [];
+    $clean = cleanAnimeTitleForTmdb($title);
+    $queriesToTry[] = $clean;
+    if ($clean !== $title) {
+        $queriesToTry[] = $title;
+    }
+    if (strpos($title, ':') !== false) {
+        $beforeColon = trim(explode(':', $title)[0]);
+        if (!in_array($beforeColon, $queriesToTry)) {
+            $queriesToTry[] = $beforeColon;
+        }
+    }
+
+    $foundItem = null;
+    $mediaType = 'tv';
+
+    foreach ($queriesToTry as $q) {
+        // Try TV search first
+        $params = ['query' => $q];
+        if ($year) {
+            $params['first_air_date_year'] = $year;
+        }
+        $searchRes = tmdbApiGet('search/tv', $params);
+        if (empty($searchRes['results']) && isset($params['first_air_date_year'])) {
+            unset($params['first_air_date_year']);
+            $searchRes = tmdbApiGet('search/tv', $params);
+        }
+
+        if (!empty($searchRes['results'])) {
+            // Sort by vote count and popularity to prioritize the main series over obscure specials
+            usort($searchRes['results'], function($a, $b) {
+                $aVotes = $a['vote_count'] ?? 0;
+                $bVotes = $b['vote_count'] ?? 0;
+                if ($aVotes !== $bVotes) return $bVotes <=> $aVotes;
+                return ($b['popularity'] ?? 0) <=> ($a['popularity'] ?? 0);
+            });
+            $foundItem = $searchRes['results'][0];
+            $mediaType = 'tv';
+            break;
+        }
+
+        // Try Movie search
+        $movieParams = ['query' => $q];
+        if ($year) {
+            $movieParams['primary_release_year'] = $year;
+        }
+        $searchMovie = tmdbApiGet('search/movie', $movieParams);
+        if (empty($searchMovie['results']) && isset($movieParams['primary_release_year'])) {
+            unset($movieParams['primary_release_year']);
+            $searchMovie = tmdbApiGet('search/movie', $movieParams);
+        }
+
+        if (!empty($searchMovie['results'])) {
+            usort($searchMovie['results'], function($a, $b) {
+                $aVotes = $a['vote_count'] ?? 0;
+                $bVotes = $b['vote_count'] ?? 0;
+                if ($aVotes !== $bVotes) return $bVotes <=> $aVotes;
+                return ($b['popularity'] ?? 0) <=> ($a['popularity'] ?? 0);
+            });
+            $foundItem = $searchMovie['results'][0];
+            $mediaType = 'movie';
+            break;
+        }
+    }
+
+    if (!$foundItem) {
+        return null;
+    }
+
+    $tmdbId = $foundItem['id'];
+    $backdropUrl = !empty($foundItem['backdrop_path']) 
+        ? 'https://image.tmdb.org/t/p/original' . $foundItem['backdrop_path'] 
+        : null;
+
+    // Fetch Images for official Logos (omit language filter to get all worldwide logos)
+    $logoUrl = null;
+    $imgRes = tmdbApiGet($mediaType . '/' . $tmdbId . '/images');
+
+    if (!empty($imgRes['logos'])) {
+        $logos = $imgRes['logos'];
+        // Sort logos: prioritize transparent PNGs with horizontal aspect ratio (typical anime logos)
+        usort($logos, function($a, $b) {
+            $aPath = $a['file_path'] ?? '';
+            $bPath = $b['file_path'] ?? '';
+            $aIsPng = (strtolower(substr($aPath, -4)) === '.png') ? 6 : 0;
+            $bIsPng = (strtolower(substr($bPath, -4)) === '.png') ? 6 : 0;
+
+            $aLangCode = strtolower($a['iso_639_1'] ?? '');
+            $bLangCode = strtolower($b['iso_639_1'] ?? '');
+
+            $aLang = ($aLangCode === 'en') ? 10 : (empty($aLangCode) ? 8 : (($aLangCode === 'hi') ? 7 : (($aLangCode === 'ja') ? 5 : 2)));
+            $bLang = ($bLangCode === 'en') ? 10 : (empty($bLangCode) ? 8 : (($bLangCode === 'hi') ? 7 : (($bLangCode === 'ja') ? 5 : 2)));
+
+            // Prefer horizontal logos (aspect ratio between 1.5 and 7.0)
+            $aAspect = (float)($a['aspect_ratio'] ?? 1);
+            $bAspect = (float)($b['aspect_ratio'] ?? 1);
+            $aRatioBonus = ($aAspect >= 1.5 && $aAspect <= 8.0) ? 3 : 0;
+            $bRatioBonus = ($bAspect >= 1.5 && $bAspect <= 8.0) ? 3 : 0;
+
+            $aScore = $aLang + $aIsPng + $aRatioBonus + (($a['vote_average'] ?? 0) * 0.2);
+            $bScore = $bLang + $bIsPng + $bRatioBonus + (($b['vote_average'] ?? 0) * 0.2);
+
+            return $bScore <=> $aScore;
+        });
+
+        if (!empty($logos[0]['file_path'])) {
+            $logoUrl = 'https://image.tmdb.org/t/p/w500' . $logos[0]['file_path'];
+        }
+    }
+
+    // High quality backdrop selection (prioritize top voted ~16:9 landscape backdrop)
+    if (!empty($imgRes['backdrops'])) {
+        $backdrops = $imgRes['backdrops'];
+        usort($backdrops, function($a, $b) {
+            $aAspect = (float)($a['aspect_ratio'] ?? 1.78);
+            $bAspect = (float)($b['aspect_ratio'] ?? 1.78);
+            $aAspectScore = (abs($aAspect - 1.78) < 0.15) ? 5 : 0;
+            $bAspectScore = (abs($bAspect - 1.78) < 0.15) ? 5 : 0;
+            $aScore = $aAspectScore + ($a['vote_count'] ?? 0);
+            $bScore = $bAspectScore + ($b['vote_count'] ?? 0);
+            return $bScore <=> $aScore;
+        });
+
+        if (!empty($backdrops[0]['file_path'])) {
+            $backdropUrl = 'https://image.tmdb.org/t/p/original' . $backdrops[0]['file_path'];
+        }
+    }
+
+    // If TV series entry has no logo, check franchise movies for official logo
+    if (empty($logoUrl) && $mediaType === 'tv') {
+        $movieSearch = tmdbApiGet('search/movie', ['query' => $clean]);
+        if (!empty($movieSearch['results'])) {
+            $movieId = $movieSearch['results'][0]['id'];
+            $movieImgs = tmdbApiGet('movie/' . $movieId . '/images');
+            if (!empty($movieImgs['logos'])) {
+                foreach ($movieImgs['logos'] as $ml) {
+                    if (strtolower(substr($ml['file_path'] ?? '', -4)) === '.png') {
+                        $logoUrl = 'https://image.tmdb.org/t/p/w500' . $ml['file_path'];
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    $result = [
+        'tmdb_id' => $tmdbId,
+        'title' => $foundItem['name'] ?? $foundItem['title'] ?? $title,
+        'backdrop' => $backdropUrl,
+        'logo' => $logoUrl
+    ];
+
+    @file_put_contents($cacheFile, json_encode($result));
+    return $result;
+}
