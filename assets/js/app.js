@@ -46,36 +46,53 @@ document.addEventListener('DOMContentLoaded', () => {
         targetDropdown.style.display = 'block';
     }
 
-    // Desktop search input listener
-    if (searchInput && searchDropdown) {
-        searchInput.addEventListener('input', (e) => {
-            clearTimeout(debounceTimer);
-            const query = e.target.value.trim();
+    // Unified Search Input Handler (Live Suggest + Enter Key Navigation)
+    function setupSearchInput(inputEl, dropdownEl) {
+        if (!inputEl || !dropdownEl) return;
 
-            if (query.length < 2) {
-                searchDropdown.style.display = 'none';
-                searchDropdown.innerHTML = '';
-                return;
-            }
+        ['input', 'keyup', 'change'].forEach(evt => {
+            inputEl.addEventListener(evt, (e) => {
+                if (e.key === 'Enter') return;
+                clearTimeout(debounceTimer);
+                const query = inputEl.value.trim();
 
-            debounceTimer = setTimeout(async () => {
-                try {
-                    const res = await fetch(`/api/search.php?q=${encodeURIComponent(query)}`);
-                    const data = await res.json();
-                    renderSearchResults(data, searchDropdown, query);
-                } catch (err) {
-                    console.error('Search error:', err);
+                if (query.length < 2) {
+                    dropdownEl.style.display = 'none';
+                    dropdownEl.innerHTML = '';
+                    return;
                 }
-            }, 200);
+
+                debounceTimer = setTimeout(async () => {
+                    try {
+                        const res = await fetch(`/api/search.php?q=${encodeURIComponent(query)}`);
+                        const data = await res.json();
+                        renderSearchResults(data, dropdownEl, query);
+                    } catch (err) {
+                        console.error('Search error:', err);
+                    }
+                }, 180);
+            });
         });
 
-        // Close dropdown when clicking outside
-        document.addEventListener('click', (e) => {
-            if (!searchInput.contains(e.target) && !searchDropdown.contains(e.target)) {
-                searchDropdown.style.display = 'none';
+        inputEl.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const query = inputEl.value.trim();
+                if (query) {
+                    window.location.href = `/filter.php?q=${encodeURIComponent(query)}`;
+                }
             }
         });
     }
+
+    setupSearchInput(searchInput, searchDropdown);
+    setupSearchInput(mobileSearchInput, mobileSearchDropdown);
+
+    // Close desktop dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+        if (searchInput && searchDropdown && !searchInput.contains(e.target) && !searchDropdown.contains(e.target)) {
+            searchDropdown.style.display = 'none';
+        }
+    });
 
     // Mobile Search Bar & Hamburger Menu Controls
     const mobileBackdrop = document.getElementById('mobileBackdropOverlay');
@@ -156,29 +173,6 @@ document.addEventListener('DOMContentLoaded', () => {
         mobileSearchCloseBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             closeMobileSearch();
-        });
-    }
-
-    if (mobileSearchInput && mobileSearchDropdown) {
-        mobileSearchInput.addEventListener('input', (e) => {
-            clearTimeout(debounceTimer);
-            const query = e.target.value.trim();
-
-            if (query.length < 2) {
-                mobileSearchDropdown.style.display = 'none';
-                mobileSearchDropdown.innerHTML = '';
-                return;
-            }
-
-            debounceTimer = setTimeout(async () => {
-                try {
-                    const res = await fetch(`/api/search.php?q=${encodeURIComponent(query)}`);
-                    const data = await res.json();
-                    renderSearchResults(data, mobileSearchDropdown, query);
-                } catch (err) {
-                    console.error('Mobile search error:', err);
-                }
-            }, 200);
         });
     }
 
