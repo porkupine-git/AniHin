@@ -1561,10 +1561,114 @@ body:not(:has(.hero-spotlight-deck)) .site-navbar {
 }
 
 /* ==========================================================================
-   Watch Page & Iframe Embed Player
+   Studio Watch Cockpit & Video Player System (Zero Glow • Precision Matte)
    ========================================================================== */
+
+/* Focus / Lights-Off Backdrop Isolation */
+.lights-off-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(7, 10, 9, 0.96);
+    z-index: 890;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.28s var(--ease-smooth);
+}
+
+body.lights-off-active .lights-off-overlay {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+body.lights-off-active .player-cockpit-frame {
+    position: relative;
+    z-index: 900;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.85);
+}
+
+.lights-off-notice {
+    position: fixed;
+    top: 18px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-40px);
+    background: #182220;
+    border: 1px solid var(--border-hover);
+    color: var(--text-primary);
+    padding: 8px 18px;
+    border-radius: var(--radius-full);
+    font-size: 12.5px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    z-index: 920;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.25s var(--ease-smooth);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+}
+
+.lights-off-notice button {
+    background: rgba(255, 203, 154, 0.15);
+    border: 1px solid rgba(255, 203, 154, 0.3);
+    color: var(--accent-peach);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.lights-off-notice button:hover {
+    background: rgba(255, 203, 154, 0.28);
+}
+
+body.lights-off-active .lights-off-notice {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* Ambient Backdrop Banner (Matte & Subtle - No Glow) */
+.watch-ambient-banner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 380px;
+    background-size: cover;
+    background-position: center 25%;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.22;
+    filter: grayscale(25%);
+}
+
+.ambient-matte-overlay {
+    position: absolute;
+    inset: 0;
+    background: 
+        linear-gradient(to bottom, rgba(16, 23, 22, 0.3) 0%, rgba(16, 23, 22, 0.8) 60%, var(--bg-main) 100%),
+        radial-gradient(ellipse at 50% 20%, transparent 20%, var(--bg-main) 85%);
+}
+
+/* Container & Header Navigation */
 .watch-container {
-    padding: 25px 0 50px;
+    position: relative;
+    z-index: 1;
+    padding: 16px 0 60px;
+}
+
+.watch-header-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(209, 232, 226, 0.05);
 }
 
 .breadcrumb-nav {
@@ -1572,25 +1676,68 @@ body:not(:has(.hero-spotlight-deck)) .site-navbar {
     align-items: center;
     flex-wrap: wrap;
     gap: 8px;
-    font-size: 13px;
+    font-size: 12.5px;
     color: var(--text-muted);
-    margin-bottom: 20px;
 }
 
 .breadcrumb-nav a {
     color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.15s ease;
 }
 
 .breadcrumb-nav a:hover {
-    color: var(--accent-peach);
+    color: var(--text-bright);
 }
 
+.breadcrumb-sep {
+    color: var(--text-muted);
+    opacity: 0.45;
+}
+
+.breadcrumb-anime-title {
+    color: var(--text-primary) !important;
+    font-weight: 700;
+    max-width: 320px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.breadcrumb-ep-current {
+    color: var(--accent-peach);
+    font-weight: 800;
+}
+
+.audio-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11.5px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: var(--radius-full);
+}
+
+.audio-pill.dub {
+    background: rgba(217, 176, 140, 0.12);
+    color: var(--accent-peach);
+    border: 1px solid rgba(255, 203, 154, 0.25);
+}
+
+.audio-pill.sub {
+    background: rgba(17, 100, 102, 0.2);
+    color: var(--text-primary);
+    border: 1px solid rgba(17, 100, 102, 0.4);
+}
+
+/* Master Watch Layout Grid */
 .watch-layout {
     display: grid;
-    grid-template-columns: 1fr 340px;
-    gap: 25px;
+    grid-template-columns: minmax(0, 1fr) 380px;
+    gap: 22px;
     align-items: start;
-    transition: grid-template-columns 0.3s var(--ease-smooth);
+    transition: all 0.28s var(--ease-smooth);
 }
 
 .watch-layout.theater-mode {
@@ -1598,312 +1745,993 @@ body:not(:has(.hero-spotlight-deck)) .site-navbar {
 }
 
 .watch-layout.theater-mode .episodes-column {
-    margin-top: 25px;
+    margin-top: 14px;
 }
 
-.player-wrapper {
-    background: #000000;
+/* ==========================================================================
+   Player Cockpit Frame
+   ========================================================================== */
+.player-cockpit-frame {
+    background: #0d1413;
+    border: 1px solid var(--border-subtle);
     border-radius: var(--radius-lg);
     overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cockpit-top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    background: #141d1b;
+    border-bottom: 1px solid rgba(209, 232, 226, 0.07);
+    gap: 12px;
+}
+
+.cockpit-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    flex: 1;
+}
+
+.cockpit-badge {
+    background: var(--accent-primary);
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: var(--radius-sm);
+    letter-spacing: 0.5px;
+    flex-shrink: 0;
+}
+
+.cockpit-title {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0;
+}
+
+.cockpit-right {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.cockpit-tool-btn {
+    background: #1b2523;
     border: 1px solid var(--border-subtle);
-    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.6);
+    color: var(--text-secondary);
+    font-size: 11.5px;
+    font-weight: 600;
+    padding: 6px 11px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s ease;
+}
+
+.cockpit-tool-btn:hover {
+    background: #24322f;
+    color: var(--text-bright);
+    border-color: var(--border-hover);
+}
+
+.cockpit-tool-btn:active {
+    transform: scale(0.96);
+}
+
+.cockpit-tool-btn.active {
+    background: rgba(17, 100, 102, 0.35);
+    color: var(--accent-peach);
+    border-color: rgba(17, 100, 102, 0.6);
 }
 
 .embed-responsive-frame {
     position: relative;
     padding-top: 56.25%; /* 16:9 Aspect Ratio */
     background: #000000;
+    width: 100%;
 }
 
 .embed-responsive-frame iframe {
     position: absolute;
-    top: 0;
-    left: 0;
+    inset: 0;
     width: 100%;
     height: 100%;
     border: none;
 }
 
-.player-action-bar {
+/* Bottom Cockpit Controller Bar */
+.cockpit-bottom-bar {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 12px 18px;
-    background: var(--bg-surface);
-    border-top: 1px solid var(--border-subtle);
-    gap: 15px;
+    padding: 10px 16px;
+    background: #141d1b;
+    border-top: 1px solid rgba(209, 232, 226, 0.07);
+    gap: 12px;
+    flex-wrap: wrap;
 }
 
-.player-controls-left,
-.player-controls-right {
+.cockpit-nav-actions {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
 }
 
-.ctrl-btn {
-    background: var(--bg-surface-elevated);
+.cockpit-nav-btn {
+    background: #1b2523;
     border: 1px solid var(--border-subtle);
-    color: var(--text-secondary);
+    color: var(--text-primary);
     font-size: 12px;
-    font-weight: 600;
-    padding: 6px 12px;
+    font-weight: 700;
+    padding: 7px 14px;
     border-radius: var(--radius-sm);
     cursor: pointer;
-    will-change: transform;
-    transform: translate3d(0, 0, 0);
-    backface-visibility: hidden;
-    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.15s var(--ease-smooth);
     display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    text-decoration: none;
+    transition: all 0.15s ease;
+}
+
+.cockpit-nav-btn:hover:not(.disabled) {
+    background: var(--accent-primary);
+    color: #ffffff;
+    border-color: var(--accent-hover);
+    transform: translateY(-1px);
+}
+
+.cockpit-nav-btn:active:not(.disabled) {
+    transform: scale(0.96);
+}
+
+.cockpit-nav-btn.disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.cockpit-spec-pills {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.spec-pill {
+    background: rgba(44, 53, 49, 0.6);
+    border: 1px solid rgba(209, 232, 226, 0.08);
+    color: var(--text-secondary);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 9px;
+    border-radius: var(--radius-sm);
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.spec-pill i {
+    color: var(--accent-peach);
+    font-size: 10px;
+}
+
+.cockpit-quick-tools {
+    display: flex;
     align-items: center;
     gap: 6px;
 }
 
-.ctrl-btn:hover,
-.ctrl-btn.active {
-    background: var(--bg-surface-active);
-    color: var(--accent-peach);
+.quick-tool-btn {
+    background: #1b2523;
+    border: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+    width: 33px;
+    height: 33px;
+    border-radius: var(--radius-sm);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.15s ease;
+}
+
+.quick-tool-btn:hover {
+    background: #24322f;
+    color: var(--text-bright);
     border-color: var(--border-hover);
-    transform: translateY(-1px) translate3d(0, 0, 0);
 }
 
-.ctrl-btn:active {
-    transform: scale(0.96) translate3d(0, 0, 0);
+.quick-tool-btn:active {
+    transform: scale(0.94);
 }
 
-/* Streaming Server Selection */
-.server-selection-card {
+.quick-tooltip {
+    position: absolute;
+    bottom: 120%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #116466;
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 7px;
+    border-radius: 4px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    white-space: nowrap;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+.quick-tooltip.show {
+    opacity: 1;
+}
+
+/* ==========================================================================
+   Streaming Server Station
+   ========================================================================== */
+.streaming-station-card {
     background: var(--bg-surface);
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-md);
-    padding: 14px 18px;
+    padding: 13px 16px;
     margin-top: 16px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+}
+
+.station-meta-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
     flex-wrap: wrap;
-    gap: 12px;
+    gap: 8px;
+    margin-bottom: 11px;
 }
 
-.server-title {
-    font-size: 13px;
+.station-title {
+    font-size: 12.5px;
     font-weight: 700;
-    color: var(--text-secondary);
+    color: var(--text-primary);
     display: flex;
     align-items: center;
+    gap: 8px;
 }
 
-.server-buttons-group {
+.station-pulse-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #2ecc71;
+    display: inline-block;
+}
+
+.station-hint {
+    font-size: 11.5px;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.server-pill-deck {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
 }
 
-.server-pill-btn {
+.server-station-btn {
     background: var(--bg-main);
-    color: var(--text-secondary);
     border: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
     font-size: 12px;
     font-weight: 600;
-    padding: 6px 14px;
+    padding: 7px 13px;
     border-radius: var(--radius-sm);
     cursor: pointer;
-    will-change: transform;
-    transform: translate3d(0, 0, 0);
-    backface-visibility: hidden;
-    transition: all 0.18s var(--ease-smooth);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.15s ease;
 }
 
-.server-pill-btn:hover {
-    background: var(--bg-surface-active);
+.server-station-btn:hover {
+    background: #212c29;
     border-color: var(--border-hover);
     color: var(--text-primary);
-    transform: translateY(-1px) translate3d(0, 0, 0);
+    transform: translateY(-1px);
 }
 
-.server-pill-btn:active {
-    transform: scale(0.96) translate3d(0, 0, 0);
+.server-station-btn:active {
+    transform: scale(0.97);
 }
 
-.server-pill-btn.active {
+.server-station-btn.active {
     background: var(--accent-primary);
-    color: var(--text-primary);
-    border-color: rgba(255, 203, 154, 0.4);
+    border-color: rgba(255, 203, 154, 0.35);
+    color: #ffffff;
 }
 
-/* Episodes Drawer */
-.episodes-card {
+.server-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+}
+
+.server-dot.online {
+    background: #2ecc71;
+}
+
+.server-dot.backup {
+    background: var(--accent-sand);
+}
+
+.server-tag {
+    font-size: 9.5px;
+    background: rgba(0, 0, 0, 0.35);
+    padding: 2px 5px;
+    border-radius: 3px;
+    opacity: 0.9;
+}
+
+/* ==========================================================================
+   Studio Anime Dossier Card
+   ========================================================================== */
+.anime-dossier-card {
     background: var(--bg-surface);
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-lg);
     padding: 20px;
-    height: 100%;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    margin-top: 18px;
+    display: flex;
+    gap: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
 }
 
-.episodes-header {
+.dossier-poster-wrap {
+    width: 140px;
+    flex-shrink: 0;
+    position: relative;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    border: 1px solid rgba(209, 232, 226, 0.08);
+    align-self: flex-start;
+}
+
+.dossier-poster-img {
+    width: 100%;
+    aspect-ratio: 2 / 2.9;
+    object-fit: cover;
+    display: block;
+}
+
+.dossier-poster-badge {
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    right: 8px;
+    background: rgba(16, 23, 22, 0.92);
+    border: 1px solid var(--border-subtle);
+    color: var(--accent-peach);
+    font-size: 11px;
+    font-weight: 800;
+    padding: 4px;
+    text-align: center;
+    border-radius: 6px;
+}
+
+.dossier-body {
+    flex: 1;
+    min-width: 0;
+}
+
+.dossier-header-group {
+    margin-bottom: 10px;
+}
+
+.dossier-title {
+    font-size: 21px;
+    font-weight: 800;
+    color: var(--text-bright);
+    margin-bottom: 4px;
+    letter-spacing: -0.3px;
+    line-height: 1.25;
+}
+
+.dossier-hindi-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--accent-sand);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.dossier-meta-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 12px;
+}
+
+.dossier-chip {
+    background: var(--bg-surface-elevated);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 9px;
+    border-radius: var(--radius-sm);
+}
+
+.dossier-chip.chip-dub {
+    background: rgba(217, 176, 140, 0.12);
+    color: var(--accent-peach);
+    border-color: rgba(255, 203, 154, 0.3);
+}
+
+.dossier-chip.chip-status {
+    color: #6edcb9;
+}
+
+.dossier-synopsis-wrap {
+    margin-bottom: 14px;
+}
+
+.dossier-synopsis {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--text-secondary);
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    transition: all 0.2s ease;
+}
+
+.dossier-synopsis.expanded {
+    -webkit-line-clamp: unset;
+}
+
+.btn-synopsis-toggle {
+    background: none;
+    border: none;
+    color: var(--accent-peach);
+    font-size: 11.5px;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 4px 0 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.dossier-genres {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.dossier-genre-pill {
+    background: var(--bg-main);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    transition: all 0.15s ease;
+}
+
+.dossier-genre-pill:hover {
+    border-color: var(--accent-primary);
+    color: var(--accent-peach);
+    background: var(--bg-surface-active);
+}
+
+/* ==========================================================================
+   Next-Gen Dual-View Episode Deck (Grid & Detailed List)
+   ========================================================================== */
+.episodes-deck-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: 18px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    position: sticky;
+    top: 80px;
+    max-height: calc(100vh - 100px);
+    display: flex;
+    flex-direction: column;
+}
+
+.deck-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 16px;
+    gap: 10px;
+    margin-bottom: 12px;
+    flex-shrink: 0;
+}
+
+.deck-title-wrap {
+    display: flex;
+    align-items: center;
     gap: 10px;
 }
 
-.episodes-header h3 {
+.deck-icon-box {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-sm);
+    background: var(--bg-main);
+    border: 1px solid var(--border-subtle);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent-peach);
+    font-size: 13px;
+}
+
+.deck-heading {
+    display: flex;
+    flex-direction: column;
+}
+
+.deck-title {
     font-size: 15px;
-    font-weight: 700;
+    font-weight: 800;
+    color: var(--text-bright);
+    line-height: 1.2;
+    margin: 0;
+}
+
+.deck-count-sub {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.deck-view-switcher {
+    display: flex;
+    background: var(--bg-main);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    padding: 2px;
+    gap: 2px;
+}
+
+.view-switch-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    width: 28px;
+    height: 28px;
+    border-radius: 3px;
+    font-size: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+}
+
+.view-switch-btn:hover {
     color: var(--text-primary);
 }
 
-.ep-search-input {
+.view-switch-btn.active {
+    background: var(--accent-primary);
+    color: #ffffff;
+}
+
+.deck-search-wrap {
+    position: relative;
+    margin-bottom: 12px;
+    flex-shrink: 0;
+}
+
+.search-ico {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 11px;
+    color: var(--text-muted);
+    pointer-events: none;
+}
+
+.deck-search-input {
+    width: 100%;
     background: var(--bg-main);
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-sm);
     color: var(--text-primary);
     font-size: 12px;
-    padding: 6px 10px;
-    width: 120px;
+    padding: 7px 30px 7px 30px;
     outline: none;
-    transition: border-color var(--transition-fast);
+    transition: border-color 0.15s ease;
 }
 
-.ep-search-input:focus {
-    border-color: var(--border-focus);
+.deck-search-input:focus {
+    border-color: var(--border-hover);
 }
 
-.episode-grid-list {
+.deck-search-clear {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 12px;
+    cursor: pointer;
+    display: none;
+    padding: 4px;
+}
+
+.deck-search-clear.visible {
+    display: block;
+}
+
+/* Mode 1: Compact Grid View */
+.episode-deck-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(54px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(52px, 1fr));
     gap: 8px;
-    max-height: 480px;
     overflow-y: auto;
+    overflow-x: hidden;
     padding-right: 4px;
+    max-height: 480px;
+    scroll-behavior: smooth;
 }
 
 .ep-box-item {
+    position: relative;
     background: var(--bg-main);
     border: 1px solid var(--border-subtle);
     color: var(--text-secondary);
     font-size: 13px;
     font-weight: 700;
-    padding: 10px 0;
-    text-align: center;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     border-radius: var(--radius-sm);
     cursor: pointer;
-    will-change: transform;
-    transform: translate3d(0, 0, 0);
-    backface-visibility: hidden;
-    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.15s var(--ease-smooth);
+    transition: all 0.15s ease;
 }
 
 .ep-box-item:hover {
     background: var(--bg-surface-active);
-    color: var(--text-primary);
+    color: var(--text-bright);
     border-color: var(--border-hover);
-    transform: translateY(-2px) scale(1.04) translate3d(0, 0, 0);
+    transform: translateY(-1px);
 }
 
 .ep-box-item:active {
-    transform: scale(0.94) translate3d(0, 0, 0);
+    transform: scale(0.96);
 }
 
 .ep-box-item.active {
     background: var(--accent-primary);
-    color: var(--text-primary);
+    color: #ffffff;
     border-color: rgba(255, 203, 154, 0.4);
+    font-weight: 800;
 }
 
-/* ==========================================================================
-   Watch Page Anime Detail Card
-   ========================================================================== */
-.anime-info-panel {
-    background: var(--bg-surface);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-lg);
-    padding: 24px;
-    margin-top: 25px;
+.ep-box-badge {
+    position: absolute;
+    top: 2px;
+    right: 3px;
+    font-size: 7.5px;
+    font-weight: 800;
+    color: var(--accent-peach);
+    line-height: 1;
+}
+
+.ep-box-item.active .ep-box-badge {
+    color: #ffffff;
+    opacity: 0.9;
+}
+
+/* Mode 2: Detailed List View with Thumbnails */
+.episode-deck-list {
     display: flex;
-    gap: 25px;
+    flex-direction: column;
+    gap: 8px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 4px;
+    max-height: 480px;
+    scroll-behavior: smooth;
 }
 
-.anime-info-poster {
-    width: 160px;
-    flex-shrink: 0;
-    border-radius: var(--radius-md);
+.ep-list-card {
+    display: flex;
+    gap: 12px;
+    background: var(--bg-main);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    padding: 8px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    align-items: center;
+}
+
+.ep-list-card:hover {
+    background: var(--bg-surface-active);
+    border-color: var(--border-hover);
+    transform: translateY(-1px);
+}
+
+.ep-list-card:active {
+    transform: scale(0.98);
+}
+
+.ep-list-card.active {
+    background: rgba(17, 100, 102, 0.25);
+    border-color: var(--accent-primary);
+}
+
+.ep-list-thumb-wrap {
+    width: 96px;
+    aspect-ratio: 16 / 9;
+    position: relative;
+    border-radius: 4px;
     overflow: hidden;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
+    flex-shrink: 0;
+    background: #000000;
 }
 
-.anime-info-poster img {
+.ep-list-thumb {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
 
-.anime-info-details {
-    flex-grow: 1;
+.ep-list-duration {
+    position: absolute;
+    bottom: 3px;
+    right: 3px;
+    background: rgba(0, 0, 0, 0.75);
+    font-size: 9px;
+    font-weight: 700;
+    color: #ffffff;
+    padding: 1px 4px;
+    border-radius: 2px;
 }
 
-.anime-info-title {
-    font-size: 24px;
-    font-weight: 800;
-    margin-bottom: 6px;
-    color: var(--text-primary);
-    letter-spacing: -0.3px;
-}
-
-.anime-info-hindi-title {
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--accent-sand);
-    margin-bottom: 14px;
-}
-
-.anime-info-stats {
+.ep-list-play-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
     display: flex;
     align-items: center;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 16px;
+    justify-content: center;
+    color: #ffffff;
+    font-size: 13px;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+}
+
+.ep-list-card:hover .ep-list-play-overlay {
+    opacity: 1;
+}
+
+.ep-list-card.active .ep-list-play-overlay {
+    opacity: 1;
+    color: var(--accent-peach);
+}
+
+.ep-list-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.ep-list-meta-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 3px;
+}
+
+.ep-list-badge {
+    font-size: 10px;
+    font-weight: 800;
+    background: var(--bg-surface-elevated);
+    color: var(--text-primary);
+    padding: 1px 5px;
+    border-radius: 3px;
+}
+
+.ep-list-dub-pill {
+    font-size: 9.5px;
+    font-weight: 700;
+    color: var(--accent-peach);
+}
+
+.ep-list-playing-tag {
+    font-size: 9.5px;
+    font-weight: 700;
+    color: #2ecc71;
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.ep-list-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ep-list-card.active .ep-list-title {
+    color: var(--text-bright);
+    font-weight: 700;
+}
+
+.deck-empty-state {
+    text-align: center;
+    padding: 28px 10px;
+    color: var(--text-muted);
     font-size: 13px;
 }
 
-.anime-info-synopsis {
-    font-size: 14px;
-    line-height: 1.6;
-    color: var(--text-secondary);
-    margin-bottom: 18px;
+.deck-empty-state i {
+    font-size: 22px;
+    margin-bottom: 8px;
+    opacity: 0.5;
+    display: block;
 }
 
-.genre-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-}
-
-.genre-tag-item {
+.btn-clear-search {
+    margin-top: 10px;
     background: var(--bg-surface-elevated);
     border: 1px solid var(--border-subtle);
-    color: var(--text-secondary);
-    font-size: 12px;
+    color: var(--text-primary);
+    font-size: 11.5px;
     font-weight: 600;
-    padding: 5px 12px;
+    padding: 6px 12px;
     border-radius: var(--radius-sm);
-    will-change: transform;
-    transform: translate3d(0, 0, 0);
-    backface-visibility: hidden;
-    transition: all 0.18s var(--ease-smooth);
+    cursor: pointer;
 }
 
-.genre-tag-item:hover {
-    border-color: var(--accent-primary);
-    background: var(--bg-surface-active);
-    color: var(--accent-peach);
-    transform: translateY(-2px) translate3d(0, 0, 0);
+.watch-recommendations-section {
+    margin-top: 36px;
+    margin-bottom: 20px;
 }
 
-.genre-tag-item:active {
-    transform: scale(0.96) translate3d(0, 0, 0);
+/* ==========================================================================
+   Watch Page Responsive Adaptations (<992px & <576px)
+   ========================================================================== */
+@media (max-width: 992px) {
+    .watch-layout {
+        grid-template-columns: 1fr;
+        gap: 18px;
+    }
+    .player-column {
+        order: 1;
+    }
+    .episodes-column {
+        order: 2;
+    }
+    .episodes-deck-card {
+        position: static;
+        max-height: 440px;
+    }
+}
+
+@media (max-width: 576px) {
+    .watch-ambient-banner {
+        height: 220px;
+    }
+    .watch-container {
+        padding: 10px 0 50px;
+    }
+    .watch-header-bar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        margin-bottom: 12px;
+        padding-bottom: 8px;
+    }
+    .breadcrumb-anime-title {
+        max-width: 170px;
+    }
+    .cockpit-top-bar {
+        padding: 8px 12px;
+    }
+    .cockpit-title {
+        font-size: 12px;
+    }
+    .cockpit-tool-btn {
+        padding: 5px 8px;
+        font-size: 11px;
+    }
+    .cockpit-tool-btn .tool-label {
+        display: none;
+    }
+    .cockpit-bottom-bar {
+        padding: 8px 12px;
+        gap: 8px;
+    }
+    .cockpit-spec-pills {
+        display: none;
+    }
+    .cockpit-nav-btn {
+        padding: 6px 10px;
+        font-size: 11px;
+    }
+    .streaming-station-card {
+        padding: 12px;
+    }
+    .server-station-btn {
+        padding: 6px 10px;
+        font-size: 11px;
+        flex: 1 1 calc(50% - 6px);
+        justify-content: center;
+    }
+    .anime-dossier-card {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 16px 14px;
+        gap: 14px;
+    }
+    .dossier-poster-wrap {
+        width: 120px;
+        align-self: center;
+    }
+    .dossier-header-group {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .dossier-title {
+        font-size: 18px;
+    }
+    .dossier-meta-chips,
+    .dossier-genres {
+        justify-content: center;
+    }
+    .episodes-deck-card {
+        padding: 14px;
+    }
+    .episode-deck-grid {
+        grid-template-columns: repeat(auto-fill, minmax(46px, 1fr));
+        gap: 6px;
+        max-height: 320px;
+    }
+    .ep-box-item {
+        height: 38px;
+        font-size: 12px;
+    }
+    .ep-list-thumb-wrap {
+        width: 80px;
+    }
+    .ep-list-title {
+        font-size: 11px;
+    }
 }
 
 /* ==========================================================================

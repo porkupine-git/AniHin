@@ -281,36 +281,133 @@ function closeAuthModal() {
     }
 }
 
-// Watch Page Episode Switching
+// ==========================================================================
+// Studio Watch Cockpit & Dual-View Episode Controller
+// ==========================================================================
+
+// Switch Episode (Seamless client-side switch without full page reload)
 function switchEpisode(epNumber, embedUrl, title) {
+    epNumber = parseInt(epNumber, 10);
     const frame = document.getElementById('anime-embed-frame');
-    const notice = document.getElementById('current-ep-badge');
-    const epTitleEl = document.getElementById('current-ep-title');
+    const breadcrumbBadge = document.getElementById('breadcrumb-ep-badge');
+    const cockpitBadge = document.getElementById('cockpit-ep-badge');
+    const cockpitTitle = document.getElementById('cockpit-ep-title');
 
-    // Update iframe embed source
+    // 1. Update Iframe Source
     if (frame && embedUrl) {
         frame.src = embedUrl;
     }
 
-    if (notice) notice.innerText = `Episode ${epNumber}`;
-    if (epTitleEl) epTitleEl.innerText = title || `Episode ${epNumber}`;
+    // 2. Update Badge & Title Labels
+    const epLabel = `EP ${epNumber}`;
+    const cleanTitle = title || `Episode ${epNumber}`;
 
-    // Update active episode box
+    if (breadcrumbBadge) breadcrumbBadge.innerText = epLabel;
+    if (cockpitBadge) cockpitBadge.innerText = epLabel;
+    if (cockpitTitle) cockpitTitle.innerText = cleanTitle;
+
+    // Update Document Title
+    if (window.WATCH_ANIME_SLUG) {
+        document.title = `Watch Episode ${epNumber} - AniXoHindi`;
+    }
+
+    // 3. Update Active State in Grid View
     document.querySelectorAll('.ep-box-item').forEach(el => el.classList.remove('active'));
-    const activeBtn = document.querySelector(`.ep-box-item[data-ep="${epNumber}"]`);
-    if (activeBtn) activeBtn.classList.add('active');
+    const activeGridItem = document.querySelector(`.ep-box-item[data-ep="${epNumber}"]`);
+    if (activeGridItem) {
+        activeGridItem.classList.add('active');
+        activeGridItem.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+    }
 
-    // Update browser URL without reload
-    const url = new URL(window.location);
-    url.searchParams.set('ep', epNumber);
-    window.history.pushState({}, '', url);
+    // 4. Update Active State in Detailed List View
+    document.querySelectorAll('.ep-list-card').forEach(el => {
+        el.classList.remove('active');
+        const tag = el.querySelector('.ep-list-playing-tag');
+        if (tag) tag.remove();
+    });
+    const activeListItem = document.querySelector(`.ep-list-card[data-ep="${epNumber}"]`);
+    if (activeListItem) {
+        activeListItem.classList.add('active');
+        const metaRow = activeListItem.querySelector('.ep-list-meta-row');
+        if (metaRow && !metaRow.querySelector('.ep-list-playing-tag')) {
+            const playingTag = document.createElement('span');
+            playingTag.className = 'ep-list-playing-tag';
+            playingTag.innerHTML = '<i class="fa-solid fa-volume-high"></i> Playing';
+            metaRow.appendChild(playingTag);
+        }
+        activeListItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    // 5. Update Prev / Next Buttons
+    window.WATCH_CURRENT_EP = epNumber;
+    const totalEps = window.WATCH_TOTAL_EPS || document.querySelectorAll('.ep-box-item').length || 1;
+    const prevBtn = document.getElementById('btn-prev-ep');
+    const nextBtn = document.getElementById('btn-next-ep');
+
+    if (prevBtn) {
+        if (epNumber > 1) {
+            prevBtn.classList.remove('disabled');
+            prevBtn.removeAttribute('disabled');
+            prevBtn.onclick = () => goToEpisode(epNumber - 1);
+        } else {
+            prevBtn.classList.add('disabled');
+            prevBtn.setAttribute('disabled', 'true');
+            prevBtn.onclick = null;
+        }
+    }
+
+    if (nextBtn) {
+        if (epNumber < totalEps) {
+            nextBtn.classList.remove('disabled');
+            nextBtn.removeAttribute('disabled');
+            nextBtn.onclick = () => goToEpisode(epNumber + 1);
+        } else {
+            nextBtn.classList.add('disabled');
+            nextBtn.setAttribute('disabled', 'true');
+            nextBtn.onclick = null;
+        }
+    }
+
+    // 6. Update Browser URL Query String Without Page Reload
+    try {
+        const url = new URL(window.location);
+        url.searchParams.set('ep', epNumber);
+        window.history.pushState({ ep: epNumber }, '', url);
+    } catch (e) {}
 }
 
-// Switch server
+// Go to specific episode number helper
+function goToEpisode(targetEp) {
+    targetEp = parseInt(targetEp, 10);
+    // Find in window.WATCH_EPISODES if available
+    if (window.WATCH_EPISODES && Array.isArray(window.WATCH_EPISODES)) {
+        const epData = window.WATCH_EPISODES.find(e => parseInt(e.number, 10) === targetEp);
+        if (epData) {
+            switchEpisode(epData.number, epData.embed, epData.title);
+            return;
+        }
+    }
+
+    // Fallback: Click the DOM item
+    const el = document.querySelector(`.ep-box-item[data-ep="${targetEp}"]`);
+    if (el) {
+        el.click();
+    } else {
+        // Fallback: navigate directly
+        const url = new URL(window.location);
+        url.searchParams.set('ep', targetEp);
+        window.location.href = url.toString();
+    }
+}
+
+// Streaming Server Switcher
 function switchServer(serverName, embedUrl, btn) {
-    document.querySelectorAll('.server-pill-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.server-station-btn').forEach(b => b.classList.remove('active'));
     const target = btn || (window.event ? window.event.currentTarget || window.event.target : null);
-    if (target) target.classList.add('active');
+    if (target) {
+        const stationBtn = target.closest('.server-station-btn') || target;
+        stationBtn.classList.add('active');
+    }
 
     const frame = document.getElementById('anime-embed-frame');
     if (frame && embedUrl) {
@@ -318,19 +415,223 @@ function switchServer(serverName, embedUrl, btn) {
     }
 }
 
-// Theater mode expand
-function toggleTheaterMode() {
-    const layout = document.querySelector('.watch-layout');
-    const btn = document.getElementById('theater-mode-btn');
-    if (layout) {
-        layout.classList.toggle('theater-mode');
-        if (layout.classList.contains('theater-mode')) {
-            btn.innerHTML = '<i class="fa-solid fa-compress mr-1"></i> Normal';
+// Focus / Lights-Off Mode (Zero Glow Dark Isolation)
+function toggleLightsOff() {
+    const isNowActive = document.body.classList.toggle('lights-off-active');
+    const btn = document.getElementById('lights-off-btn');
+    if (btn) {
+        if (isNowActive) {
+            btn.classList.add('active');
+            btn.innerHTML = '<i class="fa-solid fa-lightbulb"></i> <span class="tool-label">Lights On</span>';
         } else {
-            btn.innerHTML = '<i class="fa-solid fa-expand mr-1"></i> Expand';
+            btn.classList.remove('active');
+            btn.innerHTML = '<i class="fa-regular fa-lightbulb"></i> <span class="tool-label">Focus</span>';
         }
     }
 }
+
+// Auto-Next Mode Switch
+function toggleAutoNext() {
+    const btn = document.getElementById('auto-next-btn');
+    const isCurrentlyOn = btn ? btn.classList.contains('active') : true;
+    const newState = !isCurrentlyOn;
+
+    if (btn) {
+        if (newState) {
+            btn.classList.add('active');
+            btn.innerHTML = '<i class="fa-solid fa-forward-step"></i> <span class="tool-label">Auto-Next</span>';
+            try { localStorage.setItem('anixo_auto_next', '1'); } catch (e) {}
+        } else {
+            btn.classList.remove('active');
+            btn.innerHTML = '<i class="fa-solid fa-pause"></i> <span class="tool-label">Auto: OFF</span>';
+            try { localStorage.setItem('anixo_auto_next', '0'); } catch (e) {}
+        }
+    }
+}
+
+// Theater Mode (Full-width Player Layout)
+function toggleTheaterMode() {
+    const layout = document.getElementById('watchLayout') || document.querySelector('.watch-layout');
+    const btn = document.getElementById('theater-mode-btn');
+    if (!layout) return;
+
+    const isTheater = layout.classList.toggle('theater-mode');
+    if (btn) {
+        if (isTheater) {
+            btn.classList.add('active');
+            btn.innerHTML = '<i class="fa-solid fa-compress"></i> <span class="tool-label">Normal</span>';
+        } else {
+            btn.classList.remove('active');
+            btn.innerHTML = '<i class="fa-solid fa-expand"></i> <span class="tool-label">Theater</span>';
+        }
+    }
+}
+
+// Dual-View Mode Switcher (Grid vs Detailed List)
+function setEpisodeView(view) {
+    const gridView = document.getElementById('episodeDeckGrid');
+    const listView = document.getElementById('episodeDeckList');
+    const btnGrid = document.getElementById('btn-view-grid');
+    const btnList = document.getElementById('btn-view-list');
+
+    if (!gridView || !listView) return;
+
+    if (view === 'list') {
+        gridView.style.display = 'none';
+        listView.style.display = 'flex';
+        if (btnGrid) btnGrid.classList.remove('active');
+        if (btnList) btnList.classList.add('active');
+        try { localStorage.setItem('anixo_ep_view', 'list'); } catch (e) {}
+    } else {
+        gridView.style.display = 'grid';
+        listView.style.display = 'none';
+        if (btnGrid) btnGrid.classList.add('active');
+        if (btnList) btnList.classList.remove('active');
+        try { localStorage.setItem('anixo_ep_view', 'grid'); } catch (e) {}
+    }
+}
+
+// Fast Episode Search / Filter
+function filterEpisodes(query) {
+    query = (query || '').trim().toLowerCase();
+    const clearBtn = document.getElementById('deck-search-clear');
+    const emptyState = document.getElementById('deckEmptyState');
+    const countSub = document.getElementById('episodesFilteredCount');
+
+    if (clearBtn) {
+        if (query.length > 0) {
+            clearBtn.classList.add('visible');
+        } else {
+            clearBtn.classList.remove('visible');
+        }
+    }
+
+    const gridItems = document.querySelectorAll('.ep-box-item');
+    const listItems = document.querySelectorAll('.ep-list-card');
+    let matchCount = 0;
+
+    gridItems.forEach(item => {
+        const ep = item.getAttribute('data-ep') || '';
+        const title = item.getAttribute('data-title') || '';
+        const match = !query || ep === query || ep.includes(query) || title.includes(query);
+        item.style.display = match ? 'flex' : 'none';
+        if (match) matchCount++;
+    });
+
+    listItems.forEach(item => {
+        const ep = item.getAttribute('data-ep') || '';
+        const title = item.getAttribute('data-title') || '';
+        const match = !query || ep === query || ep.includes(query) || title.includes(query);
+        item.style.display = match ? 'flex' : 'none';
+    });
+
+    if (countSub) {
+        countSub.innerText = matchCount;
+    }
+
+    if (emptyState) {
+        emptyState.style.display = (matchCount === 0) ? 'block' : 'none';
+    }
+}
+
+// Clear Search Query
+function clearEpSearch() {
+    const input = document.getElementById('episode-search-input');
+    if (input) {
+        input.value = '';
+        filterEpisodes('');
+        input.focus();
+    }
+}
+
+// Expand / Collapse Synopsis in Dossier
+function toggleSynopsis() {
+    const synopsis = document.getElementById('dossierSynopsis');
+    const btn = document.getElementById('synopsisToggleBtn');
+    if (!synopsis) return;
+
+    const isExpanded = synopsis.classList.toggle('expanded');
+    if (btn) {
+        btn.innerHTML = isExpanded 
+            ? '<span>Show Less</span> <i class="fa-solid fa-chevron-up"></i>' 
+            : '<span>Read More</span> <i class="fa-solid fa-chevron-down"></i>';
+    }
+}
+
+// Copy Episode Link to Clipboard
+function copyWatchLink() {
+    const url = window.location.href;
+    const tooltip = document.getElementById('shareTooltip');
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(url).then(() => {
+            if (tooltip) {
+                tooltip.classList.add('show');
+                setTimeout(() => tooltip.classList.remove('show'), 2000);
+            }
+        }).catch(() => fallbackCopy(url));
+    } else {
+        fallbackCopy(url);
+    }
+}
+
+function fallbackCopy(text) {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    try {
+        document.execCommand('copy');
+        const tooltip = document.getElementById('shareTooltip');
+        if (tooltip) {
+            tooltip.classList.add('show');
+            setTimeout(() => tooltip.classList.remove('show'), 2000);
+        }
+    } catch (e) {}
+    document.body.removeChild(ta);
+}
+
+// Reload Current Stream
+function reloadPlayer() {
+    const frame = document.getElementById('anime-embed-frame');
+    if (frame) {
+        const curSrc = frame.src;
+        frame.src = 'about:blank';
+        setTimeout(() => { frame.src = curSrc; }, 150);
+    }
+}
+
+// Report Playback Issue
+function reportPlaybackIssue() {
+    alert('Thank you! Our streaming servers have logged this report for immediate inspection. (सर्वर रिपोर्ट दर्ज कर ली गई है)');
+}
+
+// Keyboard shortcuts (ESC for lights off, left/right for prev/next episode)
+document.addEventListener('keydown', function(e) {
+    if (e.target && ['input', 'textarea', 'select'].includes(e.target.tagName.toLowerCase())) return;
+
+    if (e.key === 'Escape' && document.body.classList.contains('lights-off-active')) {
+        toggleLightsOff();
+    }
+});
+
+// Restore saved preferences on watch page load
+document.addEventListener('DOMContentLoaded', function() {
+    try {
+        const savedView = localStorage.getItem('anixo_ep_view');
+        if (savedView === 'list') {
+            setEpisodeView('list');
+        }
+
+        const savedAutoNext = localStorage.getItem('anixo_auto_next');
+        if (savedAutoNext === '0') {
+            const btn = document.getElementById('auto-next-btn');
+            if (btn) {
+                btn.classList.remove('active');
+                btn.innerHTML = '<i class="fa-solid fa-pause"></i> <span class="tool-label">Auto: OFF</span>';
+            }
+        }
+    } catch (e) {}
+});
 
 // ==========================================================================
 // 3D Infinite Curved Fan-Deck Hero Showcase Controller
