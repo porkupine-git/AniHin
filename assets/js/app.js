@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (currentQuery && currentQuery.length >= 2) {
                 html += `
-                    <a href="/filter.php?q=${encodeURIComponent(currentQuery)}" class="search-view-all-link">
+                    <a href="/browse.php?q=${encodeURIComponent(currentQuery)}" class="search-view-all-link">
                         <span>View all results for "<strong>${currentQuery}</strong>" in Catalog</span>
                         <i class="fa-solid fa-arrow-right"></i>
                     </a>
@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (e.key === 'Enter') {
                 const query = inputEl.value.trim();
                 if (query) {
-                    window.location.href = `/filter.php?q=${encodeURIComponent(query)}`;
+                    window.location.href = `/browse.php?q=${encodeURIComponent(query)}`;
                 }
             }
         });

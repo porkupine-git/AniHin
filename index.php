@@ -151,7 +151,7 @@ usort($topRated, fn($a, $b) => ($b['score'] ?? 0) <=> ($a['score'] ?? 0));
                 <a href="/watch.php?anime=<?= e($initialAnime['slug']) ?>&ep=1" class="btn-deck-watch" id="deckWatchBtn">
                     <i class="fa-solid fa-play mr-2"></i> WATCH NOW
                 </a>
-                <a href="/filter.php" class="btn-deck-browse">
+                <a href="/browse.php" class="btn-deck-browse">
                     BROWSE CATALOGUE
                 </a>
             </div>
@@ -188,16 +188,16 @@ usort($topRated, fn($a, $b) => ($b['score'] ?? 0) <=> ($a['score'] ?? 0));
     <div class="mobile-chips-bar" aria-label="Quick Category Filter">
         <div class="container">
             <div class="chips-scroll-track">
-                <a href="/filter.php" class="chip-pill active"><i class="fa-solid fa-fire text-accent-gold mr-1"></i> All</a>
-                <a href="/filter.php?type=dub" class="chip-pill"><i class="fa-solid fa-headphones mr-1"></i> Hindi Dubbed</a>
-                <a href="/filter.php?status=Currently+Airing" class="chip-pill"><i class="fa-solid fa-bolt mr-1"></i> Currently Airing</a>
-                <a href="/filter.php?type=Movie" class="chip-pill"><i class="fa-solid fa-film mr-1"></i> Movies</a>
-                <a href="/filter.php?type=sub" class="chip-pill"><i class="fa-solid fa-closed-captioning mr-1"></i> Subbed</a>
-                <a href="/filter.php?genre=Action" class="chip-pill">Action</a>
-                <a href="/filter.php?genre=Adventure" class="chip-pill">Adventure</a>
-                <a href="/filter.php?genre=Fantasy" class="chip-pill">Fantasy</a>
-                <a href="/filter.php?genre=Comedy" class="chip-pill">Comedy</a>
-                <a href="/filter.php?genre=Romance" class="chip-pill">Romance</a>
+                <a href="/browse.php" class="chip-pill active"><i class="fa-solid fa-fire text-accent-gold mr-1"></i> All</a>
+                <a href="/browse.php?type=dub" class="chip-pill"><i class="fa-solid fa-headphones mr-1"></i> Hindi Dubbed</a>
+                <a href="/browse.php?status=Currently+Airing" class="chip-pill"><i class="fa-solid fa-bolt mr-1"></i> Currently Airing</a>
+                <a href="/browse.php?type=Movie" class="chip-pill"><i class="fa-solid fa-film mr-1"></i> Movies</a>
+                <a href="/browse.php?type=sub" class="chip-pill"><i class="fa-solid fa-closed-captioning mr-1"></i> Subbed</a>
+                <a href="/browse.php?genre=Action" class="chip-pill">Action</a>
+                <a href="/browse.php?genre=Adventure" class="chip-pill">Adventure</a>
+                <a href="/browse.php?genre=Fantasy" class="chip-pill">Fantasy</a>
+                <a href="/browse.php?genre=Comedy" class="chip-pill">Comedy</a>
+                <a href="/browse.php?genre=Romance" class="chip-pill">Romance</a>
             </div>
         </div>
     </div>
@@ -209,7 +209,7 @@ usort($topRated, fn($a, $b) => ($b['score'] ?? 0) <=> ($a['score'] ?? 0));
                 <span class="title-bar"></span>
                 <span>Newly Released & Airing Anime (नई रिलीज़्ड एनीमे)</span>
             </h2>
-            <a href="/filter.php?status=Currently+Airing" class="text-secondary small font-weight-bold">
+            <a href="/browse.php?status=Currently+Airing" class="text-secondary small font-weight-bold">
                 View Airing Catalog <i class="fa-solid fa-angle-right ml-1"></i>
             </a>
         </div>
@@ -228,7 +228,7 @@ usort($topRated, fn($a, $b) => ($b['score'] ?? 0) <=> ($a['score'] ?? 0));
                 <span class="title-bar"></span>
                 <span>Popular in Hindi Dub (हिंदी डब एनीमे)</span>
             </h2>
-            <a href="/filter.php?type=dub" class="text-secondary small font-weight-bold">
+            <a href="/browse.php?type=dub" class="text-secondary small font-weight-bold">
                 View All Dubs <i class="fa-solid fa-angle-right ml-1"></i>
             </a>
         </div>
@@ -247,7 +247,7 @@ usort($topRated, fn($a, $b) => ($b['score'] ?? 0) <=> ($a['score'] ?? 0));
                 <span class="title-bar"></span>
                 <span>Top Rated Anime Series</span>
             </h2>
-            <a href="/filter.php?sort=score" class="text-secondary small font-weight-bold">
+            <a href="/browse.php?sort=score" class="text-secondary small font-weight-bold">
                 Browse All <i class="fa-solid fa-angle-right ml-1"></i>
             </a>
         </div>
@@ -277,7 +277,7 @@ usort($topRated, fn($a, $b) => ($b['score'] ?? 0) <=> ($a['score'] ?? 0));
             ];
             foreach ($genres as $genre):
             ?>
-                <a href="/filter.php?genre=<?= urlencode($genre) ?>" class="genre-tag-item">
+                <a href="/browse.php?genre=<?= urlencode($genre) ?>" class="genre-tag-item">
                     <?= e($genre) ?>
                 </a>
             <?php endforeach; ?>

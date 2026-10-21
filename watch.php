@@ -53,7 +53,7 @@ require_once __DIR__ . '/includes/header.php';
             <nav class="breadcrumb-nav">
                 <a href="/index.php"><i class="fa-solid fa-house"></i> Home</a>
                 <span class="breadcrumb-sep">/</span>
-                <a href="/filter.php?type=<?= urlencode($anime['show_type'] ?? 'TV') ?>"><?= e($anime['show_type'] ?? 'TV') ?></a>
+                <a href="/browse.php?type=<?= urlencode($anime['show_type'] ?? 'TV') ?>"><?= e($anime['show_type'] ?? 'TV') ?></a>
                 <span class="breadcrumb-sep">/</span>
                 <a href="/watch.php?anime=<?= e($anime['slug']) ?>&ep=1" class="breadcrumb-anime-title"><?= e($anime['title']) ?></a>
                 <span class="breadcrumb-sep">/</span>
@@ -320,7 +320,7 @@ require_once __DIR__ . '/includes/header.php';
                         <button type="button" class="btn-dossier-action" onclick="copyWatchLink()" title="Share Anime Link">
                             <i class="fa-solid fa-share-nodes"></i> <span>Share</span>
                         </button>
-                        <a href="/filter.php?type=<?= urlencode($anime['show_type'] ?? 'TV') ?>" class="btn-dossier-action">
+                        <a href="/browse.php?type=<?= urlencode($anime['show_type'] ?? 'TV') ?>" class="btn-dossier-action">
                             <i class="fa-solid fa-film"></i> <span><?= e($anime['show_type'] ?? 'TV') ?> Series</span>
                         </a>
                     </div>
@@ -365,7 +365,7 @@ require_once __DIR__ . '/includes/header.php';
                         $g = trim($g);
                         if (empty($g)) continue;
                     ?>
-                        <a href="/filter.php?genre=<?= urlencode($g) ?>" class="dossier-genre-pill"><?= e($g) ?></a>
+                        <a href="/browse.php?genre=<?= urlencode($g) ?>" class="dossier-genre-pill"><?= e($g) ?></a>
                     <?php endforeach; ?>
                 </div>
             </div>
@@ -378,7 +378,7 @@ require_once __DIR__ . '/includes/header.php';
                     <span class="title-bar"></span>
                     <span>You Might Also Like (अन्य एनीमे)</span>
                 </h2>
-                <a href="/filter.php" class="section-more-link">
+                <a href="/browse.php" class="section-more-link">
                     <span>Explore All</span>
                     <i class="fa-solid fa-arrow-right"></i>
                 </a>

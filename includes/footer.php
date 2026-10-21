@@ -9,10 +9,10 @@
             
             <ul class="footer-links-list">
                 <li><a href="/index.php">Home</a></li>
-                <li><a href="/filter.php?type=dub">Hindi Dubbed</a></li>
-                <li><a href="/filter.php">Catalog</a></li>
-                <li><a href="/filter.php?dmca=1">DMCA</a></li>
-                <li><a href="/filter.php?contact=1">Contact</a></li>
+                <li><a href="/browse.php?type=dub">Hindi Dubbed</a></li>
+                <li><a href="/browse.php">Browse Catalog</a></li>
+                <li><a href="/browse.php?dmca=1">DMCA</a></li>
+                <li><a href="/browse.php?contact=1">Contact</a></li>
             </ul>
         </div>
         
@@ -32,7 +32,7 @@
         <i class="fa-solid fa-house"></i>
         <span>Home</span>
     </a>
-    <a href="/filter.php?type=dub" class="bottom-nav-item <?= ($_GET['type'] ?? '') == 'dub' ? 'active' : '' ?>">
+    <a href="/browse.php?type=dub" class="bottom-nav-item <?= ($_GET['type'] ?? '') == 'dub' ? 'active' : '' ?>">
         <i class="fa-solid fa-headphones"></i>
         <span>Hindi Dub</span>
     </a>
@@ -42,13 +42,13 @@
         </div>
         <span>Search</span>
     </button>
-    <a href="/filter.php?status=Currently+Airing" class="bottom-nav-item <?= ($_GET['status'] ?? '') == 'Currently Airing' ? 'active' : '' ?>">
+    <a href="/browse.php?status=Currently+Airing" class="bottom-nav-item <?= ($_GET['status'] ?? '') == 'Currently Airing' ? 'active' : '' ?>">
         <i class="fa-solid fa-bolt"></i>
         <span>Airing</span>
     </a>
-    <a href="/filter.php" class="bottom-nav-item <?= basename($_SERVER['PHP_SELF']) == 'filter.php' && empty($_GET['type']) && empty($_GET['status']) ? 'active' : '' ?>">
+    <a href="/browse.php" class="bottom-nav-item <?= basename($_SERVER['PHP_SELF']) == 'browse.php' && empty($_GET['type']) && empty($_GET['status']) ? 'active' : '' ?>">
         <i class="fa-solid fa-compass"></i>
-        <span>Explore</span>
+        <span>Browse</span>
     </a>
 </nav>
 

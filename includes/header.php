@@ -46,10 +46,10 @@ $user = currentUser();
                 <!-- Navigation Links -->
                 <ul class="nav-links">
                     <li><a href="/index.php" class="<?= basename($_SERVER['PHP_SELF']) == 'index.php' ? 'active' : '' ?>">Home</a></li>
-                    <li><a href="/filter.php?type=dub" class="<?= ($_GET['type'] ?? '') == 'dub' ? 'active' : '' ?>">Hindi Dubbed</a></li>
-                    <li><a href="/filter.php?type=sub" class="<?= ($_GET['type'] ?? '') == 'sub' ? 'active' : '' ?>">Subbed</a></li>
-                    <li><a href="/filter.php?type=Movie">Movies</a></li>
-                    <li><a href="/filter.php">All Anime</a></li>
+                    <li><a href="/browse.php?type=dub" class="<?= ($_GET['type'] ?? '') == 'dub' ? 'active' : '' ?>">Hindi Dubbed</a></li>
+                    <li><a href="/browse.php?type=sub" class="<?= ($_GET['type'] ?? '') == 'sub' ? 'active' : '' ?>">Subbed</a></li>
+                    <li><a href="/browse.php?type=Movie" class="<?= ($_GET['type'] ?? '') == 'Movie' ? 'active' : '' ?>">Movies</a></li>
+                    <li><a href="/browse.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'browse.php' && empty($_GET['type'])) ? 'active' : '' ?>">Browse</a></li>
                 </ul>
             </div>
 
@@ -109,11 +109,11 @@ $user = currentUser();
             </div>
             <ul class="mobile-nav-links">
                 <li><a href="/index.php" class="<?= basename($_SERVER['PHP_SELF']) == 'index.php' ? 'active' : '' ?>"><i class="fa-solid fa-house mr-2"></i> Home</a></li>
-                <li><a href="/filter.php?type=dub" class="<?= ($_GET['type'] ?? '') == 'dub' ? 'active' : '' ?>"><i class="fa-solid fa-headphones mr-2 text-accent-gold"></i> Hindi Dubbed <span class="nav-pill-hot">HOT</span></a></li>
-                <li><a href="/filter.php?status=Currently+Airing" class="<?= ($_GET['status'] ?? '') == 'Currently Airing' ? 'active' : '' ?>"><i class="fa-solid fa-bolt mr-2 text-accent-teal"></i> Currently Airing</a></li>
-                <li><a href="/filter.php?type=sub" class="<?= ($_GET['type'] ?? '') == 'sub' ? 'active' : '' ?>"><i class="fa-solid fa-closed-captioning mr-2"></i> Subbed</a></li>
-                <li><a href="/filter.php?type=Movie"><i class="fa-solid fa-film mr-2"></i> Movies</a></li>
-                <li><a href="/filter.php"><i class="fa-solid fa-compass mr-2"></i> All Anime</a></li>
+                <li><a href="/browse.php?type=dub" class="<?= ($_GET['type'] ?? '') == 'dub' ? 'active' : '' ?>"><i class="fa-solid fa-headphones mr-2 text-accent-gold"></i> Hindi Dubbed <span class="nav-pill-hot">HOT</span></a></li>
+                <li><a href="/browse.php?status=Currently+Airing" class="<?= ($_GET['status'] ?? '') == 'Currently Airing' ? 'active' : '' ?>"><i class="fa-solid fa-bolt mr-2 text-accent-teal"></i> Currently Airing</a></li>
+                <li><a href="/browse.php?type=sub" class="<?= ($_GET['type'] ?? '') == 'sub' ? 'active' : '' ?>"><i class="fa-solid fa-closed-captioning mr-2"></i> Subbed</a></li>
+                <li><a href="/browse.php?type=Movie" class="<?= ($_GET['type'] ?? '') == 'Movie' ? 'active' : '' ?>"><i class="fa-solid fa-film mr-2"></i> Movies</a></li>
+                <li><a href="/browse.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'browse.php' && empty($_GET['type'])) ? 'active' : '' ?>"><i class="fa-solid fa-compass mr-2"></i> Browse All</a></li>
             </ul>
             <?php if (!$user): ?>
             <div class="mobile-drawer-footer">

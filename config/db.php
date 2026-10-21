@@ -192,6 +192,18 @@ function getAllAnime($filter = []) {
         });
     }
 
+    // Sort order support
+    $sort = $filter['sort'] ?? 'popular';
+    if ($sort === 'score' || $sort === 'rating') {
+        usort($list, fn($a, $b) => (float)($b['score'] ?? 0) <=> (float)($a['score'] ?? 0));
+    } elseif ($sort === 'az' || $sort === 'title') {
+        usort($list, fn($a, $b) => strcasecmp($a['title'] ?? '', $b['title'] ?? ''));
+    } elseif ($sort === 'latest' || $sort === 'year') {
+        usort($list, fn($a, $b) => (int)($b['release_year'] ?? 0) <=> (int)($a['release_year'] ?? 0));
+    } elseif ($sort === 'episodes') {
+        usort($list, fn($a, $b) => (int)($b['episodes_count'] ?? 0) <=> (int)($a['episodes_count'] ?? 0));
+    }
+
     return array_values($list);
 }
 
