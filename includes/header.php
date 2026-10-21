@@ -72,10 +72,24 @@ $user = currentUser();
                 <!-- Auth Action -->
                 <div class="nav-auth-actions">
                     <?php if ($user): ?>
-                        <div class="user-profile-badge" onclick="toggleUserMenu()">
-                            <img src="<?= e($user['avatar'] ?? 'https://ui-avatars.com/api/?name=' . urlencode($user['username'])) ?>" alt="User" class="user-profile-avatar">
-                            <span class="small font-weight-bold user-name-label"><?= e($user['username']) ?></span>
-                            <a href="/auth/logout.php" title="Logout" class="text-muted ml-2"><i class="fa-solid fa-arrow-right-from-bracket"></i></a>
+                        <div class="user-avatar-dropdown-wrap" id="userAvatarDropdownWrap">
+                            <button type="button" class="user-avatar-btn" id="userAvatarBtn" onclick="toggleUserMenu(event)" aria-label="User Account" title="<?= e($user['username']) ?>">
+                                <img src="<?= e($user['avatar'] ?? 'https://ui-avatars.com/api/?name=' . urlencode($user['username'])) ?>" alt="<?= e($user['username']) ?>" class="user-avatar-img">
+                            </button>
+                            <div class="user-dropdown-menu" id="userDropdownMenu">
+                                <div class="dropdown-user-header">
+                                    <img src="<?= e($user['avatar'] ?? 'https://ui-avatars.com/api/?name=' . urlencode($user['username'])) ?>" alt="<?= e($user['username']) ?>" class="dropdown-avatar-thumb">
+                                    <div class="dropdown-user-info">
+                                        <div class="dropdown-user-name"><?= e($user['username']) ?></div>
+                                        <div class="dropdown-user-status"><span class="user-status-dot"></span> Logged In</div>
+                                    </div>
+                                </div>
+                                <div class="dropdown-divider"></div>
+                                <a href="/auth/logout.php" class="dropdown-item dropdown-logout-item">
+                                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                                    <span>Log Out</span>
+                                </a>
+                            </div>
                         </div>
                     <?php else: ?>
                         <button class="btn-primary-custom" onclick="openAuthModal()">
@@ -120,6 +134,19 @@ $user = currentUser();
                 <button class="btn-primary-custom w-100" onclick="openAuthModal(); closeMobileMenu();" style="width: 100%; justify-content: center; padding: 10px 16px;">
                     <i class="fa-regular fa-user mr-2"></i> Sign In to AniXoHindi
                 </button>
+            </div>
+            <?php else: ?>
+            <div class="mobile-drawer-footer">
+                <div class="mobile-user-card">
+                    <img src="<?= e($user['avatar'] ?? 'https://ui-avatars.com/api/?name=' . urlencode($user['username'])) ?>" alt="<?= e($user['username']) ?>" class="mobile-user-avatar">
+                    <div class="mobile-user-details">
+                        <span class="mobile-user-name"><?= e($user['username']) ?></span>
+                        <span class="mobile-user-status-text"><span class="user-status-dot"></span> Logged In</span>
+                    </div>
+                    <a href="/auth/logout.php" class="btn-mobile-logout" title="Log Out">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                    </a>
+                </div>
             </div>
             <?php endif; ?>
         </div>

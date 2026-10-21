@@ -281,6 +281,26 @@ function closeAuthModal() {
     }
 }
 
+// User Profile Avatar Dropdown Menu Handler
+function toggleUserMenu(e) {
+    if (e) e.stopPropagation();
+    const dropdown = document.getElementById('userDropdownMenu');
+    if (dropdown) {
+        dropdown.classList.toggle('show');
+    }
+}
+
+// Close user profile dropdown on clicking outside
+document.addEventListener('click', (e) => {
+    const wrap = document.getElementById('userAvatarDropdownWrap');
+    const dropdown = document.getElementById('userDropdownMenu');
+    if (dropdown && dropdown.classList.contains('show')) {
+        if (!wrap || !wrap.contains(e.target)) {
+            dropdown.classList.remove('show');
+        }
+    }
+});
+
 // ==========================================================================
 // Studio Watch Cockpit & Dual-View Episode Controller
 // ==========================================================================
