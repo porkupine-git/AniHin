@@ -70,6 +70,9 @@
 
 html {
     scroll-behavior: smooth;
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100%;
 }
 
 body {
@@ -80,6 +83,9 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-x: hidden;
+    width: 100%;
+    max-width: 100%;
+    position: relative;
     text-rendering: optimizeLegibility;
 }
 
@@ -4721,20 +4727,43 @@ body.lights-off-active .lights-off-notice {
    ========================================================================== */
 @media (max-width: 991px) {
     .watch-layout {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr !important;
         gap: 16px;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        box-sizing: border-box !important;
+    }
+    .player-column,
+    .episodes-column {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        box-sizing: border-box !important;
+    }
+    .episodes-deck-card {
+        position: static !important;
+        max-height: none !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
     }
 }
 
 @media (max-width: 768px) {
     .watch-container {
         padding: 10px 0 85px;
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow-x: clip;
+        box-sizing: border-box;
     }
 
     /* Ambient Banner Height on Mobile */
     .watch-ambient-banner {
         height: 220px;
         opacity: 0.16;
+        max-width: 100vw;
+        overflow: hidden;
     }
 
     /* Header & Breadcrumb Row */
@@ -4742,44 +4771,77 @@ body.lights-off-active .lights-off-notice {
         display: flex;
         align-items: center;
         justify-content: space-between;
+        flex-wrap: wrap !important;
         gap: 6px;
         margin-bottom: 10px;
         padding-bottom: 8px;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
     }
 
     .breadcrumb-nav {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap !important;
         font-size: 11px;
         gap: 5px;
+        min-width: 0;
+        max-width: 100%;
     }
 
     .breadcrumb-anime-title {
-        max-width: 140px;
+        max-width: clamp(100px, 32vw, 160px);
         font-size: 11px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        display: inline-block;
     }
 
     .breadcrumb-ep-current {
         font-size: 11px;
+        flex-shrink: 0;
+    }
+
+    .watch-audio-tag {
+        flex-shrink: 0;
     }
 
     .audio-pill {
         font-size: 9.5px;
         padding: 2px 7px;
+        white-space: nowrap;
     }
 
     /* Cockpit Top Bar (Focus, Auto-Next, Title) */
     .cockpit-top-bar {
         padding: 7px 10px;
         gap: 6px;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+
+    .cockpit-left {
+        min-width: 0 !important;
+        flex: 1;
+        overflow: hidden;
     }
 
     .cockpit-badge {
         font-size: 10px;
         padding: 2px 6px;
+        flex-shrink: 0;
     }
 
     .cockpit-title {
         font-size: 12px;
         font-weight: 600;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 
     /* Hide Theater Mode on Mobile (Screen is already full-width) */
@@ -4792,6 +4854,7 @@ body.lights-off-active .lights-off-notice {
         padding: 5px 8px;
         font-size: 11px;
         gap: 0;
+        flex-shrink: 0;
     }
 
     .cockpit-tool-btn .tool-label {
@@ -4802,12 +4865,15 @@ body.lights-off-active .lights-off-notice {
     .cockpit-bottom-bar {
         padding: 8px 10px;
         gap: 8px;
+        width: 100%;
+        box-sizing: border-box;
     }
 
     .cockpit-nav-actions {
         flex: 1;
         display: flex;
         gap: 6px;
+        min-width: 0;
     }
 
     .cockpit-nav-btn {
@@ -4817,6 +4883,7 @@ body.lights-off-active .lights-off-notice {
         padding: 6px 8px;
         font-size: 11.5px;
         font-weight: 700;
+        min-width: 0;
     }
 
     .cockpit-spec-pills {
@@ -4827,6 +4894,7 @@ body.lights-off-active .lights-off-notice {
         width: 34px;
         height: 36px;
         font-size: 12px;
+        flex-shrink: 0;
     }
 
     /* Streaming Server Station on Mobile (3-Button Native Segmented Control) */
@@ -4834,6 +4902,9 @@ body.lights-off-active .lights-off-notice {
         padding: 10px 12px;
         margin-top: 12px;
         border-radius: 10px;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
     }
 
     .station-meta-row {
@@ -4853,6 +4924,10 @@ body.lights-off-active .lights-off-notice {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         gap: 6px;
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
     }
 
     .server-station-btn {
@@ -4863,6 +4938,9 @@ body.lights-off-active .lights-off-notice {
         text-align: center;
         border-radius: 6px;
         gap: 4px;
+        min-width: 0 !important;
+        overflow: hidden;
+        box-sizing: border-box;
     }
 
     .server-station-btn .server-name {
@@ -4870,6 +4948,7 @@ body.lights-off-active .lights-off-notice {
         overflow: hidden;
         text-overflow: ellipsis;
         font-size: 10px;
+        min-width: 0;
     }
 
     .server-station-btn .server-tag {
@@ -4879,16 +4958,26 @@ body.lights-off-active .lights-off-notice {
     /* Episodes Column & Deck Card */
     .episodes-column {
         margin-top: 4px;
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
     }
 
     .episodes-deck-card {
         padding: 12px 10px;
         border-radius: 12px;
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
     }
 
     .ep-deck-header {
         margin-bottom: 8px;
         gap: 8px;
+        width: 100%;
+        box-sizing: border-box;
     }
 
     .ep-deck-title {
@@ -4902,24 +4991,32 @@ body.lights-off-active .lights-off-notice {
     .ep-deck-search-wrap {
         height: 36px;
         margin-bottom: 10px;
+        width: 100%;
+        box-sizing: border-box;
     }
 
     .ep-deck-search-input {
         font-size: 12px;
         height: 34px;
+        box-sizing: border-box;
     }
 
     /* Compact Episode Grid on Mobile */
     .episode-deck-grid {
-        grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(38px, 1fr));
         gap: 6px;
         max-height: 220px;
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
     }
 
     .ep-box-item {
         height: 38px;
         font-size: 12px;
         border-radius: 6px;
+        min-width: 0;
     }
 
     .ep-box-badge {
@@ -4933,12 +5030,17 @@ body.lights-off-active .lights-off-notice {
     .episode-deck-list {
         max-height: 280px;
         gap: 8px;
+        width: 100%;
+        box-sizing: border-box;
     }
 
     .ep-list-card {
         padding: 6px;
         gap: 8px;
         border-radius: 8px;
+        width: 100%;
+        box-sizing: border-box;
+        min-width: 0;
     }
 
     .ep-list-thumb-wrap {
@@ -4947,9 +5049,18 @@ body.lights-off-active .lights-off-notice {
         flex-shrink: 0;
     }
 
+    .ep-list-info {
+        min-width: 0;
+        flex: 1;
+        overflow: hidden;
+    }
+
     .ep-list-title {
         font-size: 11.5px;
         line-height: 1.3;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     .ep-list-overview {
@@ -4967,11 +5078,17 @@ body.lights-off-active .lights-off-notice {
         margin-top: 16px;
         border-radius: 12px;
         gap: 12px;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        box-sizing: border-box !important;
+        overflow: hidden;
     }
 
     .dossier-poster-wrap {
         width: 82px;
         border-radius: 8px;
+        flex-shrink: 0;
     }
 
     .dossier-poster-badge {
@@ -4982,20 +5099,37 @@ body.lights-off-active .lights-off-notice {
         right: 3px;
     }
 
+    .dossier-body {
+        min-width: 0;
+        flex: 1;
+        box-sizing: border-box;
+    }
+
     .dossier-top-meta-row {
         flex-direction: column;
         align-items: flex-start;
         gap: 6px;
         margin-bottom: 6px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .dossier-header-group {
+        width: 100%;
+        min-width: 0;
     }
 
     .dossier-title {
         font-size: 14.5px !important;
         line-height: 1.25;
+        overflow-wrap: break-word;
+        word-break: break-word;
     }
 
     .dossier-hindi-title {
         font-size: 11.5px;
+        overflow-wrap: break-word;
+        word-break: break-word;
     }
 
     .dossier-quick-actions {
@@ -5038,10 +5172,37 @@ body.lights-off-active .lights-off-notice {
     /* Recommendations Section on Watch Page */
     .watch-recommendations-section {
         margin-top: 24px;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
     }
 
     .watch-recommendations-section .section-title {
         font-size: 15px;
+    }
+}
+
+@media (max-width: 380px) {
+    .breadcrumb-nav {
+        font-size: 10px;
+        gap: 4px;
+    }
+    .breadcrumb-anime-title {
+        max-width: 95px;
+    }
+    .server-station-btn {
+        padding: 6px 2px;
+        font-size: 9px;
+    }
+    .server-station-btn .server-dot {
+        display: none;
+    }
+    .cockpit-nav-btn {
+        font-size: 10px;
+        padding: 5px 4px;
+    }
+    .cockpit-title {
+        font-size: 11px;
     }
 }
 
