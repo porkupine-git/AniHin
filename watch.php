@@ -214,9 +214,16 @@ require_once __DIR__ . '/includes/header.php';
                             <span class="dossier-chip chip-status"><?= e($anime['status'] ?? 'Currently Airing') ?></span>
                         </div>
 
-                        <!-- Synopsis with Expand/Collapse -->
+                        <!-- Synopsis with Expand/Collapse & Anti-Spoiler -->
+                        <div class="dossier-synopsis-header">
+                            <span class="dossier-synopsis-label"><i class="fa-solid fa-align-left"></i> Story Synopsis</span>
+                            <button type="button" class="btn-spoiler-text active" id="btn-synopsis-blur" onclick="toggleSynopsisBlur()" title="Spoiler Shield: Blur / Unblur Story Synopsis">
+                                <i class="fa-solid fa-eye-slash" id="synopsis-eye-icon"></i>
+                                <span id="synopsis-eye-text">Spoiler Shield</span>
+                            </button>
+                        </div>
                         <div class="dossier-synopsis-wrap">
-                            <p class="dossier-synopsis" id="dossierSynopsis">
+                            <p class="dossier-synopsis spoiler-blurred" id="dossierSynopsis" onclick="toggleSynopsisBlur()">
                                 <?= e($anime['synopsis'] ?? 'No synopsis available for this title.') ?>
                             </p>
                             <?php if (strlen($anime['synopsis'] ?? '') > 160): ?>
@@ -243,21 +250,25 @@ require_once __DIR__ . '/includes/header.php';
 
             <!-- Right Column: Next-Gen Dual-View Episode Deck -->
             <div class="episodes-column">
-                <div class="episodes-deck-card">
-                    <!-- Deck Header with View Mode Switcher -->
-                    <div class="deck-header">
-                        <div class="deck-title-wrap">
-                            <div class="deck-icon-box">
+                <div class="episodes-deck-card spoiler-blur-active" id="episodesDeckCard">
+                    <!-- Deck Header with View Mode Switcher & Anti-Spoiler Shield -->
+                    <div class="ep-deck-header">
+                        <div class="ep-deck-title-wrap">
+                            <div class="ep-deck-icon-box">
                                 <i class="fa-solid fa-layer-group"></i>
                             </div>
-                            <div class="deck-heading">
-                                <h3 class="deck-title">Episodes</h3>
-                                <span class="deck-count-sub"><span id="episodesFilteredCount"><?= $epCount ?></span> of <?= $epCount ?> Available</span>
+                            <div class="ep-deck-heading">
+                                <h3 class="ep-deck-title">Episodes</h3>
+                                <span class="ep-deck-count-sub"><span id="episodesFilteredCount"><?= $epCount ?></span> of <?= $epCount ?> Available</span>
                             </div>
                         </div>
 
-                        <!-- Dual-View Toggle Buttons -->
-                        <div class="deck-view-switcher">
+                        <!-- Dual-View Toggle Buttons & Spoiler Shield -->
+                        <div class="ep-deck-view-switcher">
+                            <button type="button" class="view-switch-btn active btn-spoiler-toggle" id="btn-spoiler-toggle" onclick="toggleSpoilerBlur()" title="Spoiler Shield: Blur Episode Images & Descriptions (Hover to peek)">
+                                <i class="fa-solid fa-eye-slash" id="spoiler-icon"></i>
+                            </button>
+                            <span class="switcher-divider"></span>
                             <button type="button" class="view-switch-btn active" id="btn-view-grid" onclick="setEpisodeView('grid')" title="Switch to Grid View">
                                 <i class="fa-solid fa-grip"></i>
                             </button>
@@ -268,10 +279,10 @@ require_once __DIR__ . '/includes/header.php';
                     </div>
 
                     <!-- Fast Episode Search / Jump Input -->
-                    <div class="deck-search-wrap">
+                    <div class="ep-deck-search-wrap">
                         <i class="fa-solid fa-magnifying-glass search-ico"></i>
-                        <input type="text" id="episode-search-input" class="deck-search-input" placeholder="Search Ep number or title..." oninput="filterEpisodes(this.value)">
-                        <button type="button" class="deck-search-clear" id="deck-search-clear" onclick="clearEpSearch()" title="Clear Search">
+                        <input type="text" id="episode-search-input" class="ep-deck-search-input" placeholder="Search Ep number or title..." oninput="filterEpisodes(this.value)">
+                        <button type="button" class="ep-deck-search-clear" id="deck-search-clear" onclick="clearEpSearch()" title="Clear Search">
                             <i class="fa-solid fa-xmark"></i>
                         </button>
                     </div>
@@ -296,13 +307,14 @@ require_once __DIR__ . '/includes/header.php';
                         <?php endforeach; ?>
                     </div>
 
-                    <!-- Mode 2: Detailed List View with Thumbnails -->
+                    <!-- Mode 2: Detailed List View with Thumbnails & Descriptions -->
                     <div class="episode-deck-list" id="episodeDeckList" style="display: none;">
                         <?php foreach ($episodes as $ep): 
                             $num = (int)$ep['number'];
                             $isActive = $num === $currentEpNum ? 'active' : '';
                             $epTitle = $ep['title'] ?? ('Episode ' . $num);
                             $thumb = !empty($ep['image']) ? $ep['image'] : $bannerImg;
+                            $overview = !empty($ep['overview']) ? $ep['overview'] : '';
                         ?>
                             <div class="ep-list-card <?= $isActive ?>" 
                                  data-ep="<?= $num ?>"
@@ -313,6 +325,9 @@ require_once __DIR__ . '/includes/header.php';
                                     <span class="ep-list-duration">24m</span>
                                     <div class="ep-list-play-overlay">
                                         <i class="fa-solid fa-play"></i>
+                                    </div>
+                                    <div class="ep-list-spoiler-badge">
+                                        <i class="fa-solid fa-eye-slash"></i>
                                     </div>
                                 </div>
 
@@ -327,13 +342,16 @@ require_once __DIR__ . '/includes/header.php';
                                         <?php endif; ?>
                                     </div>
                                     <div class="ep-list-title" title="<?= e($epTitle) ?>"><?= e($epTitle) ?></div>
+                                    <?php if (!empty($overview)): ?>
+                                        <div class="ep-list-overview" title="<?= e($overview) ?>"><?= e($overview) ?></div>
+                                    <?php endif; ?>
                                 </div>
                             </div>
                         <?php endforeach; ?>
                     </div>
 
                     <!-- No Episodes Found Notice -->
-                    <div class="deck-empty-state" id="deckEmptyState" style="display: none;">
+                    <div class="ep-deck-empty-state" id="deckEmptyState" style="display: none;">
                         <i class="fa-solid fa-magnifying-glass"></i>
                         <p>No episode matching your search.</p>
                         <button type="button" class="btn-clear-search" onclick="clearEpSearch()">View All Episodes</button>

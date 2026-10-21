@@ -2143,37 +2143,37 @@ body.lights-off-active .lights-off-notice {
 }
 
 .dossier-title {
-    font-size: 21px;
-    font-weight: 800;
+    font-size: 17px !important;
+    font-weight: 700 !important;
     color: var(--text-bright);
-    margin-bottom: 4px;
-    letter-spacing: -0.3px;
+    margin-bottom: 3px;
+    letter-spacing: -0.2px;
     line-height: 1.25;
 }
 
 .dossier-hindi-title {
-    font-size: 14px;
+    font-size: 12.5px;
     font-weight: 600;
     color: var(--accent-sand);
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 5px;
 }
 
 .dossier-meta-chips {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
-    margin-bottom: 12px;
+    gap: 5px;
+    margin-bottom: 10px;
 }
 
 .dossier-chip {
     background: var(--bg-surface-elevated);
     border: 1px solid var(--border-subtle);
     color: var(--text-secondary);
-    font-size: 11px;
+    font-size: 10.5px;
     font-weight: 600;
-    padding: 3px 9px;
+    padding: 2.5px 8px;
     border-radius: var(--radius-sm);
 }
 
@@ -2187,51 +2187,107 @@ body.lights-off-active .lights-off-notice {
     color: #6edcb9;
 }
 
+.dossier-synopsis-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 5px;
+}
+
+.dossier-synopsis-label {
+    font-size: 10.5px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.btn-spoiler-text {
+    background: #121a19;
+    border: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.15s ease;
+}
+
+.btn-spoiler-text:hover {
+    background: #1c2825;
+    color: var(--text-bright);
+    border-color: var(--border-hover);
+}
+
+.btn-spoiler-text.active {
+    background: rgba(255, 203, 154, 0.12);
+    color: var(--accent-peach);
+    border-color: rgba(255, 203, 154, 0.35);
+}
+
 .dossier-synopsis-wrap {
-    margin-bottom: 14px;
+    margin-bottom: 12px;
 }
 
 .dossier-synopsis {
-    font-size: 13px;
-    line-height: 1.6;
+    font-size: 12px;
+    line-height: 1.55;
     color: var(--text-secondary);
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    transition: all 0.2s ease;
+    transition: filter 0.25s ease;
 }
 
 .dossier-synopsis.expanded {
     -webkit-line-clamp: unset;
 }
 
+.dossier-synopsis.spoiler-blurred {
+    filter: blur(5px);
+    user-select: none;
+    cursor: pointer;
+}
+
+.dossier-synopsis.spoiler-blurred:hover {
+    filter: blur(2px);
+}
+
 .btn-synopsis-toggle {
     background: none;
     border: none;
     color: var(--accent-peach);
-    font-size: 11.5px;
+    font-size: 11px;
     font-weight: 700;
     cursor: pointer;
-    padding: 4px 0 0;
+    padding: 3px 0 0;
     display: inline-flex;
     align-items: center;
-    gap: 5px;
+    gap: 4px;
 }
 
 .dossier-genres {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
+    gap: 5px;
 }
 
 .dossier-genre-pill {
     background: var(--bg-main);
     border: 1px solid var(--border-subtle);
     color: var(--text-secondary);
-    font-size: 11px;
+    font-size: 10.5px;
     font-weight: 600;
-    padding: 4px 10px;
+    padding: 3px 9px;
     border-radius: var(--radius-sm);
     text-decoration: none;
     transition: all 0.15s ease;
@@ -2250,7 +2306,7 @@ body.lights-off-active .lights-off-notice {
     background: var(--bg-surface);
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-lg);
-    padding: 18px;
+    padding: 16px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
     position: sticky;
     top: 80px;
@@ -2259,7 +2315,7 @@ body.lights-off-active .lights-off-notice {
     flex-direction: column;
 }
 
-.deck-header {
+.ep-deck-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -2268,15 +2324,15 @@ body.lights-off-active .lights-off-notice {
     flex-shrink: 0;
 }
 
-.deck-title-wrap {
+.ep-deck-title-wrap {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 9px;
 }
 
-.deck-icon-box {
-    width: 32px;
-    height: 32px;
+.ep-deck-icon-box {
+    width: 28px;
+    height: 28px;
     border-radius: var(--radius-sm);
     background: var(--bg-main);
     border: 1px solid var(--border-subtle);
@@ -2284,35 +2340,44 @@ body.lights-off-active .lights-off-notice {
     align-items: center;
     justify-content: center;
     color: var(--accent-peach);
-    font-size: 13px;
+    font-size: 12px;
 }
 
-.deck-heading {
+.ep-deck-heading {
     display: flex;
     flex-direction: column;
 }
 
-.deck-title {
-    font-size: 15px;
-    font-weight: 800;
+.ep-deck-title {
+    font-size: 13.5px !important;
+    font-weight: 700 !important;
     color: var(--text-bright);
     line-height: 1.2;
     margin: 0;
+    letter-spacing: -0.2px;
 }
 
-.deck-count-sub {
-    font-size: 11px;
+.ep-deck-count-sub {
+    font-size: 10.5px;
     color: var(--text-muted);
     font-weight: 500;
 }
 
-.deck-view-switcher {
+.ep-deck-view-switcher {
     display: flex;
+    align-items: center;
     background: var(--bg-main);
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-sm);
     padding: 2px;
     gap: 2px;
+}
+
+.switcher-divider {
+    width: 1px;
+    height: 16px;
+    background: var(--border-subtle);
+    margin: 0 2px;
 }
 
 .view-switch-btn {
@@ -2322,7 +2387,7 @@ body.lights-off-active .lights-off-notice {
     width: 28px;
     height: 28px;
     border-radius: 3px;
-    font-size: 12px;
+    font-size: 11.5px;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -2339,7 +2404,17 @@ body.lights-off-active .lights-off-notice {
     color: #ffffff;
 }
 
-.deck-search-wrap {
+.btn-spoiler-toggle {
+    color: var(--text-muted);
+}
+
+.btn-spoiler-toggle.active {
+    background: rgba(255, 203, 154, 0.15) !important;
+    color: var(--accent-peach) !important;
+    border: 1px solid rgba(255, 203, 154, 0.3) !important;
+}
+
+.ep-deck-search-wrap {
     position: relative;
     margin-bottom: 12px;
     flex-shrink: 0;
@@ -2350,28 +2425,28 @@ body.lights-off-active .lights-off-notice {
     left: 10px;
     top: 50%;
     transform: translateY(-50%);
-    font-size: 11px;
+    font-size: 10.5px;
     color: var(--text-muted);
     pointer-events: none;
 }
 
-.deck-search-input {
+.ep-deck-search-input {
     width: 100%;
     background: var(--bg-main);
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-sm);
     color: var(--text-primary);
-    font-size: 12px;
-    padding: 7px 30px 7px 30px;
+    font-size: 11.5px;
+    padding: 6px 28px 6px 28px;
     outline: none;
     transition: border-color 0.15s ease;
 }
 
-.deck-search-input:focus {
+.ep-deck-search-input:focus {
     border-color: var(--border-hover);
 }
 
-.deck-search-clear {
+.ep-deck-search-clear {
     position: absolute;
     right: 8px;
     top: 50%;
@@ -2379,21 +2454,21 @@ body.lights-off-active .lights-off-notice {
     background: none;
     border: none;
     color: var(--text-muted);
-    font-size: 12px;
+    font-size: 11px;
     cursor: pointer;
     display: none;
     padding: 4px;
 }
 
-.deck-search-clear.visible {
+.ep-deck-search-clear.visible {
     display: block;
 }
 
 /* Mode 1: Compact Grid View */
 .episode-deck-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(52px, 1fr));
-    gap: 8px;
+    grid-template-columns: repeat(auto-fill, minmax(48px, 1fr));
+    gap: 7px;
     overflow-y: auto;
     overflow-x: hidden;
     padding-right: 4px;
@@ -2406,9 +2481,9 @@ body.lights-off-active .lights-off-notice {
     background: var(--bg-main);
     border: 1px solid var(--border-subtle);
     color: var(--text-secondary);
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 700;
-    height: 42px;
+    height: 38px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -2450,7 +2525,7 @@ body.lights-off-active .lights-off-notice {
     opacity: 0.9;
 }
 
-/* Mode 2: Detailed List View with Thumbnails */
+/* Mode 2: Detailed List View with Thumbnails & Descriptions */
 .episode-deck-list {
     display: flex;
     flex-direction: column;
@@ -2464,7 +2539,7 @@ body.lights-off-active .lights-off-notice {
 
 .ep-list-card {
     display: flex;
-    gap: 12px;
+    gap: 11px;
     background: var(--bg-main);
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-sm);
@@ -2490,7 +2565,7 @@ body.lights-off-active .lights-off-notice {
 }
 
 .ep-list-thumb-wrap {
-    width: 96px;
+    width: 90px;
     aspect-ratio: 16 / 9;
     position: relative;
     border-radius: 4px;
@@ -2503,6 +2578,7 @@ body.lights-off-active .lights-off-notice {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transition: filter 0.25s ease, transform 0.25s ease;
 }
 
 .ep-list-duration {
@@ -2510,11 +2586,12 @@ body.lights-off-active .lights-off-notice {
     bottom: 3px;
     right: 3px;
     background: rgba(0, 0, 0, 0.75);
-    font-size: 9px;
+    font-size: 8.5px;
     font-weight: 700;
     color: #ffffff;
     padding: 1px 4px;
     border-radius: 2px;
+    z-index: 2;
 }
 
 .ep-list-play-overlay {
@@ -2525,9 +2602,10 @@ body.lights-off-active .lights-off-notice {
     align-items: center;
     justify-content: center;
     color: #ffffff;
-    font-size: 13px;
+    font-size: 12px;
     opacity: 0;
     transition: opacity 0.15s ease;
+    z-index: 2;
 }
 
 .ep-list-card:hover .ep-list-play-overlay {
@@ -2539,6 +2617,44 @@ body.lights-off-active .lights-off-notice {
     color: var(--accent-peach);
 }
 
+.ep-list-spoiler-badge {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    background: rgba(16, 23, 22, 0.88);
+    color: var(--accent-peach);
+    font-size: 8.5px;
+    width: 18px;
+    height: 18px;
+    border-radius: 3px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 3;
+    border: 1px solid rgba(255, 203, 154, 0.25);
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+}
+
+/* Spoiler Protection Blur Rules */
+.episodes-deck-card.spoiler-blur-active .ep-list-thumb {
+    filter: blur(8px);
+    transform: scale(1.08);
+}
+
+.episodes-deck-card.spoiler-blur-active .ep-list-spoiler-badge {
+    display: flex;
+}
+
+.episodes-deck-card.spoiler-blur-active .ep-list-card:hover .ep-list-thumb {
+    filter: blur(0);
+    transform: scale(1);
+}
+
+.episodes-deck-card.spoiler-blur-active .ep-list-card:hover .ep-list-spoiler-badge {
+    opacity: 0;
+}
+
 .ep-list-info {
     flex: 1;
     min-width: 0;
@@ -2548,11 +2664,11 @@ body.lights-off-active .lights-off-notice {
     display: flex;
     align-items: center;
     gap: 6px;
-    margin-bottom: 3px;
+    margin-bottom: 2px;
 }
 
 .ep-list-badge {
-    font-size: 10px;
+    font-size: 9.5px;
     font-weight: 800;
     background: var(--bg-surface-elevated);
     color: var(--text-primary);
@@ -2561,13 +2677,13 @@ body.lights-off-active .lights-off-notice {
 }
 
 .ep-list-dub-pill {
-    font-size: 9.5px;
+    font-size: 9px;
     font-weight: 700;
     color: var(--accent-peach);
 }
 
 .ep-list-playing-tag {
-    font-size: 9.5px;
+    font-size: 9px;
     font-weight: 700;
     color: #2ecc71;
     margin-left: auto;
@@ -2577,7 +2693,7 @@ body.lights-off-active .lights-off-notice {
 }
 
 .ep-list-title {
-    font-size: 12px;
+    font-size: 11.5px;
     font-weight: 600;
     color: var(--text-secondary);
     white-space: nowrap;
@@ -2590,16 +2706,38 @@ body.lights-off-active .lights-off-notice {
     font-weight: 700;
 }
 
-.deck-empty-state {
-    text-align: center;
-    padding: 28px 10px;
+.ep-list-overview {
+    font-size: 10px;
     color: var(--text-muted);
-    font-size: 13px;
+    line-height: 1.35;
+    margin-top: 3px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    transition: filter 0.2s ease;
 }
 
-.deck-empty-state i {
-    font-size: 22px;
-    margin-bottom: 8px;
+.episodes-deck-card.spoiler-blur-active .ep-list-overview {
+    filter: blur(4px);
+    user-select: none;
+}
+
+.episodes-deck-card.spoiler-blur-active .ep-list-card:hover .ep-list-overview {
+    filter: blur(0);
+    user-select: auto;
+}
+
+.ep-deck-empty-state {
+    text-align: center;
+    padding: 24px 10px;
+    color: var(--text-muted);
+    font-size: 12px;
+}
+
+.ep-deck-empty-state i {
+    font-size: 20px;
+    margin-bottom: 6px;
     opacity: 0.5;
     display: block;
 }

@@ -605,6 +605,45 @@ function reportPlaybackIssue() {
     alert('Thank you! Our streaming servers have logged this report for immediate inspection. (सर्वर रिपोर्ट दर्ज कर ली गई है)');
 }
 
+// Toggle Anti-Spoiler Blur on Episode Deck (Images & Descriptions)
+function toggleSpoilerBlur() {
+    const card = document.getElementById('episodesDeckCard') || document.querySelector('.episodes-deck-card');
+    const btn = document.getElementById('btn-spoiler-toggle');
+    const icon = document.getElementById('spoiler-icon');
+    if (!card) return;
+
+    const isNowActive = card.classList.toggle('spoiler-blur-active');
+    if (btn) {
+        btn.classList.toggle('active', isNowActive);
+    }
+    if (icon) {
+        icon.className = isNowActive ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye';
+    }
+    try {
+        localStorage.setItem('anixo_spoiler_blur', isNowActive ? '1' : '0');
+    } catch (e) {}
+}
+
+// Toggle Anti-Spoiler Blur on Story Synopsis in Anime Dossier
+function toggleSynopsisBlur() {
+    const synopsis = document.getElementById('dossierSynopsis');
+    const btn = document.getElementById('btn-synopsis-blur');
+    const icon = document.getElementById('synopsis-eye-icon');
+    const label = document.getElementById('synopsis-eye-text');
+    if (!synopsis) return;
+
+    const isNowBlurred = synopsis.classList.toggle('spoiler-blurred');
+    if (btn) {
+        btn.classList.toggle('active', isNowBlurred);
+    }
+    if (icon) {
+        icon.className = isNowBlurred ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye';
+    }
+    if (label) {
+        label.innerText = isNowBlurred ? 'Spoiler Shield' : 'Revealed';
+    }
+}
+
 // Keyboard shortcuts (ESC for lights off, left/right for prev/next episode)
 document.addEventListener('keydown', function(e) {
     if (e.target && ['input', 'textarea', 'select'].includes(e.target.tagName.toLowerCase())) return;
@@ -629,6 +668,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 btn.classList.remove('active');
                 btn.innerHTML = '<i class="fa-solid fa-pause"></i> <span class="tool-label">Auto: OFF</span>';
             }
+        }
+
+        const savedSpoilerBlur = localStorage.getItem('anixo_spoiler_blur');
+        if (savedSpoilerBlur === '0') {
+            const card = document.getElementById('episodesDeckCard') || document.querySelector('.episodes-deck-card');
+            const btn = document.getElementById('btn-spoiler-toggle');
+            const icon = document.getElementById('spoiler-icon');
+            if (card) card.classList.remove('spoiler-blur-active');
+            if (btn) btn.classList.remove('active');
+            if (icon) icon.className = 'fa-solid fa-eye';
         }
     } catch (e) {}
 });
