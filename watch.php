@@ -182,70 +182,6 @@ require_once __DIR__ . '/includes/header.php';
                         </button>
                     </div>
                 </div>
-
-                <!-- Studio Anime Dossier Card -->
-                <div class="anime-dossier-card">
-                    <div class="dossier-poster-wrap">
-                        <img src="<?= e($anime['poster']) ?>" alt="<?= e($anime['title']) ?>" class="dossier-poster-img" loading="lazy">
-                        <div class="dossier-poster-badge">
-                            <i class="fa-solid fa-star"></i> <?= e($anime['score'] ?? '8.5') ?>
-                        </div>
-                    </div>
-
-                    <div class="dossier-body">
-                        <div class="dossier-header-group">
-                            <h1 class="dossier-title"><?= e($anime['title']) ?></h1>
-                            <?php if (!empty($anime['hindi_title'])): ?>
-                                <div class="dossier-hindi-title">
-                                    <i class="fa-solid fa-language"></i> <?= e($anime['hindi_title']) ?>
-                                </div>
-                            <?php endif; ?>
-                        </div>
-
-                        <!-- Meta Chips -->
-                        <div class="dossier-meta-chips">
-                            <?php if ($isDub): ?>
-                                <span class="dossier-chip chip-dub"><i class="fa-solid fa-headphones"></i> Hindi Dub</span>
-                            <?php endif; ?>
-                            <span class="dossier-chip"><?= e($anime['show_type'] ?? 'TV') ?></span>
-                            <span class="dossier-chip"><?= e($anime['release_year'] ?? '2024') ?></span>
-                            <span class="dossier-chip"><?= e($anime['rating'] ?? 'HD') ?></span>
-                            <span class="dossier-chip"><?= count($episodes) ?> Episodes</span>
-                            <span class="dossier-chip chip-status"><?= e($anime['status'] ?? 'Currently Airing') ?></span>
-                        </div>
-
-                        <!-- Synopsis with Expand/Collapse & Anti-Spoiler -->
-                        <div class="dossier-synopsis-header">
-                            <span class="dossier-synopsis-label"><i class="fa-solid fa-align-left"></i> Story Synopsis</span>
-                            <button type="button" class="btn-spoiler-text active" id="btn-synopsis-blur" onclick="toggleSynopsisBlur()" title="Spoiler Shield: Blur / Unblur Story Synopsis">
-                                <i class="fa-solid fa-eye-slash" id="synopsis-eye-icon"></i>
-                                <span id="synopsis-eye-text">Spoiler Shield</span>
-                            </button>
-                        </div>
-                        <div class="dossier-synopsis-wrap">
-                            <p class="dossier-synopsis spoiler-blurred" id="dossierSynopsis" onclick="toggleSynopsisBlur()">
-                                <?= e($anime['synopsis'] ?? 'No synopsis available for this title.') ?>
-                            </p>
-                            <?php if (strlen($anime['synopsis'] ?? '') > 160): ?>
-                                <button type="button" class="btn-synopsis-toggle" id="synopsisToggleBtn" onclick="toggleSynopsis()">
-                                    <span>Read More</span> <i class="fa-solid fa-chevron-down"></i>
-                                </button>
-                            <?php endif; ?>
-                        </div>
-
-                        <!-- Genre Pills -->
-                        <div class="dossier-genres">
-                            <?php 
-                            $genreList = is_array($anime['genres'] ?? null) ? $anime['genres'] : explode(',', (string)($anime['genres'] ?? 'Action, Adventure'));
-                            foreach ($genreList as $g): 
-                                $g = trim($g);
-                                if (empty($g)) continue;
-                            ?>
-                                <a href="/filter.php?genre=<?= urlencode($g) ?>" class="dossier-genre-pill"><?= e($g) ?></a>
-                            <?php endforeach; ?>
-                        </div>
-                    </div>
-                </div>
             </div>
 
             <!-- Right Column: Next-Gen Dual-View Episode Deck -->
@@ -356,6 +292,81 @@ require_once __DIR__ . '/includes/header.php';
                         <p>No episode matching your search.</p>
                         <button type="button" class="btn-clear-search" onclick="clearEpSearch()">View All Episodes</button>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Studio Anime Dossier Card (Full-Width Stretched Across Screen) -->
+        <div class="anime-dossier-card full-width-dossier">
+            <div class="dossier-poster-wrap">
+                <img src="<?= e($anime['poster']) ?>" alt="<?= e($anime['title']) ?>" class="dossier-poster-img" loading="lazy">
+                <div class="dossier-poster-badge">
+                    <i class="fa-solid fa-star"></i> <?= e($anime['score'] ?? '8.5') ?>
+                </div>
+            </div>
+
+            <div class="dossier-body">
+                <div class="dossier-top-meta-row">
+                    <div class="dossier-header-group">
+                        <h1 class="dossier-title"><?= e($anime['title']) ?></h1>
+                        <?php if (!empty($anime['hindi_title'])): ?>
+                            <div class="dossier-hindi-title">
+                                <i class="fa-solid fa-language"></i> <?= e($anime['hindi_title']) ?>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+
+                    <div class="dossier-quick-actions">
+                        <button type="button" class="btn-dossier-action" onclick="copyWatchLink()" title="Share Anime Link">
+                            <i class="fa-solid fa-share-nodes"></i> <span>Share</span>
+                        </button>
+                        <a href="/filter.php?type=<?= urlencode($anime['show_type'] ?? 'TV') ?>" class="btn-dossier-action">
+                            <i class="fa-solid fa-film"></i> <span><?= e($anime['show_type'] ?? 'TV') ?> Series</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Meta Chips -->
+                <div class="dossier-meta-chips">
+                    <?php if ($isDub): ?>
+                        <span class="dossier-chip chip-dub"><i class="fa-solid fa-headphones"></i> Hindi Dub</span>
+                    <?php endif; ?>
+                    <span class="dossier-chip"><?= e($anime['show_type'] ?? 'TV') ?></span>
+                    <span class="dossier-chip"><?= e($anime['release_year'] ?? '2024') ?></span>
+                    <span class="dossier-chip"><?= e($anime['rating'] ?? 'HD') ?></span>
+                    <span class="dossier-chip"><?= count($episodes) ?> Episodes</span>
+                    <span class="dossier-chip chip-status"><?= e($anime['status'] ?? 'Currently Airing') ?></span>
+                </div>
+
+                <!-- Synopsis with Expand/Collapse & Anti-Spoiler -->
+                <div class="dossier-synopsis-header">
+                    <span class="dossier-synopsis-label"><i class="fa-solid fa-align-left"></i> Story Synopsis</span>
+                    <button type="button" class="btn-spoiler-text active" id="btn-synopsis-blur" onclick="toggleSynopsisBlur()" title="Spoiler Shield: Blur / Unblur Story Synopsis">
+                        <i class="fa-solid fa-eye-slash" id="synopsis-eye-icon"></i>
+                        <span id="synopsis-eye-text">Spoiler Shield</span>
+                    </button>
+                </div>
+                <div class="dossier-synopsis-wrap">
+                    <p class="dossier-synopsis spoiler-blurred" id="dossierSynopsis" onclick="toggleSynopsisBlur()">
+                        <?= e($anime['synopsis'] ?? 'No synopsis available for this title.') ?>
+                    </p>
+                    <?php if (strlen($anime['synopsis'] ?? '') > 220): ?>
+                        <button type="button" class="btn-synopsis-toggle" id="synopsisToggleBtn" onclick="toggleSynopsis()">
+                            <span>Read More</span> <i class="fa-solid fa-chevron-down"></i>
+                        </button>
+                    <?php endif; ?>
+                </div>
+
+                <!-- Genre Pills -->
+                <div class="dossier-genres">
+                    <?php 
+                    $genreList = is_array($anime['genres'] ?? null) ? $anime['genres'] : explode(',', (string)($anime['genres'] ?? 'Action, Adventure'));
+                    foreach ($genreList as $g): 
+                        $g = trim($g);
+                        if (empty($g)) continue;
+                    ?>
+                        <a href="/filter.php?genre=<?= urlencode($g) ?>" class="dossier-genre-pill"><?= e($g) ?></a>
+                    <?php endforeach; ?>
                 </div>
             </div>
         </div>
