@@ -1776,11 +1776,13 @@ body:not(:has(.hero-spotlight-deck)) .site-navbar {
 .lights-off-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(7, 10, 9, 0.96);
-    z-index: 890;
+    background: rgba(5, 8, 7, 0.95);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 998;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.28s var(--ease-smooth);
+    transition: opacity 0.3s ease;
 }
 
 body.lights-off-active .lights-off-overlay {
@@ -1788,48 +1790,77 @@ body.lights-off-active .lights-off-overlay {
     pointer-events: auto;
 }
 
+/* Elevate watch container & player frame above the overlay */
+body.lights-off-active .watch-container {
+    position: relative;
+    z-index: 1000 !important;
+}
+
 body.lights-off-active .player-cockpit-frame {
     position: relative;
-    z-index: 900;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.85);
+    z-index: 1005 !important;
+    box-shadow: 0 0 90px rgba(0, 0, 0, 0.98), 0 0 35px rgba(222, 122, 88, 0.28) !important;
+    border-color: rgba(222, 122, 88, 0.45) !important;
+    transition: all 0.3s ease;
+}
+
+/* Dim surrounding non-player sections when Focus mode is active */
+body.lights-off-active .site-header {
+    opacity: 0.15 !important;
+    pointer-events: none !important;
+    transition: opacity 0.3s ease;
+}
+
+body.lights-off-active .watch-header-bar,
+body.lights-off-active .episodes-column,
+body.lights-off-active .streaming-station-card,
+body.lights-off-active .anime-dossier-card,
+body.lights-off-active .site-footer {
+    opacity: 0.12 !important;
+    pointer-events: none !important;
+    filter: blur(1.5px) !important;
+    transition: opacity 0.3s ease, filter 0.3s ease;
 }
 
 .lights-off-notice {
     position: fixed;
-    top: 18px;
+    top: 22px;
     left: 50%;
-    transform: translateX(-50%) translateY(-40px);
-    background: #182220;
-    border: 1px solid var(--border-hover);
-    color: var(--text-primary);
-    padding: 8px 18px;
-    border-radius: var(--radius-full);
-    font-size: 12.5px;
+    transform: translateX(-50%) translateY(-60px);
+    background: rgba(18, 24, 22, 0.95);
+    border: 1px solid rgba(222, 122, 88, 0.4);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 15px rgba(222, 122, 88, 0.2);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    color: #fff;
+    padding: 8px 20px;
+    border-radius: 999px;
+    font-size: 13px;
     font-weight: 700;
     display: flex;
     align-items: center;
-    gap: 14px;
-    z-index: 920;
+    gap: 16px;
+    z-index: 1010;
     opacity: 0;
     pointer-events: none;
-    transition: all 0.25s var(--ease-smooth);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+    transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .lights-off-notice button {
-    background: rgba(255, 203, 154, 0.15);
-    border: 1px solid rgba(255, 203, 154, 0.3);
-    color: var(--accent-peach);
-    font-size: 11px;
+    background: rgba(222, 122, 88, 0.2);
+    border: 1px solid rgba(222, 122, 88, 0.4);
+    color: #de7a58;
+    font-size: 11.5px;
     font-weight: 700;
-    padding: 3px 10px;
-    border-radius: var(--radius-full);
+    padding: 3px 12px;
+    border-radius: 999px;
     cursor: pointer;
-    transition: background 0.15s ease;
+    transition: background 0.15s ease, color 0.15s ease;
 }
 
 .lights-off-notice button:hover {
-    background: rgba(255, 203, 154, 0.28);
+    background: rgba(222, 122, 88, 0.35);
+    color: #fff;
 }
 
 body.lights-off-active .lights-off-notice {
@@ -5259,4 +5290,38 @@ body.lights-off-active .lights-off-notice {
         justify-content: center;
         text-align: center;
     }
+}
+
+/* Card Bookmark Floating Button */
+.card-chip-bookmark {
+    background: rgba(16, 24, 22, 0.78);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #e0e8e5;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.88rem;
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    padding: 0;
+    margin-left: auto;
+    z-index: 5;
+}
+
+.card-chip-bookmark:hover {
+    background: rgba(222, 122, 88, 0.35);
+    border-color: rgba(222, 122, 88, 0.7);
+    color: #fff;
+    transform: scale(1.12);
+}
+
+.card-chip-bookmark.is-bookmarked {
+    background: rgba(229, 169, 60, 0.25);
+    border-color: rgba(229, 169, 60, 0.7);
+    color: #e5a93c;
 }

@@ -151,15 +151,23 @@ require_once __DIR__ . '/includes/header.php';
                         </div>
 
                         <div class="cockpit-quick-tools">
+                            <button type="button" 
+                                    class="quick-tool-btn <?= $isBookmarked ? 'active-bookmark' : '' ?>" 
+                                    id="quickBookmarkBtn"
+                                    data-id="<?= (int)($anime['id'] ?? 0) ?>"
+                                    data-slug="<?= e($animeSlug) ?>"
+                                    data-title="<?= e($anime['title'] ?? '') ?>"
+                                    data-poster="<?= e($anime['poster'] ?? '') ?>"
+                                    onclick="toggleWatchlistBookmark(this)" 
+                                    title="<?= $isBookmarked ? 'In Watchlist (Click to remove)' : 'Add to Watchlist' ?>">
+                                <i class="<?= $isBookmarked ? 'fa-solid fa-bookmark text-accent-gold' : 'fa-regular fa-bookmark' ?>" id="quickBookmarkIcon"></i>
+                            </button>
                             <button type="button" class="quick-tool-btn" onclick="copyWatchLink()" title="Copy Share Link">
                                 <i class="fa-solid fa-share-nodes"></i>
                                 <span class="quick-tooltip" id="shareTooltip">Copied!</span>
                             </button>
                             <button type="button" class="quick-tool-btn" onclick="reloadPlayer()" title="Reload Player Stream">
                                 <i class="fa-solid fa-arrows-rotate"></i>
-                            </button>
-                            <button type="button" class="quick-tool-btn" onclick="reportPlaybackIssue()" title="Report Broken Stream">
-                                <i class="fa-solid fa-triangle-exclamation"></i>
                             </button>
                         </div>
                     </div>
@@ -333,7 +341,15 @@ require_once __DIR__ . '/includes/header.php';
                     </div>
 
                     <div class="dossier-quick-actions">
-                        <button type="button" class="btn-dossier-action <?= $isBookmarked ? 'active-bookmark' : '' ?>" id="btnBookmarkWatch" onclick="toggleWatchlistBookmark(<?= (int)$hindiId ?>, '<?= addslashes(e($animeSlug)) ?>', '<?= addslashes(e($anime['title'])) ?>', '<?= addslashes(e($anime['poster'])) ?>')">
+                        <button type="button" 
+                                class="btn-dossier-action <?= $isBookmarked ? 'active-bookmark' : '' ?>" 
+                                id="btnBookmarkWatch" 
+                                data-id="<?= (int)($anime['id'] ?? 0) ?>"
+                                data-slug="<?= e($animeSlug) ?>"
+                                data-title="<?= e($anime['title'] ?? '') ?>"
+                                data-poster="<?= e($anime['poster'] ?? '') ?>"
+                                onclick="toggleWatchlistBookmark(this)"
+                                title="<?= $isBookmarked ? 'In Watchlist (Click to remove)' : 'Add to Watchlist' ?>">
                             <i class="<?= $isBookmarked ? 'fa-solid fa-bookmark text-accent-gold' : 'fa-regular fa-bookmark' ?>" id="bookmarkWatchIcon"></i> 
                             <span id="bookmarkWatchText"><?= $isBookmarked ? 'In Watchlist' : 'Watchlist' ?></span>
                         </button>

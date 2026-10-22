@@ -554,6 +554,27 @@ function enrichAnimeDetails($anime) {
 /**
  * Render Ultra-Unique AniXo Glass-Pocket Anime Card
  */
+// Helper to fetch all bookmarks for logged-in user (cached in memory)
+function getUserBookmarkIds() {
+    static $cached = null;
+    if ($cached !== null) return $cached;
+    $cached = [];
+    if (!empty($_SESSION['user']['id']) && function_exists('getHindiPdo')) {
+        $pdo = getHindiPdo();
+        if ($pdo) {
+            try {
+                $stmt = $pdo->prepare("SELECT anime_id, anime_slug FROM bookmarks WHERE user_id = ?");
+                $stmt->execute([(int)$_SESSION['user']['id']]);
+                foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $r) {
+                    if (!empty($r['anime_id'])) $cached['id_' . $r['anime_id']] = true;
+                    if (!empty($r['anime_slug'])) $cached['slug_' . $r['anime_slug']] = true;
+                }
+            } catch (Exception $e) {}
+        }
+    }
+    return $cached;
+}
+
 function renderAnimeCard($anime) {
     $slug = e($anime['slug'] ?? ('anime-' . ($anime['id'] ?? '1')));
     $title = e($anime['title'] ?? 'Anime Series');
@@ -566,6 +587,9 @@ function renderAnimeCard($anime) {
     $epText = ($format === 'MOVIE') ? 'Movie' : ($epCount > 0 ? $epCount . ' Eps' : 'Hindi Dub');
     $year = e($anime['release_year'] ?? '2024');
     $isAiring = ($anime['status'] ?? '') === 'Currently Airing';
+    $userBookmarks = getUserBookmarkIds();
+    $cardId = (int)($anime['id'] ?? 0);
+    $isBookmarkedCard = !empty($userBookmarks['id_' . $cardId]) || !empty($userBookmarks['slug_' . $slug]);
 
     $genresRaw = $anime['genres'] ?? '';
     if (is_array($genresRaw)) {
@@ -600,6 +624,17 @@ function renderAnimeCard($anime) {
                 <?php else: ?>
                     <span class="card-chip chip-format"><?= $format ?></span>
                 <?php endif; ?>
+
+                <button type="button" 
+                        class="card-chip-bookmark <?= $isBookmarkedCard ? 'is-bookmarked' : '' ?>" 
+                        data-id="<?= $cardId ?>"
+                        data-slug="<?= $slug ?>"
+                        data-title="<?= $title ?>"
+                        data-poster="<?= $poster ?>"
+                        onclick="event.preventDefault(); event.stopPropagation(); toggleWatchlistBookmark(this);" 
+                        title="<?= $isBookmarkedCard ? 'In Watchlist (Click to remove)' : 'Add to Watchlist' ?>">
+                    <i class="<?= $isBookmarkedCard ? 'fa-solid fa-bookmark text-accent-gold' : 'fa-regular fa-bookmark' ?>"></i>
+                </button>
             </div>
 
             <!-- Cinematic Center Play Portal on Hover -->

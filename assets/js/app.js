@@ -465,10 +465,12 @@ function toggleLightsOff() {
     if (btn) {
         if (isNowActive) {
             btn.classList.add('active');
-            btn.innerHTML = '<i class="fa-solid fa-lightbulb"></i> <span class="tool-label">Lights On</span>';
+            btn.innerHTML = '<i class="fa-solid fa-lightbulb text-accent-gold"></i> <span class="tool-label">Lights On</span>';
+            btn.title = 'Turn Lights On (Exit Focus)';
         } else {
             btn.classList.remove('active');
             btn.innerHTML = '<i class="fa-regular fa-lightbulb"></i> <span class="tool-label">Focus</span>';
+            btn.title = 'Toggle Focus Mode (Lights Off)';
         }
     }
 }
@@ -1530,10 +1532,19 @@ window.addEventListener('message', function(event) {
 // ==========================================
 // Watchlist / Bookmark Feature Logic
 // ==========================================
-window.toggleWatchlistBookmark = async function(animeId, animeSlug, animeTitle, animePoster) {
-    const btn = document.getElementById('btnBookmarkWatch');
-    const icon = document.getElementById('bookmarkWatchIcon');
-    const text = document.getElementById('bookmarkWatchText');
+window.toggleWatchlistBookmark = async function(arg1, animeSlug, animeTitle, animePoster) {
+    let animeId = 0;
+    let clickedEl = null;
+
+    if (arg1 instanceof HTMLElement) {
+        clickedEl = arg1;
+        animeId = parseInt(clickedEl.dataset.id || '0', 10);
+        animeSlug = clickedEl.dataset.slug || '';
+        animeTitle = clickedEl.dataset.title || '';
+        animePoster = clickedEl.dataset.poster || '';
+    } else {
+        animeId = parseInt(arg1 || '0', 10);
+    }
 
     try {
         const res = await fetch('/api/bookmark.php?action=toggle', {
@@ -1560,21 +1571,72 @@ window.toggleWatchlistBookmark = async function(animeId, animeSlug, animeTitle, 
 
         const data = await res.json();
         if (data.success) {
-            if (data.bookmarked) {
-                if (btn) btn.classList.add('active-bookmark');
-                if (icon) {
-                    icon.className = 'fa-solid fa-bookmark text-accent-gold';
+            const isBookmarked = !!data.bookmarked;
+
+            // Sync all card bookmark chips on current page with this slug or id
+            document.querySelectorAll(`[data-slug="${animeSlug}"]`).forEach(el => {
+                if (el.classList.contains('card-chip-bookmark')) {
+                    if (isBookmarked) {
+                        el.classList.add('is-bookmarked');
+                        el.title = 'In Watchlist (Click to remove)';
+                        el.innerHTML = '<i class="fa-solid fa-bookmark text-accent-gold"></i>';
+                    } else {
+                        el.classList.remove('is-bookmarked');
+                        el.title = 'Add to Watchlist';
+                        el.innerHTML = '<i class="fa-regular fa-bookmark"></i>';
+                    }
                 }
-                if (text) text.innerText = 'In Watchlist';
-                showToast(data.message || 'Added to your Watchlist!', 'success');
-            } else {
-                if (btn) btn.classList.remove('active-bookmark');
-                if (icon) {
-                    icon.className = 'fa-regular fa-bookmark';
+            });
+
+            // Watch Page Dossier Button
+            const btnDossier = document.getElementById('btnBookmarkWatch');
+            const iconDossier = document.getElementById('bookmarkWatchIcon');
+            const textDossier = document.getElementById('bookmarkWatchText');
+            if (btnDossier) {
+                if (isBookmarked) {
+                    btnDossier.classList.add('active-bookmark');
+                    if (iconDossier) iconDossier.className = 'fa-solid fa-bookmark text-accent-gold';
+                    if (textDossier) textDossier.innerText = 'In Watchlist';
+                } else {
+                    btnDossier.classList.remove('active-bookmark');
+                    if (iconDossier) iconDossier.className = 'fa-regular fa-bookmark';
+                    if (textDossier) textDossier.innerText = 'Watchlist';
                 }
-                if (text) text.innerText = 'Watchlist';
-                showToast(data.message || 'Removed from Watchlist', 'info');
             }
+
+            // Watch Page Cockpit Button
+            const quickBtn = document.getElementById('quickBookmarkBtn');
+            const quickIcon = document.getElementById('quickBookmarkIcon');
+            if (quickBtn) {
+                if (isBookmarked) {
+                    quickBtn.classList.add('active-bookmark');
+                    quickBtn.title = 'In Watchlist (Click to remove)';
+                    if (quickIcon) quickIcon.className = 'fa-solid fa-bookmark text-accent-gold';
+                } else {
+                    quickBtn.classList.remove('active-bookmark');
+                    quickBtn.title = 'Add to Watchlist';
+                    if (quickIcon) quickIcon.className = 'fa-regular fa-bookmark';
+                }
+            }
+
+            // If we are currently on watchlist.php and an item was removed, fade out the card smoothly
+            if (window.location.pathname.includes('watchlist.php') && !isBookmarked && clickedEl) {
+                const card = clickedEl.closest('.anime-card');
+                if (card) {
+                    card.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                    card.style.opacity = '0';
+                    card.style.transform = 'scale(0.85)';
+                    setTimeout(() => {
+                        card.remove();
+                        const remaining = document.querySelectorAll('.anime-grid .anime-card');
+                        if (remaining.length === 0) {
+                            window.location.reload();
+                        }
+                    }, 300);
+                }
+            }
+
+            showToast(data.message || (isBookmarked ? 'Added to your Watchlist!' : 'Removed from Watchlist'), isBookmarked ? 'success' : 'info');
         } else {
             showToast(data.message || 'Failed to update watchlist', 'error');
         }
