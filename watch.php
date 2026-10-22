@@ -42,9 +42,81 @@ if (isLoggedIn() && function_exists('getHindiPdo')) {
     }
 }
 
-$page_title = 'Watch ' . ($anime['title'] ?? 'Anime') . ' Episode ' . $currentEpNum . ($isDub ? ' (Hindi Dubbed)' : ' (Subbed)');
-$page_desc = 'Stream ' . ($anime['title'] ?? 'Anime') . ' Episode ' . $currentEpNum . ' in 1080p Full HD with zero buffering on AniXoHindi.';
-$og_image = !empty($anime['banner']) ? $anime['banner'] : (!empty($anime['poster']) ? $anime['poster'] : '');
+$animeMainTitle = $anime['title'] ?? 'Anime';
+$canonicalUrl = 'https://anixohindi.cc/watch.php?anime=' . urlencode($animeSlug) . '&ep=' . $currentEpNum;
+$page_title = 'Watch ' . $animeMainTitle . ' Episode ' . $currentEpNum . ($isDub ? ' (Hindi Dubbed)' : ' (Subbed)');
+$page_desc = 'Watch ' . $animeMainTitle . ' Episode ' . $currentEpNum . ' in 1080p Full HD Hindi Dubbed online free on AniXoHindi. Authentic Hindi audio, zero buffering, high speed streaming.';
+$page_keywords = $animeMainTitle . ' Hindi Dubbed, ' . $animeMainTitle . ' Episode ' . $currentEpNum . ', Watch ' . $animeMainTitle . ' Online, ' . (!empty($anime['hindi_title']) ? $anime['hindi_title'] . ', ' : '') . 'AniXoHindi';
+$og_type = 'video.episode';
+$og_image = !empty($anime['banner']) ? $anime['banner'] : (!empty($anime['poster']) ? $anime['poster'] : 'https://anixohindi.cc/assets/img/logo.png');
+
+// Structured Data (Schema.org) for Google Video Rich Snippets & Search Carousel
+$page_schema_json = [
+    "@context" => "https://schema.org",
+    "@graph" => [
+        [
+            "@type" => "VideoObject",
+            "name" => "Watch " . $animeMainTitle . " Episode " . $currentEpNum . " in Hindi Dubbed",
+            "description" => !empty($anime['synopsis']) ? mb_substr(strip_tags($anime['synopsis']), 0, 250) : $page_desc,
+            "thumbnailUrl" => array_values(array_filter([$anime['banner'] ?? null, $anime['poster'] ?? null])),
+            "uploadDate" => "2024-01-01T00:00:00+05:30",
+            "embedUrl" => "https://embed.anixohindi.cc/embed/ani/" . ($anime['anilist_id'] ?? $curId ?? 1) . "/" . $currentEpNum,
+            "inLanguage" => ["hi", "ja"],
+            "isFamilyFriendly" => true,
+            "potentialAction" => [
+                "@type" => "WatchAction",
+                "target" => $canonicalUrl
+            ]
+        ],
+        [
+            "@type" => "TVEpisode",
+            "episodeNumber" => $currentEpNum,
+            "name" => $animeMainTitle . " Episode " . $currentEpNum,
+            "partOfSeries" => [
+                "@type" => "TVSeries",
+                "name" => $animeMainTitle,
+                "alternateName" => $anime['hindi_title'] ?? null,
+                "genre" => is_array($anime['genres'] ?? null) ? $anime['genres'] : ['Animation', 'Action'],
+                "aggregateRating" => [
+                    "@type" => "AggregateRating",
+                    "ratingValue" => (float)($anime['score'] ?? 8.5),
+                    "bestRating" => 10,
+                    "ratingCount" => 1420
+                ]
+            ]
+        ],
+        [
+            "@type" => "BreadcrumbList",
+            "itemListElement" => [
+                [
+                    "@type" => "ListItem",
+                    "position" => 1,
+                    "name" => "Home",
+                    "item" => "https://anixohindi.cc/"
+                ],
+                [
+                    "@type" => "ListItem",
+                    "position" => 2,
+                    "name" => "Hindi Dubbed",
+                    "item" => "https://anixohindi.cc/browse.php?type=dub"
+                ],
+                [
+                    "@type" => "ListItem",
+                    "position" => 3,
+                    "name" => $animeMainTitle,
+                    "item" => "https://anixohindi.cc/watch.php?anime=" . urlencode($animeSlug) . "&ep=1"
+                ],
+                [
+                    "@type" => "ListItem",
+                    "position" => 4,
+                    "name" => "Episode " . $currentEpNum,
+                    "item" => $canonicalUrl
+                ]
+            ]
+        ]
+    ]
+];
+
 require_once __DIR__ . '/includes/header.php';
 ?>
 

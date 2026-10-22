@@ -13,6 +13,7 @@
                 <li><a href="/browse.php">Browse Catalog</a></li>
                 <li><a href="/browse.php?dmca=1">DMCA</a></li>
                 <li><a href="/browse.php?contact=1">Contact</a></li>
+                <li><a href="/sitemap.xml">Sitemap</a></li>
             </ul>
         </div>
         
@@ -21,7 +22,7 @@
         </p>
         
         <div class="footer-copyright">
-            © <?= date('Y') ?> <?= SITE_NAME ?>. All rights reserved. Designed for Hindi Anime Community.
+            &copy; <?= date('Y') ?> <?= SITE_NAME ?>. All rights reserved. Designed for Hindi Anime Community.
         </div>
     </div>
 </footer>

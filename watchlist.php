@@ -50,6 +50,7 @@ if ($user) {
 
 $page_title = 'My Watchlist - ' . SITE_NAME;
 $page_desc = 'Your personal bookmarked Hindi Dubbed anime collection on AniXoHindi.';
+$page_robots = 'noindex, follow';
 require_once __DIR__ . '/includes/header.php';
 ?>
 

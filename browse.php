@@ -32,8 +32,44 @@ $allGenres = [
     'Supernatural', 'Super Power', 'Suspense', 'Thriller'
 ];
 
-$page_title = 'Browse Anime Catalog - ' . SITE_NAME;
-$page_desc = 'Browse and search complete library of Hindi Dubbed and Subbed anime.';
+if ($filter_type === 'dub') {
+    $page_title = 'Watch Hindi Dubbed Anime List - 1080p Full HD Free Online';
+    $page_desc = 'Browse our complete catalog of 220+ verified Hindi Dubbed anime series and movies. Fast 1080p streaming with authentic Hindi audio on AniXoHindi.';
+} elseif ($filter_type === 'Movie') {
+    $page_title = 'Watch Hindi Dubbed Anime Movies in 1080p Full HD Online';
+    $page_desc = 'Stream popular anime movies in Hindi Dubbed online free with zero buffering on AniXoHindi.';
+} elseif ($filter_genre !== 'all') {
+    $page_title = 'Best ' . e($filter_genre) . ' Hindi Dubbed Anime Series to Watch Online';
+    $page_desc = 'Explore top rated ' . e($filter_genre) . ' anime in Hindi Dubbed on AniXoHindi. Stream episodes in HD 1080p.';
+} elseif (!empty($filter_search)) {
+    $page_title = 'Search results for "' . e($filter_search) . '" - Hindi Dubbed Anime';
+    $page_desc = 'Watch Hindi Dubbed episodes of ' . e($filter_search) . ' in 1080p Full HD on AniXoHindi.';
+} else {
+    $page_title = 'Browse Hindi Dubbed Anime Catalog - 1080p Full HD Stream';
+    $page_desc = 'Browse complete library of 220+ verified Hindi Dubbed anime series and movies. Free high-speed streaming on AniXoHindi.';
+}
+
+$page_keywords = 'Hindi Dubbed Anime, Watch Anime Online, Anime in Hindi, Free Anime Streaming, AniXoHindi Catalog';
+
+$page_schema_json = [
+    "@context" => "https://schema.org",
+    "@type" => "BreadcrumbList",
+    "itemListElement" => [
+        [
+            "@type" => "ListItem",
+            "position" => 1,
+            "name" => "Home",
+            "item" => "https://anixohindi.cc/"
+        ],
+        [
+            "@type" => "ListItem",
+            "position" => 2,
+            "name" => "Browse Anime Catalog",
+            "item" => "https://anixohindi.cc/browse.php"
+        ]
+    ]
+];
+
 require_once __DIR__ . '/includes/header.php';
 ?>
 

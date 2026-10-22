@@ -1,0 +1,31 @@
+# AniXoHindi Robots.txt
+# Enterprise Search Engine Directives
+
+User-agent: *
+Allow: /
+Allow: /browse.php
+Allow: /watch.php
+Allow: /sitemap.xml
+Disallow: /auth/
+Disallow: /api/
+Disallow: /config/
+Disallow: /cache/
+Disallow: /watchlist.php
+
+# Google Dedicated Bots
+User-agent: Googlebot
+Allow: /
+
+User-agent: Googlebot-Video
+Allow: /
+Allow: /watch.php
+
+User-agent: Googlebot-Image
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+# Canonical Sitemaps
+Sitemap: https://anixohindi.cc/sitemap.xml
+Sitemap: https://anixohindi.cc/sitemap.php

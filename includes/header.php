@@ -8,28 +8,123 @@ $user = currentUser();
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= isset($page_title) ? e($page_title) . ' - ' . SITE_NAME : SITE_NAME . ' – ' . SITE_TAGLINE ?></title>
-    <meta name="description" content="<?= isset($page_desc) ? e($page_desc) : 'Watch popular anime in Hindi Dubbed and English Subbed in 1080p Full HD without buffering. Stream free on ' . SITE_NAME . '.' ?>">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     
-    <!-- Open Graph for Social Previews & SEO -->
-    <meta property="og:title" content="<?= isset($page_title) ? e($page_title) : SITE_NAME ?>">
-    <meta property="og:description" content="<?= isset($page_desc) ? e($page_desc) : SITE_TAGLINE ?>">
-    <meta property="og:type" content="website">
+    <?php
+    $siteName = 'AniXoHindi';
+    $siteTagline = 'Watch Hindi Dubbed Anime in 1080p Full HD';
+    if (!empty($page_title)) {
+        $finalTitle = (strpos($page_title, $siteName) !== false) ? e($page_title) : (e($page_title) . ' | ' . $siteName);
+    } else {
+        $finalTitle = $siteName . ' – ' . $siteTagline;
+    }
+
+    $finalDesc = !empty($page_desc) ? e($page_desc) : 'Watch popular anime in Hindi Dubbed and English Subbed in 1080p Full HD without buffering. Stream free on AniXoHindi.';
+    $finalKeywords = !empty($page_keywords) ? e($page_keywords) : 'Hindi Dubbed Anime, Watch Anime in Hindi, Hindi Anime Episodes, Free Anime Online, Solo Leveling Hindi Dub, Naruto Hindi Dub, Bleach Hindi, Death Note Hindi, AniXoHindi';
+    $finalRobots = !empty($page_robots) ? e($page_robots) : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1';
+
+    if (empty($canonicalUrl)) {
+        $rawUri = $_SERVER['REQUEST_URI'] ?? '/';
+        $pathOnly = strtok($rawUri, '?');
+        if ($pathOnly === '/' || $pathOnly === '/index.php') {
+            $canonicalUrl = 'https://anixohindi.cc/';
+        } elseif ($pathOnly === '/browse.php') {
+            $allowedParams = [];
+            if (!empty($_GET['type'])) $allowedParams['type'] = $_GET['type'];
+            if (!empty($_GET['genre'])) $allowedParams['genre'] = $_GET['genre'];
+            if (!empty($_GET['status'])) $allowedParams['status'] = $_GET['status'];
+            if (!empty($_GET['keyword'])) $allowedParams['keyword'] = $_GET['keyword'];
+            $canonicalUrl = 'https://anixohindi.cc/browse.php' . (!empty($allowedParams) ? '?' . http_build_query($allowedParams) : '');
+        } else {
+            $canonicalUrl = 'https://anixohindi.cc' . $rawUri;
+        }
+    }
+    ?>
+
+    <!-- Primary Title & Meta SEO -->
+    <title><?= $finalTitle ?></title>
+    <meta name="description" content="<?= $finalDesc ?>">
+    <meta name="keywords" content="<?= $finalKeywords ?>">
+    <meta name="author" content="AniXoHindi">
+    <meta name="theme-color" content="#101716">
+    <link rel="canonical" href="<?= e($canonicalUrl) ?>">
+
+    <!-- Search Engine Indexing Directives -->
+    <meta name="robots" content="<?= $finalRobots ?>">
+    <meta name="googlebot" content="<?= $finalRobots ?>">
+    <meta name="bingbot" content="<?= $finalRobots ?>">
+
+    <!-- Open Graph Protocol (Facebook, Telegram, Discord, WhatsApp) -->
+    <meta property="og:site_name" content="AniXoHindi">
+    <meta property="og:type" content="<?= !empty($og_type) ? e($og_type) : 'website' ?>">
+    <meta property="og:title" content="<?= $finalTitle ?>">
+    <meta property="og:description" content="<?= $finalDesc ?>">
+    <meta property="og:url" content="<?= e($canonicalUrl) ?>">
+    <meta property="og:locale" content="hi_IN">
+    <meta property="og:locale:alternate" content="en_US">
     <?php if (!empty($og_image)): ?>
     <meta property="og:image" content="<?= e($og_image) ?>">
+    <meta property="og:image:alt" content="<?= $finalTitle ?>">
+    <?php endif; ?>
+
+    <!-- Twitter Card for High CTR Previews -->
     <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="<?= $finalTitle ?>">
+    <meta name="twitter:description" content="<?= $finalDesc ?>">
+    <?php if (!empty($og_image)): ?>
     <meta name="twitter:image" content="<?= e($og_image) ?>">
     <?php endif; ?>
-    
-    <!-- Fonts & Icons -->
+
+    <!-- Fonts, Preconnect & Styling Performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://embed.anixohindi.cc" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
-    <!-- Professional Design System Stylesheet -->
     <link rel="stylesheet" href="/assets/css/style.css?v=<?= filemtime(__DIR__ . '/../assets/css/style.css') ?>">
+
+    <!-- Google Global Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "@id": "https://anixohindi.cc/#website",
+          "url": "https://anixohindi.cc/",
+          "name": "AniXoHindi",
+          "alternateName": ["AniXo Hindi", "AniXo Anime", "अनिक्सो हिंदी"],
+          "description": "Watch Free Hindi Dubbed Anime Online in Full HD 1080p",
+          "inLanguage": "hi-IN",
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": {
+              "@type": "EntryPoint",
+              "urlTemplate": "https://anixohindi.cc/browse.php?keyword={search_term_string}"
+            },
+            "query-input": "required name=search_term_string"
+          }
+        },
+        {
+          "@type": "Organization",
+          "@id": "https://anixohindi.cc/#organization",
+          "name": "AniXoHindi",
+          "url": "https://anixohindi.cc/",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://anixohindi.cc/assets/img/logo.png"
+          }
+        }
+      ]
+    }
+    </script>
+
+    <?php if (!empty($page_schema_json)): ?>
+    <!-- Page Specific Structured Data Schema (VideoObject, TVEpisode, Breadcrumbs) -->
+    <script type="application/ld+json">
+    <?= json_encode($page_schema_json, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) ?>
+    </script>
+    <?php endif; ?>
 </head>
 <body>
 
