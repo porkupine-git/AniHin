@@ -4,6 +4,7 @@
 User-agent: *
 Allow: /
 Allow: /browse.php
+Allow: /blog.php
 Allow: /watch.php
 Allow: /sitemap.xml
 Disallow: /auth/

@@ -1,5 +1,7 @@
 # Cache files
 cache/*.json
+cache/articles/*
+!cache/articles/.gitkeep
 !cache/.gitkeep
 
 # Environment and sensitive configs

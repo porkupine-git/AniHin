@@ -51,6 +51,12 @@ echo '<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL;
         <changefreq>daily</changefreq>
         <priority>0.85</priority>
     </url>
+    <url>
+        <loc><?= $baseUrl ?>/blog.php</loc>
+        <lastmod><?= $today ?></lastmod>
+        <changefreq>daily</changefreq>
+        <priority>0.90</priority>
+    </url>
 
     <!-- Genre Category Hubs -->
     <?php foreach ($genres as $genre): ?>

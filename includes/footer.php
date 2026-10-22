@@ -11,6 +11,7 @@
                 <li><a href="/index.php">Home</a></li>
                 <li><a href="/browse.php?type=dub">Hindi Dubbed</a></li>
                 <li><a href="/browse.php">Browse Catalog</a></li>
+                <li><a href="/blog.php">Anime Blog</a></li>
                 <li><a href="/browse.php?dmca=1">DMCA</a></li>
                 <li><a href="/browse.php?contact=1">Contact</a></li>
                 <li><a href="/sitemap.xml">Sitemap</a></li>

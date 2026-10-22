@@ -150,6 +150,7 @@ $user = currentUser();
                     <li><a href="/browse.php?type=sub" class="<?= ($_GET['type'] ?? '') == 'sub' ? 'active' : '' ?>">Subbed</a></li>
                     <li><a href="/browse.php?type=Movie" class="<?= ($_GET['type'] ?? '') == 'Movie' ? 'active' : '' ?>">Movies</a></li>
                     <li><a href="/browse.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'browse.php' && empty($_GET['type'])) ? 'active' : '' ?>">Browse</a></li>
+                    <li><a href="/blog.php" class="<?= basename($_SERVER['PHP_SELF']) == 'blog.php' ? 'active' : '' ?>">Blog</a></li>
                 </ul>
             </div>
 
@@ -232,6 +233,7 @@ $user = currentUser();
                 <li><a href="/browse.php?type=sub" class="<?= ($_GET['type'] ?? '') == 'sub' ? 'active' : '' ?>"><i class="fa-solid fa-closed-captioning mr-2"></i> Subbed</a></li>
                 <li><a href="/browse.php?type=Movie" class="<?= ($_GET['type'] ?? '') == 'Movie' ? 'active' : '' ?>"><i class="fa-solid fa-film mr-2"></i> Movies</a></li>
                 <li><a href="/browse.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'browse.php' && empty($_GET['type'])) ? 'active' : '' ?>"><i class="fa-solid fa-compass mr-2"></i> Browse All</a></li>
+                <li><a href="/blog.php" class="<?= basename($_SERVER['PHP_SELF']) == 'blog.php' ? 'active' : '' ?>"><i class="fa-solid fa-newspaper mr-2 text-accent-peach"></i> Anime Blog</a></li>
                 <?php if ($user): ?>
                     <li><a href="/watchlist.php" class="<?= basename($_SERVER['PHP_SELF']) == 'watchlist.php' ? 'active' : '' ?>"><i class="fa-regular fa-bookmark mr-2"></i> My Watchlist</a></li>
                 <?php endif; ?>
