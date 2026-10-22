@@ -192,7 +192,13 @@ function formatHindiDbItem($row) {
     $aniId = !empty($row['anilist_id']) ? (int)$row['anilist_id'] : null;
     $malId = !empty($row['mal_id']) ? (int)$row['mal_id'] : null;
 
-    $title = trim($row['title'] ?? $row['title_english'] ?? $row['title_romaji'] ?? ('Anime #' . $id));
+    $engTitle = trim($row['title_english'] ?? '');
+    $mTitle = trim($row['title'] ?? '');
+    if (!empty($engTitle) && (stripos($engTitle, 'Season') !== false || stripos($engTitle, '(S') !== false || stripos($engTitle, 'Cour') !== false || stripos($engTitle, 'Part') !== false || stripos($engTitle, 'Movie') !== false)) {
+        $title = $engTitle;
+    } else {
+        $title = !empty($mTitle) ? $mTitle : (!empty($engTitle) ? $engTitle : ('Anime #' . $id));
+    }
     $slug = slugifyAnime($title, $id);
 
     // Parse Genres
@@ -458,7 +464,7 @@ function enrichAnimeDetails($anime) {
 
             foreach ($dbEps as $e) {
                 $num = (int)$e['episode_number'];
-                $zip = $anizipEps[String($num)] ?? [];
+                $zip = $anizipEps[(string)$num] ?? [];
                 
                 $title = !empty($e['episode_title']) ? $e['episode_title'] : ($zip['title']['en'] ?? $zip['title']['ja'] ?? ('Episode ' . $num));
                 $image = !empty($e['episode_thumbnail']) ? $e['episode_thumbnail'] : ($zip['image'] ?? $anime['banner'] ?? $anime['poster']);
@@ -466,9 +472,10 @@ function enrichAnimeDetails($anime) {
                 $durSec = (int)($e['duration_seconds'] ?? 0);
                 $duration = $durSec > 0 ? round($durSec / 60) . 'm' : '24m';
 
-                $embedUrl = $aniId 
-                    ? "{$embedBase}/embed/ani/{$aniId}/{$num}"
-                    : "{$embedBase}/embed/id/{$hindiId}/{$num}";
+                $embedIdUrl = "{$embedBase}/embed/id/{$hindiId}/{$num}";
+                $embedAniUrl = $aniId ? "{$embedBase}/embed/ani/{$aniId}/{$num}" : $embedIdUrl;
+                $isMultiPart = (stripos($anime['title'], 'Season') !== false || stripos($anime['title'], '(S') !== false || stripos($anime['title'], 'Cour') !== false);
+                $embedUrl = $isMultiPart ? $embedIdUrl : $embedAniUrl;
 
                 $episodes[] = [
                     'number' => $num,
@@ -478,7 +485,8 @@ function enrichAnimeDetails($anime) {
                     'duration' => $duration,
                     'overview' => $overview,
                     'embed' => $embedUrl,
-                    'embed_id' => "{$embedBase}/embed/id/{$hindiId}/{$num}"
+                    'embed_id' => $embedIdUrl,
+                    'embed_ani' => $embedAniUrl
                 ];
             }
         } catch (Exception $e) {

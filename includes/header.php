@@ -16,6 +16,11 @@ $user = currentUser();
     <meta property="og:title" content="<?= isset($page_title) ? e($page_title) : SITE_NAME ?>">
     <meta property="og:description" content="<?= isset($page_desc) ? e($page_desc) : SITE_TAGLINE ?>">
     <meta property="og:type" content="website">
+    <?php if (!empty($og_image)): ?>
+    <meta property="og:image" content="<?= e($og_image) ?>">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="<?= e($og_image) ?>">
+    <?php endif; ?>
     
     <!-- Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -85,6 +90,10 @@ $user = currentUser();
                                     </div>
                                 </div>
                                 <div class="dropdown-divider"></div>
+                                <a href="/watchlist.php" class="dropdown-item">
+                                    <i class="fa-solid fa-bookmark text-accent-gold"></i>
+                                    <span>My Watchlist</span>
+                                </a>
                                 <a href="/auth/logout.php" class="dropdown-item dropdown-logout-item">
                                     <i class="fa-solid fa-arrow-right-from-bracket"></i>
                                     <span>Log Out</span>
@@ -128,6 +137,9 @@ $user = currentUser();
                 <li><a href="/browse.php?type=sub" class="<?= ($_GET['type'] ?? '') == 'sub' ? 'active' : '' ?>"><i class="fa-solid fa-closed-captioning mr-2"></i> Subbed</a></li>
                 <li><a href="/browse.php?type=Movie" class="<?= ($_GET['type'] ?? '') == 'Movie' ? 'active' : '' ?>"><i class="fa-solid fa-film mr-2"></i> Movies</a></li>
                 <li><a href="/browse.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'browse.php' && empty($_GET['type'])) ? 'active' : '' ?>"><i class="fa-solid fa-compass mr-2"></i> Browse All</a></li>
+                <?php if ($user): ?>
+                    <li><a href="/watchlist.php" class="<?= basename($_SERVER['PHP_SELF']) == 'watchlist.php' ? 'active' : '' ?>"><i class="fa-solid fa-bookmark mr-2 text-accent-gold"></i> My Watchlist</a></li>
+                <?php endif; ?>
             </ul>
             <?php if (!$user): ?>
             <div class="mobile-drawer-footer">

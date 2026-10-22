@@ -1492,3 +1492,111 @@ function initSpotlightDeck() {
     startAutoplay();
 }
 
+
+// ==========================================================================
+// Parent Iframe PostMessage Bridge (Auto-Next & Watch Progress)
+// ==========================================================================
+window.addEventListener('message', function(event) {
+    if (!event.data) return;
+    const data = event.data;
+
+    // 1. Auto-Next Episode on Video Completion
+    if (data.event === 'ended' || data.type === 'ended') {
+        const autoNextPref = localStorage.getItem('anixo_auto_next');
+        const isAutoNextOn = autoNextPref === null || autoNextPref === '1';
+        if (isAutoNextOn && typeof goToEpisode === 'function' && window.WATCH_CURRENT_EP) {
+            console.log('[AniXoHindi] Video finished playing. Triggering Auto-Next to EP', window.WATCH_CURRENT_EP + 1);
+            setTimeout(() => {
+                goToEpisode(window.WATCH_CURRENT_EP + 1);
+            }, 1000);
+        }
+    }
+
+    // 2. Save Watch Progress in localStorage (Continue Watching)
+    if ((data.event === 'timeupdate' || data.type === 'timeupdate') && data.currentTime && window.WATCH_ANIME_SLUG) {
+        try {
+            const history = JSON.parse(localStorage.getItem('anixo_history') || '{}');
+            history[window.WATCH_ANIME_SLUG] = {
+                ep: window.WATCH_CURRENT_EP || 1,
+                time: Math.floor(data.currentTime),
+                duration: Math.floor(data.duration || 0),
+                updated: Date.now()
+            };
+            localStorage.setItem('anixo_history', JSON.stringify(history));
+        } catch (e) {}
+    }
+});
+
+// ==========================================
+// Watchlist / Bookmark Feature Logic
+// ==========================================
+window.toggleWatchlistBookmark = async function(animeId, animeSlug, animeTitle, animePoster) {
+    const btn = document.getElementById('btnBookmarkWatch');
+    const icon = document.getElementById('bookmarkWatchIcon');
+    const text = document.getElementById('bookmarkWatchText');
+
+    try {
+        const res = await fetch('/api/bookmark.php?action=toggle', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                anime_id: animeId,
+                anime_slug: animeSlug,
+                anime_title: animeTitle,
+                anime_poster: animePoster
+            })
+        });
+
+        if (res.status === 401) {
+            if (typeof openAuthModal === 'function') {
+                openAuthModal();
+            } else {
+                alert('Please sign in to save anime to your Watchlist.');
+            }
+            return;
+        }
+
+        const data = await res.json();
+        if (data.success) {
+            if (data.bookmarked) {
+                if (btn) btn.classList.add('active-bookmark');
+                if (icon) {
+                    icon.className = 'fa-solid fa-bookmark text-accent-gold';
+                }
+                if (text) text.innerText = 'In Watchlist';
+                showToast(data.message || 'Added to your Watchlist!', 'success');
+            } else {
+                if (btn) btn.classList.remove('active-bookmark');
+                if (icon) {
+                    icon.className = 'fa-regular fa-bookmark';
+                }
+                if (text) text.innerText = 'Watchlist';
+                showToast(data.message || 'Removed from Watchlist', 'info');
+            }
+        } else {
+            showToast(data.message || 'Failed to update watchlist', 'error');
+        }
+    } catch (e) {
+        console.error('Bookmark toggle error:', e);
+        showToast('Network error, please try again.', 'error');
+    }
+};
+
+window.showToast = function(msg, type) {
+    let toast = document.getElementById('site-live-toast');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'site-live-toast';
+        toast.className = 'site-live-toast';
+        document.body.appendChild(toast);
+    }
+    const iconClass = type === 'success' ? 'fa-circle-check text-accent-gold' : (type === 'error' ? 'fa-circle-exclamation text-accent-peach' : 'fa-circle-info');
+    toast.innerHTML = `<i class="fa-solid ${iconClass} mr-2"></i> <span>${msg}</span>`;
+    toast.classList.add('show');
+    clearTimeout(window.__toastTimeout);
+    window.__toastTimeout = setTimeout(() => {
+        toast.classList.remove('show');
+    }, 3200);
+};

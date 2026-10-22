@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../config/db.php';
 
-$provider = $_GET['provider'] ?? '';
+$provider = $_GET['provider'] ?? ($_GET['state'] ?? 'google');
 $code = $_GET['code'] ?? '';
 
 if (!$code) {
@@ -13,7 +13,7 @@ if (!$code) {
 $userData = null;
 
 if ($provider === 'google') {
-    // Exchange code for Google Access Token
+    // Exchange authorization code for Google Access Token
     $tokenUrl = 'https://oauth2.googleapis.com/token';
     $postData = [
         'code' => $code,
@@ -28,16 +28,28 @@ if ($provider === 'google') {
         CURLOPT_POST => true,
         CURLOPT_POSTFIELDS => http_build_query($postData),
         CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_SSL_VERIFYPEER => false
+        CURLOPT_SSL_VERIFYPEER => false,
+        CURLOPT_USERAGENT => 'AniXoHindi/1.0'
     ]);
     $res = curl_exec($ch);
     curl_close($ch);
     $tokenJson = json_decode($res, true);
 
     if (!empty($tokenJson['access_token'])) {
-        // Fetch user info from Google
-        $userUrl = 'https://www.googleapis.com/oauth2/v2/userinfo?access_token=' . $tokenJson['access_token'];
-        $userRes = @file_get_contents($userUrl);
+        // Fetch user profile info with Bearer Authorization header
+        $userUrl = 'https://www.googleapis.com/oauth2/v2/userinfo';
+        $chUser = curl_init($userUrl);
+        curl_setopt_array($chUser, [
+            CURLOPT_HTTPHEADER => [
+                'Authorization: Bearer ' . $tokenJson['access_token'],
+                'Accept: application/json'
+            ],
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_USERAGENT => 'AniXoHindi/1.0'
+        ]);
+        $userRes = curl_exec($chUser);
+        curl_close($chUser);
         $googleUser = json_decode($userRes, true);
 
         if (!empty($googleUser['id'])) {
@@ -49,6 +61,8 @@ if ($provider === 'google') {
                 'avatar' => $googleUser['picture'] ?? null
             ];
         }
+    } else {
+        error_log('Google token error: ' . ($res ?: 'No response'));
     }
 } elseif ($provider === 'anilist') {
     // Exchange code for AniList Access Token
@@ -67,14 +81,14 @@ if ($provider === 'google') {
         CURLOPT_POSTFIELDS => json_encode($postData),
         CURLOPT_HTTPHEADER => ['Content-Type: application/json', 'Accept: application/json'],
         CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_SSL_VERIFYPEER => false
+        CURLOPT_SSL_VERIFYPEER => false,
+        CURLOPT_USERAGENT => 'AniXoHindi/1.0'
     ]);
     $res = curl_exec($ch);
     curl_close($ch);
     $tokenJson = json_decode($res, true);
 
     if (!empty($tokenJson['access_token'])) {
-        // Query AniList GraphQL for Viewer details
         $query = 'query { Viewer { id name avatar { medium } } }';
         $chGql = curl_init('https://graphql.anilist.co');
         curl_setopt_array($chGql, [
@@ -85,7 +99,8 @@ if ($provider === 'google') {
                 'Authorization: Bearer ' . $tokenJson['access_token']
             ],
             CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_SSL_VERIFYPEER => false
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_USERAGENT => 'AniXoHindi/1.0'
         ]);
         $gqlRes = curl_exec($chGql);
         curl_close($chGql);
@@ -105,18 +120,47 @@ if ($provider === 'google') {
 }
 
 if ($userData) {
-    // Save to Database if connected
-    if ($db_connected && $conn) {
-        $stmt = $conn->prepare("INSERT INTO users (oauth_provider, oauth_id, username, email, avatar) 
-            VALUES (?, ?, ?, ?, ?) 
-            ON DUPLICATE KEY UPDATE username = VALUES(username), avatar = VALUES(avatar)");
-        $stmt->bind_param("sssss", $userData['provider'], $userData['oauth_id'], $userData['username'], $userData['email'], $userData['avatar']);
-        $stmt->execute();
-        $userData['id'] = $stmt->insert_id ?: $conn->insert_id;
+    // Save to SQLite users table
+    $pdo = function_exists('getHindiPdo') ? getHindiPdo() : null;
+    if ($pdo) {
+        try {
+            $stmt = $pdo->prepare("
+                INSERT INTO users (oauth_provider, oauth_id, username, email, avatar) 
+                VALUES (?, ?, ?, ?, ?) 
+                ON CONFLICT(oauth_provider, oauth_id) DO UPDATE SET 
+                    username = excluded.username, 
+                    avatar = excluded.avatar, 
+                    last_login = CURRENT_TIMESTAMP
+            ");
+            $stmt->execute([
+                $userData['provider'],
+                $userData['oauth_id'],
+                $userData['username'],
+                $userData['email'],
+                $userData['avatar']
+            ]);
+
+            $idStmt = $pdo->prepare("SELECT id FROM users WHERE oauth_provider = ? AND oauth_id = ?");
+            $idStmt->execute([$userData['provider'], $userData['oauth_id']]);
+            $uRow = $idStmt->fetch();
+            if ($uRow) {
+                $userData['id'] = (int)$uRow['id'];
+            }
+        } catch (Exception $e) {
+            error_log('User save error: ' . $e->getMessage());
+        }
+    }
+
+    if (empty($userData['id'])) {
+        $userData['id'] = 1;
     }
 
     $_SESSION['user'] = $userData;
-    header('Location: /index.php?login_success=1');
+
+    // Return to the page user was previously on
+    $returnUrl = $_SESSION['auth_redirect_after'] ?? '/index.php?login_success=1';
+    unset($_SESSION['auth_redirect_after']);
+    header('Location: ' . $returnUrl);
     exit;
 }
 

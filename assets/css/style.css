@@ -5207,3 +5207,56 @@ body.lights-off-active .lights-off-notice {
 }
 
 
+
+/* ==========================================
+   Watchlist & Live Toast Notifications
+   ========================================== */
+.active-bookmark {
+    background: rgba(222, 122, 88, 0.18) !important;
+    border-color: rgba(222, 122, 88, 0.5) !important;
+    color: #fff !important;
+}
+
+.text-accent-gold {
+    color: #e5a93c !important;
+}
+
+.site-live-toast {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    z-index: 999999;
+    background: rgba(18, 24, 22, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-size: 0.92rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5), 0 0 20px rgba(222, 122, 88, 0.15);
+    transform: translateY(30px);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+}
+
+.site-live-toast.show {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+}
+
+@media (max-width: 768px) {
+    .site-live-toast {
+        bottom: 20px;
+        right: 20px;
+        left: 20px;
+        justify-content: center;
+        text-align: center;
+    }
+}

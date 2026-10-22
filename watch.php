@@ -29,8 +29,22 @@ $nextEp = $currentEpNum < $epCount ? $currentEpNum + 1 : null;
 $bannerImg = !empty($anime['banner']) ? $anime['banner'] : (!empty($anime['poster']) ? $anime['poster'] : 'https://placehold.co/1280x400/101716/D1E8E2?text=AniXoHindi');
 $isDub = !empty($anime['is_hindi_dubbed']) || !empty($anime['hindi_title']);
 
+// Check if current anime is in user's watchlist
+$isBookmarked = false;
+if (isLoggedIn() && function_exists('getHindiPdo')) {
+    $pdo = getHindiPdo();
+    if ($pdo) {
+        $uId = (int)($_SESSION['user']['id'] ?? 0);
+        $curId = (int)($anime['id'] ?? 0);
+        $bmStmt = $pdo->prepare("SELECT id FROM bookmarks WHERE user_id = ? AND (anime_id = ? OR (anime_slug = ? AND anime_slug != '')) LIMIT 1");
+        $bmStmt->execute([$uId, $curId, $animeSlug]);
+        $isBookmarked = (bool)$bmStmt->fetch();
+    }
+}
+
 $page_title = 'Watch ' . ($anime['title'] ?? 'Anime') . ' Episode ' . $currentEpNum . ($isDub ? ' (Hindi Dubbed)' : ' (Subbed)');
 $page_desc = 'Stream ' . ($anime['title'] ?? 'Anime') . ' Episode ' . $currentEpNum . ' in 1080p Full HD with zero buffering on AniXoHindi.';
+$og_image = !empty($anime['banner']) ? $anime['banner'] : (!empty($anime['poster']) ? $anime['poster'] : '');
 require_once __DIR__ . '/includes/header.php';
 ?>
 
@@ -319,6 +333,10 @@ require_once __DIR__ . '/includes/header.php';
                     </div>
 
                     <div class="dossier-quick-actions">
+                        <button type="button" class="btn-dossier-action <?= $isBookmarked ? 'active-bookmark' : '' ?>" id="btnBookmarkWatch" onclick="toggleWatchlistBookmark(<?= (int)$hindiId ?>, '<?= addslashes(e($animeSlug)) ?>', '<?= addslashes(e($anime['title'])) ?>', '<?= addslashes(e($anime['poster'])) ?>')">
+                            <i class="<?= $isBookmarked ? 'fa-solid fa-bookmark text-accent-gold' : 'fa-regular fa-bookmark' ?>" id="bookmarkWatchIcon"></i> 
+                            <span id="bookmarkWatchText"><?= $isBookmarked ? 'In Watchlist' : 'Watchlist' ?></span>
+                        </button>
                         <button type="button" class="btn-dossier-action" onclick="copyWatchLink()" title="Share Anime Link">
                             <i class="fa-solid fa-share-nodes"></i> <span>Share</span>
                         </button>

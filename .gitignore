@@ -4,3 +4,6 @@ cache/*.json
 
 # Environment and sensitive configs
 .env
+
+# Private credentials
+config/credentials.php

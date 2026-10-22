@@ -26,10 +26,20 @@ define('DB_USER', 'root');
 define('DB_PASS', '');
 define('DB_NAME', 'anixohindi');
 
-// Google OAuth 2.0 Credentials (Replace with your actual keys from Google Cloud Console)
-define('GOOGLE_CLIENT_ID', 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com');
-define('GOOGLE_CLIENT_SECRET', 'YOUR_GOOGLE_CLIENT_SECRET');
-define('GOOGLE_REDIRECT_URI', SITE_URL . '/auth/callback.php?provider=google');
+// Load local private credentials if available
+if (file_exists(__DIR__ . '/credentials.php')) {
+    require_once __DIR__ . '/credentials.php';
+}
+
+// Google OAuth 2.0 Credentials (Fallback)
+if (!defined('GOOGLE_CLIENT_ID')) {
+    define('GOOGLE_CLIENT_ID', getenv('GOOGLE_CLIENT_ID') ?: 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com');
+}
+if (!defined('GOOGLE_CLIENT_SECRET')) {
+    define('GOOGLE_CLIENT_SECRET', getenv('GOOGLE_CLIENT_SECRET') ?: 'YOUR_GOOGLE_CLIENT_SECRET');
+}
+$isWww = isset($_SERVER['HTTP_HOST']) && strpos($_SERVER['HTTP_HOST'], 'www.') !== false;
+define('GOOGLE_REDIRECT_URI', 'https://' . ($isWww ? 'www.anixohindi.cc' : 'anixohindi.cc') . '/auth/callback.php');
 
 // AniList OAuth Credentials (Replace with your AniList Developer Client ID/Secret)
 define('ANILIST_CLIENT_ID', 'YOUR_ANILIST_CLIENT_ID');
