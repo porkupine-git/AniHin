@@ -6424,3 +6424,108 @@ body.lights-off-active .lights-off-notice {
         width: 100%;
     }
 }
+
+
+/* Comparison Table (Hindi Dub vs Japanese Sub) */
+.comparison-table-wrapper {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    overflow-x: auto;
+    margin-bottom: 24px;
+}
+
+.comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.92rem;
+    text-align: left;
+}
+
+.comparison-table th {
+    background: var(--bg-surface-elevated);
+    color: var(--text-bright);
+    font-weight: 700;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border-subtle);
+    white-space: nowrap;
+}
+
+.comparison-table td {
+    padding: 14px 18px;
+    border-bottom: 1px solid rgba(209, 232, 226, 0.06);
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+.comparison-table tr:last-child td {
+    border-bottom: none;
+}
+
+.comp-feature {
+    font-weight: 700;
+    color: var(--text-bright);
+    white-space: nowrap;
+}
+
+.comp-dub {
+    color: var(--text-primary);
+    background: rgba(17, 100, 102, 0.08);
+}
+
+.comp-sub {
+    color: var(--text-muted);
+}
+
+/* Streaming Steps */
+.streaming-steps-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    padding: 22px;
+    margin-bottom: 24px;
+}
+
+.streaming-steps-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.streaming-steps-list li {
+    font-size: 0.94rem;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    line-height: 1.5;
+}
+
+/* LSI Keywords Cloud */
+.lsi-tags-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.lsi-tag-pill {
+    background: var(--bg-surface-elevated);
+    border: 1px solid rgba(209, 232, 226, 0.08);
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.18s ease;
+}
+
+.lsi-tag-pill:hover {
+    background: var(--accent-primary);
+    color: #ffffff;
+    border-color: var(--accent-primary);
+    transform: translateY(-2px);
+}
