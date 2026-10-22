@@ -712,26 +712,36 @@ body:not(:has(.hero-spotlight-deck)) .site-navbar {
     color: var(--accent-peach);
 }
 
+.nav-mobile-toggle {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+
 .nav-mobile-menu {
     display: block;
     max-height: 0;
     opacity: 0;
+    visibility: hidden;
     overflow: hidden;
-    background: rgba(14, 21, 20, 0.98);
+    background: #141c1a;
     border-top: 1px solid rgba(209, 232, 226, 0.12);
     border-radius: 0 0 16px 16px;
-    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.65);
-    transition: max-height 0.32s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.24s ease, padding 0.24s ease;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.55);
     padding: 0 14px;
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    transform: translate3d(0, -6px, 0);
+    will-change: transform, opacity, max-height;
+    contain: layout style;
+    transition: max-height 0.2s cubic-bezier(0, 0, 0.2, 1), transform 0.18s cubic-bezier(0, 0, 0.2, 1), opacity 0.15s ease, padding 0.2s ease, visibility 0.2s;
 }
 
 .nav-mobile-menu.open {
-    max-height: 520px;
+    max-height: 560px;
     opacity: 1;
-    overflow: visible;
+    visibility: visible;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     padding: 12px 14px 16px;
+    transform: translate3d(0, 0, 0);
 }
 
 .mobile-drawer-header {
@@ -3337,14 +3347,13 @@ body.lights-off-active .lights-off-notice {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.72);
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
+    background: rgba(0, 0, 0, 0.7);
     z-index: 998;
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
-    transition: opacity 0.28s ease, visibility 0.28s ease;
+    will-change: opacity;
+    transition: opacity 0.18s ease, visibility 0.18s ease;
 }
 
 .mobile-backdrop-overlay.active {
@@ -3356,11 +3365,9 @@ body.lights-off-active .lights-off-notice {
 /* Navbar Active states when mobile drawer or search is open */
 .site-navbar.menu-active,
 .site-navbar.search-active {
-    background: rgba(12, 18, 17, 0.98) !important;
-    backdrop-filter: blur(20px) saturate(160%) !important;
-    -webkit-backdrop-filter: blur(20px) saturate(160%) !important;
+    background: #101716 !important;
     border-bottom: 1px solid rgba(209, 232, 226, 0.14) !important;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45) !important;
 }
 
 /* Mobile Bottom Navigation Bar (Hidden on desktop) */
@@ -3558,9 +3565,7 @@ body.lights-off-active .lights-off-notice {
         height: 60px;
         padding: 4px 10px;
         padding-bottom: max(4px, env(safe-area-inset-bottom));
-        background: rgba(12, 18, 17, 0.94);
-        backdrop-filter: blur(20px) saturate(160%);
-        -webkit-backdrop-filter: blur(20px) saturate(160%);
+        background: #101716;
         border-top: 1px solid rgba(209, 232, 226, 0.12);
         align-items: center;
         justify-content: space-around;
@@ -6528,4 +6533,265 @@ body.lights-off-active .lights-off-notice {
     color: #ffffff;
     border-color: var(--accent-primary);
     transform: translateY(-2px);
+}
+
+
+/* ==========================================================================
+   Mobile Responsive Engine for Anime Blog & Articles (<= 768px & <= 480px)
+   ========================================================================== */
+@media (max-width: 768px) {
+    /* Single Article Page Mobile */
+    .blog-hero {
+        padding: 24px 0 20px 0;
+    }
+    .blog-breadcrumbs {
+        font-size: 0.78rem;
+        gap: 6px;
+        margin-bottom: 14px;
+    }
+    .blog-badges {
+        gap: 6px;
+        margin-bottom: 12px;
+    }
+    .blog-badge {
+        font-size: 0.7rem;
+        padding: 3px 9px;
+    }
+    .blog-article-h1 {
+        font-size: 1.45rem;
+        line-height: 1.3;
+        margin-bottom: 12px;
+    }
+    .blog-meta-row {
+        font-size: 0.78rem;
+        gap: 8px;
+    }
+    .blog-grid-layout {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+    .blog-sidebar {
+        position: static;
+        order: 2;
+    }
+    .blog-cta-box {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 18px 16px;
+        gap: 14px;
+    }
+    .blog-cta-box h3 {
+        font-size: 1.1rem;
+    }
+    .blog-cta-box p {
+        font-size: 0.84rem;
+    }
+    .btn-blog-cta {
+        width: 100%;
+        padding: 12px 18px;
+        font-size: 0.9rem;
+    }
+    .blog-specs-card {
+        padding: 16px;
+    }
+    .specs-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    .blog-section {
+        margin-bottom: 28px;
+    }
+    .blog-section h2 {
+        font-size: 1.2rem;
+        line-height: 1.35;
+        margin-bottom: 12px;
+    }
+    .blog-prose p {
+        font-size: 0.92rem;
+        line-height: 1.65;
+        margin-bottom: 14px;
+    }
+    .blog-highlight-box {
+        padding: 14px 16px;
+        gap: 10px;
+    }
+    .blog-highlight-box p {
+        font-size: 0.86rem;
+    }
+    
+    /* Comparison Table Horizontal Touch Scroll */
+    .comparison-table-wrapper {
+        -webkit-overflow-scrolling: touch;
+        border-radius: 10px;
+    }
+    .comparison-table th, 
+    .comparison-table td {
+        padding: 10px 12px;
+        font-size: 0.8rem;
+    }
+    .comp-feature {
+        font-size: 0.8rem;
+        min-width: 110px;
+    }
+    .comp-dub, .comp-sub {
+        min-width: 160px;
+    }
+
+    /* Characters Grid */
+    .characters-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    .character-card {
+        padding: 10px;
+        gap: 10px;
+    }
+    .char-img, .char-img-placeholder {
+        width: 48px;
+        height: 48px;
+    }
+    .char-name {
+        font-size: 0.88rem;
+    }
+    .char-role {
+        font-size: 0.74rem;
+    }
+    .char-va {
+        font-size: 0.72rem;
+    }
+
+    /* Episodes List */
+    .ep-blog-row {
+        padding: 10px 12px;
+        gap: 8px;
+    }
+    .ep-num-pill {
+        font-size: 0.72rem;
+        padding: 3px 7px;
+    }
+    .ep-title-text {
+        font-size: 0.84rem;
+        max-width: 160px;
+    }
+    .ep-row-btn {
+        font-size: 0.76rem;
+    }
+
+    /* Bottom CTA */
+    .bottom-cta {
+        padding: 24px 16px;
+        margin: 28px 0;
+    }
+    .bottom-cta h2 {
+        font-size: 1.3rem;
+    }
+    .btn-large {
+        padding: 13px 22px;
+        font-size: 0.95rem;
+    }
+
+    /* Streaming Steps */
+    .streaming-steps-card {
+        padding: 16px;
+    }
+    .streaming-steps-list li {
+        font-size: 0.86rem;
+        align-items: flex-start;
+    }
+    .streaming-steps-list li i {
+        margin-top: 3px;
+    }
+
+    /* LSI Tags */
+    .lsi-tag-pill {
+        font-size: 0.75rem;
+        padding: 5px 10px;
+    }
+
+    /* =========================================================
+       Blog Hub / Directory Page Mobile Styles
+       ========================================================= */
+    .blog-hub-hero {
+        padding: 32px 0 20px 0;
+    }
+    .hub-title {
+        font-size: 1.45rem;
+        line-height: 1.3;
+        margin-bottom: 8px;
+    }
+    .hub-subtitle {
+        font-size: 0.88rem;
+        margin-bottom: 18px;
+    }
+    .hub-search-bar {
+        padding: 4px 6px 4px 12px;
+    }
+    .hub-search-bar input {
+        font-size: 0.86rem;
+    }
+    .btn-hub-search {
+        padding: 8px 14px;
+        font-size: 0.82rem;
+    }
+    .hub-header-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 18px;
+    }
+    .hub-header-row h2 {
+        font-size: 1.15rem;
+    }
+    /* Horizontal Swipable Genre Chips (App-like feel) */
+    .hub-genres {
+        width: 100%;
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 6px;
+        gap: 6px;
+        scrollbar-width: none;
+    }
+    .hub-genres::-webkit-scrollbar {
+        display: none;
+    }
+    .hub-genre-pill {
+        white-space: nowrap;
+        font-size: 0.76rem;
+        padding: 5px 12px;
+        flex-shrink: 0;
+    }
+
+    /* 1 Column Cards on Mobile */
+    .blog-cards-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+    .blog-card-title {
+        font-size: 0.98rem;
+    }
+    .blog-card-excerpt {
+        font-size: 0.82rem;
+        margin-bottom: 12px;
+    }
+    .blog-card-actions {
+        gap: 8px;
+    }
+    .btn-read-guide, .btn-watch-direct {
+        font-size: 0.78rem;
+        padding: 8px 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .blog-article-h1 {
+        font-size: 1.3rem;
+    }
+    .ep-title-text {
+        max-width: 130px;
+    }
+    .sidebar-card {
+        padding: 14px;
+    }
 }

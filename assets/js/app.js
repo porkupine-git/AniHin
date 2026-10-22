@@ -129,7 +129,11 @@ document.addEventListener('DOMContentLoaded', () => {
         mobileMenu.classList.add('open');
         siteNavbar?.classList.add('menu-active');
         mobileBackdrop?.classList.add('active');
-        if (mobileToggle) mobileToggle.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+        if (mobileToggle) {
+            mobileToggle.classList.add('active');
+            const icon = mobileToggle.querySelector('i');
+            if (icon) icon.className = 'fa-solid fa-xmark';
+        }
         updateNavbarBackground();
     }
 
@@ -140,7 +144,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!mobileSearchBar?.classList.contains('open')) {
             mobileBackdrop?.classList.remove('active');
         }
-        if (mobileToggle) mobileToggle.innerHTML = '<i class="fa-solid fa-bars"></i>';
+        if (mobileToggle) {
+            mobileToggle.classList.remove('active');
+            const icon = mobileToggle.querySelector('i');
+            if (icon) icon.className = 'fa-solid fa-bars';
+        }
         updateNavbarBackground();
     }
 
