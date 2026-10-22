@@ -2,10 +2,10 @@
 <footer class="site-footer">
     <div class="container">
         <div class="footer-top-row">
-            <div class="brand-logo">
-                <i class="fa-solid fa-play text-accent"></i>
-                <span>Ani<span class="brand-highlight">Xo</span>Hindi</span>
-            </div>
+            <a href="/index.php" class="brand-logo footer-brand-logo" aria-label="AniXoHindi Home">
+                <img src="/logo.png" alt="AniXo" class="brand-logo-img" loading="lazy">
+                <span class="brand-badge">हिंदी</span>
+            </a>
             
             <ul class="footer-links-list">
                 <li><a href="/index.php">Home</a></li>

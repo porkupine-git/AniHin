@@ -1,0 +1,32 @@
+{
+  "name": "AniXoHindi - Watch Free Hindi Dubbed Anime in 1080p",
+  "short_name": "AniXoHindi",
+  "description": "Stream 220+ verified Hindi Dubbed anime series and movies in 1080p Full HD online free.",
+  "icons": [
+    {
+      "src": "/favicon-16x16.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "theme_color": "#101716",
+  "background_color": "#101716",
+  "display": "standalone",
+  "start_url": "/"
+}

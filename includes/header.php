@@ -75,6 +75,16 @@ $user = currentUser();
     <meta name="twitter:image" content="<?= e($og_image) ?>">
     <?php endif; ?>
 
+    <!-- Official AniXo Favicon & Mobile Touch Icons -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="shortcut icon" href="/favicon.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/favicon-512.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="preload" as="image" href="/logo.png" fetchpriority="high">
+
     <!-- Fonts, Preconnect & Styling Performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -135,11 +145,8 @@ $user = currentUser();
             <!-- Left Group: Brand Logo & Main Navigation -->
             <div class="navbar-left">
                 <!-- Brand Logo -->
-                <a href="/index.php" class="brand-logo">
-                    <span class="brand-icon-wrap">
-                        <i class="fa-solid fa-play"></i>
-                    </span>
-                    <span class="brand-text">Ani<span class="brand-highlight">Xo</span>Hindi</span>
+                <a href="/index.php" class="brand-logo" aria-label="AniXoHindi Home">
+                    <img src="/logo.png" alt="AniXo" class="brand-logo-img" fetchpriority="high" decoding="async">
                     <span class="brand-badge">हिंदी</span>
                 </a>
 

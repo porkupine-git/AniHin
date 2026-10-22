@@ -6795,3 +6795,25 @@ body.lights-off-active .lights-off-notice {
         padding: 14px;
     }
 }
+
+
+/* Official Brand Logo Image Styling */
+.brand-logo-img {
+    height: 28px;
+    width: auto;
+    max-width: 120px;
+    object-fit: contain;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.footer-brand-logo {
+    text-decoration: none;
+}
+
+@media (max-width: 768px) {
+    .brand-logo-img {
+        height: 24px;
+        max-width: 105px;
+    }
+}
