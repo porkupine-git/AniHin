@@ -633,7 +633,7 @@ function renderAnimeCard($anime) {
                         data-poster="<?= $poster ?>"
                         onclick="event.preventDefault(); event.stopPropagation(); toggleWatchlistBookmark(this);" 
                         title="<?= $isBookmarkedCard ? 'In Watchlist (Click to remove)' : 'Add to Watchlist' ?>">
-                    <i class="<?= $isBookmarkedCard ? 'fa-solid fa-bookmark text-accent-gold' : 'fa-regular fa-bookmark' ?>"></i>
+                    <i class="<?= $isBookmarkedCard ? 'fa-solid fa-bookmark' : 'fa-regular fa-bookmark' ?>"></i>
                 </button>
             </div>
 

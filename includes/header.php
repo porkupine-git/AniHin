@@ -91,7 +91,7 @@ $user = currentUser();
                                 </div>
                                 <div class="dropdown-divider"></div>
                                 <a href="/watchlist.php" class="dropdown-item">
-                                    <i class="fa-solid fa-bookmark text-accent-gold"></i>
+                                    <i class="fa-regular fa-bookmark"></i>
                                     <span>My Watchlist</span>
                                 </a>
                                 <a href="/auth/logout.php" class="dropdown-item dropdown-logout-item">
@@ -138,7 +138,7 @@ $user = currentUser();
                 <li><a href="/browse.php?type=Movie" class="<?= ($_GET['type'] ?? '') == 'Movie' ? 'active' : '' ?>"><i class="fa-solid fa-film mr-2"></i> Movies</a></li>
                 <li><a href="/browse.php" class="<?= (basename($_SERVER['PHP_SELF']) == 'browse.php' && empty($_GET['type'])) ? 'active' : '' ?>"><i class="fa-solid fa-compass mr-2"></i> Browse All</a></li>
                 <?php if ($user): ?>
-                    <li><a href="/watchlist.php" class="<?= basename($_SERVER['PHP_SELF']) == 'watchlist.php' ? 'active' : '' ?>"><i class="fa-solid fa-bookmark mr-2 text-accent-gold"></i> My Watchlist</a></li>
+                    <li><a href="/watchlist.php" class="<?= basename($_SERVER['PHP_SELF']) == 'watchlist.php' ? 'active' : '' ?>"><i class="fa-regular fa-bookmark mr-2"></i> My Watchlist</a></li>
                 <?php endif; ?>
             </ul>
             <?php if (!$user): ?>

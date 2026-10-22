@@ -160,7 +160,7 @@ require_once __DIR__ . '/includes/header.php';
                                     data-poster="<?= e($anime['poster'] ?? '') ?>"
                                     onclick="toggleWatchlistBookmark(this)" 
                                     title="<?= $isBookmarked ? 'In Watchlist (Click to remove)' : 'Add to Watchlist' ?>">
-                                <i class="<?= $isBookmarked ? 'fa-solid fa-bookmark text-accent-gold' : 'fa-regular fa-bookmark' ?>" id="quickBookmarkIcon"></i>
+                                <i class="<?= $isBookmarked ? 'fa-solid fa-bookmark' : 'fa-regular fa-bookmark' ?>" id="quickBookmarkIcon"></i>
                             </button>
                             <button type="button" class="quick-tool-btn" onclick="copyWatchLink()" title="Copy Share Link">
                                 <i class="fa-solid fa-share-nodes"></i>
@@ -350,7 +350,7 @@ require_once __DIR__ . '/includes/header.php';
                                 data-poster="<?= e($anime['poster'] ?? '') ?>"
                                 onclick="toggleWatchlistBookmark(this)"
                                 title="<?= $isBookmarked ? 'In Watchlist (Click to remove)' : 'Add to Watchlist' ?>">
-                            <i class="<?= $isBookmarked ? 'fa-solid fa-bookmark text-accent-gold' : 'fa-regular fa-bookmark' ?>" id="bookmarkWatchIcon"></i> 
+                            <i class="<?= $isBookmarked ? 'fa-solid fa-bookmark' : 'fa-regular fa-bookmark' ?>" id="bookmarkWatchIcon"></i> 
                             <span id="bookmarkWatchText"><?= $isBookmarked ? 'In Watchlist' : 'Watchlist' ?></span>
                         </button>
                         <button type="button" class="btn-dossier-action" onclick="copyWatchLink()" title="Share Anime Link">

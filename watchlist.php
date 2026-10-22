@@ -61,7 +61,7 @@ require_once __DIR__ . '/includes/header.php';
             <div>
                 <h1 class="section-title">
                     <span class="title-bar"></span>
-                    <span><i class="fa-solid fa-bookmark text-accent-gold mr-2"></i> My Watchlist</span>
+                    <span><i class="fa-regular fa-bookmark mr-2"></i> My Watchlist</span>
                 </h1>
                 <p class="text-muted small mt-1">Keep track of your favorite Hindi Dubbed anime and continue where you left off.</p>
             </div>

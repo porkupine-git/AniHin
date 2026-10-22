@@ -465,7 +465,7 @@ function toggleLightsOff() {
     if (btn) {
         if (isNowActive) {
             btn.classList.add('active');
-            btn.innerHTML = '<i class="fa-solid fa-lightbulb text-accent-gold"></i> <span class="tool-label">Lights On</span>';
+            btn.innerHTML = '<i class="fa-solid fa-lightbulb"></i> <span class="tool-label">Lights On</span>';
             btn.title = 'Turn Lights On (Exit Focus)';
         } else {
             btn.classList.remove('active');
@@ -1579,7 +1579,7 @@ window.toggleWatchlistBookmark = async function(arg1, animeSlug, animeTitle, ani
                     if (isBookmarked) {
                         el.classList.add('is-bookmarked');
                         el.title = 'In Watchlist (Click to remove)';
-                        el.innerHTML = '<i class="fa-solid fa-bookmark text-accent-gold"></i>';
+                        el.innerHTML = '<i class="fa-solid fa-bookmark"></i>';
                     } else {
                         el.classList.remove('is-bookmarked');
                         el.title = 'Add to Watchlist';
@@ -1595,7 +1595,7 @@ window.toggleWatchlistBookmark = async function(arg1, animeSlug, animeTitle, ani
             if (btnDossier) {
                 if (isBookmarked) {
                     btnDossier.classList.add('active-bookmark');
-                    if (iconDossier) iconDossier.className = 'fa-solid fa-bookmark text-accent-gold';
+                    if (iconDossier) iconDossier.className = 'fa-solid fa-bookmark';
                     if (textDossier) textDossier.innerText = 'In Watchlist';
                 } else {
                     btnDossier.classList.remove('active-bookmark');
@@ -1611,7 +1611,7 @@ window.toggleWatchlistBookmark = async function(arg1, animeSlug, animeTitle, ani
                 if (isBookmarked) {
                     quickBtn.classList.add('active-bookmark');
                     quickBtn.title = 'In Watchlist (Click to remove)';
-                    if (quickIcon) quickIcon.className = 'fa-solid fa-bookmark text-accent-gold';
+                    if (quickIcon) quickIcon.className = 'fa-solid fa-bookmark';
                 } else {
                     quickBtn.classList.remove('active-bookmark');
                     quickBtn.title = 'Add to Watchlist';
@@ -1654,7 +1654,7 @@ window.showToast = function(msg, type) {
         toast.className = 'site-live-toast';
         document.body.appendChild(toast);
     }
-    const iconClass = type === 'success' ? 'fa-circle-check text-accent-gold' : (type === 'error' ? 'fa-circle-exclamation text-accent-peach' : 'fa-circle-info');
+    const iconClass = type === 'success' ? 'fa-circle-check' : (type === 'error' ? 'fa-circle-exclamation text-accent-peach' : 'fa-circle-info');
     toast.innerHTML = `<i class="fa-solid ${iconClass} mr-2"></i> <span>${msg}</span>`;
     toast.classList.add('show');
     clearTimeout(window.__toastTimeout);
