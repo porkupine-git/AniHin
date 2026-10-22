@@ -165,21 +165,23 @@ require_once __DIR__ . '/includes/header.php';
                     </div>
 
                     <div class="server-pill-deck">
-                        <button type="button" class="server-station-btn active" data-server="1" onclick="switchServer('Server 1 (Fast HD)', '<?= e($currentEpisode['embed'] ?? 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4') ?>', this)">
+                        <button type="button" class="server-station-btn active" id="server-btn-1" data-server="1" onclick="switchServer('Server 1 (Fast HD)', '<?= e($currentEpisode['embed']) ?>', this)">
                             <span class="server-dot online"></span>
                             <span class="server-name">Server 1 (Fast HD)</span>
-                            <span class="server-tag">1080p CDN</span>
+                            <span class="server-tag">1080p Stream</span>
                         </button>
-                        <button type="button" class="server-station-btn" data-server="2" onclick="switchServer('Server 2 (Multi-Audio)', 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4', this)">
+                        <button type="button" class="server-station-btn" id="server-btn-2" data-server="2" onclick="switchServer('Server 2 (Direct ID)', '<?= e($currentEpisode['embed_id'] ?? $currentEpisode['embed']) ?>', this)">
                             <span class="server-dot online"></span>
-                            <span class="server-name">Server 2 (Multi-Audio)</span>
-                            <span class="server-tag">Dual Audio</span>
+                            <span class="server-name">Server 2 (Direct ID)</span>
+                            <span class="server-tag">Direct Stream</span>
                         </button>
-                        <button type="button" class="server-station-btn" data-server="3" onclick="switchServer('Server 3 (Direct Direct)', 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4', this)">
+                        <?php if (!empty($anime['mal_id'])): ?>
+                        <button type="button" class="server-station-btn" id="server-btn-3" data-server="3" onclick="switchServer('Server 3 (MAL Fallback)', '<?= e((defined('HINDI_EMBED_BASE') ? HINDI_EMBED_BASE : 'https://embed.anixohindi.cc') . '/embed/mal/' . $anime['mal_id'] . '/' . $currentEpNum) ?>', this)">
                             <span class="server-dot backup"></span>
-                            <span class="server-name">Server 3 (Direct CDN)</span>
+                            <span class="server-name">Server 3 (MAL Fallback)</span>
                             <span class="server-tag">Backup</span>
                         </button>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -234,7 +236,7 @@ require_once __DIR__ . '/includes/header.php';
                                  data-ep="<?= $num ?>"
                                  data-title="<?= e(strtolower($epTitle)) ?>"
                                  title="<?= e($epTitle) ?>"
-                                 onclick="switchEpisode(<?= $num ?>, '<?= e($ep['embed']) ?>', '<?= e(addslashes($epTitle)) ?>')">
+                                 onclick="switchEpisode(<?= $num ?>, '<?= e($ep['embed']) ?>', '<?= e(addslashes($epTitle)) ?>', '<?= e($ep['embed_id'] ?? $ep['embed']) ?>', '<?= !empty($anime['mal_id']) ? e((defined('HINDI_EMBED_BASE') ? HINDI_EMBED_BASE : 'https://embed.anixohindi.cc') . '/embed/mal/' . $anime['mal_id'] . '/' . $num) : '' ?>')">
                                 <span class="ep-box-num"><?= $num ?></span>
                                 <?php if ($isDub): ?>
                                     <span class="ep-box-badge">HI</span>
@@ -255,7 +257,7 @@ require_once __DIR__ . '/includes/header.php';
                             <div class="ep-list-card <?= $isActive ?>" 
                                  data-ep="<?= $num ?>"
                                  data-title="<?= e(strtolower($epTitle)) ?>"
-                                 onclick="switchEpisode(<?= $num ?>, '<?= e($ep['embed']) ?>', '<?= e(addslashes($epTitle)) ?>')">
+                                 onclick="switchEpisode(<?= $num ?>, '<?= e($ep['embed']) ?>', '<?= e(addslashes($epTitle)) ?>', '<?= e($ep['embed_id'] ?? $ep['embed']) ?>', '<?= !empty($anime['mal_id']) ? e((defined('HINDI_EMBED_BASE') ? HINDI_EMBED_BASE : 'https://embed.anixohindi.cc') . '/embed/mal/' . $anime['mal_id'] . '/' . $num) : '' ?>')">
                                 <div class="ep-list-thumb-wrap">
                                     <img src="<?= e($thumb) ?>" alt="<?= e($epTitle) ?>" loading="lazy" class="ep-list-thumb">
                                     <span class="ep-list-duration">24m</span>

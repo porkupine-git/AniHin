@@ -16,6 +16,10 @@ $siteHost = $_SERVER['HTTP_HOST'] ?? 'anixohindi.cc';
 define('SITE_URL', $siteProtocol . $siteHost);
 define('CONTACT_EMAIL', 'support@anixohindi.com');
 
+// Authoritative Hindi DB & Streaming Provider Configuration
+define('HINDI_DB_PATH', '/www/wwwroot/anilist_database/anilist.db');
+define('HINDI_EMBED_BASE', 'https://embed.anixohindi.cc');
+
 // Database Credentials (Update with your MySQL credentials)
 define('DB_HOST', 'localhost');
 define('DB_USER', 'root');

@@ -161,37 +161,15 @@ function searchAnixoCatalog($query, $limit = 12) {
     $query = trim($query);
     if (strlen($query) < 2) return [];
 
-    $urlAni = 'https://db.anixo.buzz/?api=search&q=' . urlencode($query) . '&limit=' . (int)$limit;
-    $urlZip = 'https://db.anixo.buzz/?api=anizip_search&q=' . urlencode($query) . '&limit=' . (int)$limit;
-
-    $resAni = anixoApiGet($urlAni, 1800);
-    $resZip = anixoApiGet($urlZip, 1800);
-
-    $itemsAni = $resAni['results'] ?? [];
-    $itemsZip = $resZip['results'] ?? [];
-
-    $combined = [];
-    $seenIds = [];
-
-    // First include Hindi results
-    foreach ($itemsZip as $it) {
-        $id = $it['anilist_id'] ?? null;
-        if ($id && !isset($seenIds[$id])) {
-            $seenIds[$id] = true;
-            $combined[] = formatAnixoItem($it);
+    // Prioritize authoritative Hindi database search
+    if (function_exists('getAllAnime')) {
+        $results = getAllAnime(['q' => $query]);
+        if (!empty($results)) {
+            return array_slice($results, 0, $limit);
         }
     }
 
-    // Then general results
-    foreach ($itemsAni as $it) {
-        $id = $it['anilist_id'] ?? null;
-        if ($id && !isset($seenIds[$id])) {
-            $seenIds[$id] = true;
-            $combined[] = formatAnixoItem($it);
-        }
-    }
-
-    return array_slice($combined, 0, $limit);
+    return [];
 }
 
 /**
@@ -342,13 +320,8 @@ function getEpisodesForAnime($anime) {
                 $img = $epData['image'] ?? $anime['banner'] ?? $anime['poster'];
                 $airDate = $epData['airDate'] ?? null;
 
-                // Professional lightweight streaming embed link
-                $embedUrl = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
-                if ($num % 3 === 2) {
-                    $embedUrl = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4';
-                } elseif ($num % 3 === 0) {
-                    $embedUrl = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4';
-                }
+                $embedBase = defined('HINDI_EMBED_BASE') ? HINDI_EMBED_BASE : 'https://embed.anixohindi.cc';
+                $embedUrl = $id ? "{$embedBase}/embed/ani/{$id}/{$num}" : "{$embedBase}/embed/id/{$anime['id']}/{$num}";
 
                 $episodes[] = [
                     'number' => $num,
@@ -369,12 +342,8 @@ function getEpisodesForAnime($anime) {
         if ($count > 36) $count = 24; // sensible limit for display
 
         for ($i = 1; $i <= $count; $i++) {
-            $embedUrl = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
-            if ($i % 3 === 2) {
-                $embedUrl = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4';
-            } elseif ($i % 3 === 0) {
-                $embedUrl = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4';
-            }
+            $embedBase = defined('HINDI_EMBED_BASE') ? HINDI_EMBED_BASE : 'https://embed.anixohindi.cc';
+            $embedUrl = $id ? "{$embedBase}/embed/ani/{$id}/{$i}" : "{$embedBase}/embed/id/{$anime['id']}/{$i}";
 
             $episodes[] = [
                 'number' => $i,

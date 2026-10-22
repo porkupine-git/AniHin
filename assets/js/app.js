@@ -306,7 +306,7 @@ document.addEventListener('click', (e) => {
 // ==========================================================================
 
 // Switch Episode (Seamless client-side switch without full page reload)
-function switchEpisode(epNumber, embedUrl, title) {
+function switchEpisode(epNumber, embedUrl, title, embedIdUrl, malEmbedUrl) {
     epNumber = parseInt(epNumber, 10);
     const frame = document.getElementById('anime-embed-frame');
     const breadcrumbBadge = document.getElementById('breadcrumb-ep-badge');
@@ -326,10 +326,33 @@ function switchEpisode(epNumber, embedUrl, title) {
     if (cockpitBadge) cockpitBadge.innerText = epLabel;
     if (cockpitTitle) cockpitTitle.innerText = cleanTitle;
 
-    // Update Document Title
+    // Update Browser Address & Title
     if (window.WATCH_ANIME_SLUG) {
         document.title = `Watch Episode ${epNumber} - AniXoHindi`;
+        try {
+            const url = new URL(window.location);
+            url.searchParams.set('ep', epNumber);
+            window.history.replaceState({}, '', url.toString());
+        } catch (e) {}
     }
+
+    // Update Server Station Buttons with new episode URLs
+    const s1 = document.getElementById('server-btn-1');
+    const s2 = document.getElementById('server-btn-2');
+    const s3 = document.getElementById('server-btn-3');
+    if (s1 && embedUrl) {
+        s1.onclick = function() { switchServer('Server 1 (Fast HD)', embedUrl, s1); };
+    }
+    if (s2 && embedIdUrl) {
+        s2.onclick = function() { switchServer('Server 2 (Direct ID)', embedIdUrl, s2); };
+    }
+    if (s3 && malEmbedUrl) {
+        s3.onclick = function() { switchServer('Server 3 (MAL Fallback)', malEmbedUrl, s3); };
+    }
+
+    // Reset Server 1 as active
+    document.querySelectorAll('.server-station-btn').forEach(b => b.classList.remove('active'));
+    if (s1) s1.classList.add('active');
 
     // 3. Update Active State in Grid View
     document.querySelectorAll('.ep-box-item').forEach(el => el.classList.remove('active'));

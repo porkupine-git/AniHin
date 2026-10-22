@@ -3,62 +3,31 @@ $page_title = 'Watch Free Hindi Dubbed Anime Online in Full HD';
 $page_desc = 'Watch popular anime in Hindi Dubbed and English Subbed. Stream Bleach TYBW, One Piece, Death Note in 1080p without ads.';
 require_once __DIR__ . '/includes/header.php';
 
-$allAnime = getAllAnime();
+// 100% Authoritative Hindi Anime Catalog from our verified Database
+$allAnime = getAllAnime(['sort' => 'popular']);
+$trendingDubs = array_slice($allAnime, 0, 12);
+$latestDubs = getAllAnime(['sort' => 'latest']);
+$topRated = getAllAnime(['sort' => 'score']);
+$hindiMovies = getAllAnime(['type' => 'Movie']);
 
-// Spotlight Hero: pick top featured anime dynamically from the live API
-$spotlight = null;
+// Curate 12 premium spotlight anime from verified Hindi catalog
+$spotlightList = [];
+$seenDeck = [];
 foreach ($allAnime as $a) {
-    if (!empty($a['banner']) && !empty($a['hindi_title']) && ($a['score'] ?? 0) >= 8.5) {
-        $spotlight = enrichAnimeDetails($a);
-        break;
+    if (!isset($seenDeck[$a['id']]) && (!empty($a['banner']) || !empty($a['poster']))) {
+        $spotlightList[] = $a;
+        $seenDeck[$a['id']] = true;
+        if (count($spotlightList) >= 12) break;
     }
 }
-if (!$spotlight && !empty($allAnime)) {
-    $spotlight = enrichAnimeDetails($allAnime[0]);
-}
-
-// 1. Newly Released & Currently Airing from db.anixo.buzz
-$newlyReleased = array_filter($allAnime, fn($a) => ($a['status'] ?? '') === 'Currently Airing');
-
-// 2. Popular Hindi Dubbed Anime (AniZip & db.anixo.buzz Localized)
-$hindiDubbed = array_filter($allAnime, fn($a) => !empty($a['hindi_title']));
-if (count($hindiDubbed) < 8) {
-    $existingIds = array_flip(array_column($hindiDubbed, 'id'));
-    foreach ($allAnime as $a) {
-        if (!empty($a['is_hindi_dubbed']) && !isset($existingIds[$a['id']])) {
-            $hindiDubbed[] = $a;
-            $existingIds[$a['id']] = true;
-            if (count($hindiDubbed) >= 12) break;
-        }
-    }
-}
-
-// 3. Top Rated Anime from db.anixo.buzz
-$topRated = $allAnime;
-usort($topRated, fn($a, $b) => ($b['score'] ?? 0) <=> ($a['score'] ?? 0));
+$initialAnime = $spotlightList[0] ?? null;
 ?>
 
 <main>
     <!-- Spotlight Hero Section (100% Dynamic from db.anixo.buzz API) -->
     <!-- 3D Infinite Fan-Deck Spotlight Hero Section (Matching Reference Image) -->
     <?php
-    // Curate 12 premium spotlight anime (Hindi dubs + Top popular from db.anixo.buzz)
-    $spotlightList = [];
-    $seenDeck = [];
-    foreach ($hindiDubbed as $a) {
-        if (!isset($seenDeck[$a['id']])) {
-            $spotlightList[] = $a;
-            $seenDeck[$a['id']] = true;
-            if (count($spotlightList) >= 6) break;
-        }
-    }
-    foreach ($allAnime as $a) {
-        if (!isset($seenDeck[$a['id']])) {
-            $spotlightList[] = $a;
-            $seenDeck[$a['id']] = true;
-            if (count($spotlightList) >= 12) break;
-        }
-    }
+// Spotlight deck curated directly from verified Hindi catalog
 
     // Enrich spotlight items with high-resolution TMDB backdrops & official PNG logos
     foreach ($spotlightList as &$aItem) {
@@ -202,39 +171,39 @@ usort($topRated, fn($a, $b) => ($b['score'] ?? 0) <=> ($a['score'] ?? 0));
         </div>
     </div>
 
-    <!-- Section 1: Newly Released Anime (Live from db.anixo.buzz) -->
+    <!-- Section 1: Trending Hindi Dubbed Anime -->
     <section class="container mt-3">
         <div class="section-header">
             <h2 class="section-title">
                 <span class="title-bar"></span>
-                <span>Newly Released & Airing Anime (नई रिलीज़्ड एनीमे)</span>
+                <span>Trending Hindi Dubbed Anime (लोकप्रिय हिंदी डब)</span>
             </h2>
-            <a href="/browse.php?status=Currently+Airing" class="text-secondary small font-weight-bold">
-                View Airing Catalog <i class="fa-solid fa-angle-right ml-1"></i>
+            <a href="/browse.php?type=dub" class="text-secondary small font-weight-bold">
+                View All <?= count($allAnime) ?> Dubs <i class="fa-solid fa-angle-right ml-1"></i>
             </a>
         </div>
         
         <div class="anime-grid">
-            <?php foreach (array_slice($newlyReleased, 0, 12) as $anime): ?>
+            <?php foreach ($trendingDubs as $anime): ?>
                 <?= renderAnimeCard($anime) ?>
             <?php endforeach; ?>
         </div>
     </section>
 
-    <!-- Section 2: Popular in Hindi Dub (AniZip & db.anixo.buzz Localized) -->
+    <!-- Section 2: Latest Added Hindi Releases -->
     <section class="container mt-5">
         <div class="section-header">
             <h2 class="section-title">
                 <span class="title-bar"></span>
-                <span>Popular in Hindi Dub (हिंदी डब एनीमे)</span>
+                <span>Latest Hindi Dubbed Releases (ताज़ा हिंदी डब रिलीज़)</span>
             </h2>
-            <a href="/browse.php?type=dub" class="text-secondary small font-weight-bold">
-                View All Dubs <i class="fa-solid fa-angle-right ml-1"></i>
+            <a href="/browse.php?sort=latest" class="text-secondary small font-weight-bold">
+                View Latest <i class="fa-solid fa-angle-right ml-1"></i>
             </a>
         </div>
         
         <div class="anime-grid">
-            <?php foreach (array_slice($hindiDubbed, 0, 12) as $anime): ?>
+            <?php foreach (array_slice($latestDubs, 0, 12) as $anime): ?>
                 <?= renderAnimeCard($anime) ?>
             <?php endforeach; ?>
         </div>
@@ -259,7 +228,28 @@ usort($topRated, fn($a, $b) => ($b['score'] ?? 0) <=> ($a['score'] ?? 0));
         </div>
     </section>
 
-    <!-- Section 4: Genre Quick Access -->
+    <!-- Section 4: Hindi Dubbed Anime Movies -->
+    <?php if (!empty($hindiMovies)): ?>
+    <section class="container mt-5">
+        <div class="section-header">
+            <h2 class="section-title">
+                <span class="title-bar"></span>
+                <span>Hindi Dubbed Anime Movies (हिंदी डब फिल्में)</span>
+            </h2>
+            <a href="/browse.php?type=Movie" class="text-secondary small font-weight-bold">
+                View Movies <i class="fa-solid fa-angle-right ml-1"></i>
+            </a>
+        </div>
+        
+        <div class="anime-grid">
+            <?php foreach (array_slice($hindiMovies, 0, 8) as $anime): ?>
+                <?= renderAnimeCard($anime) ?>
+            <?php endforeach; ?>
+        </div>
+    </section>
+    <?php endif; ?>
+
+    <!-- Section 5: Genre Quick Access -->
     <section class="container mt-5 mb-5">
         <div class="section-header">
             <h2 class="section-title">
